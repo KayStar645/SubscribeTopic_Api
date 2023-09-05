@@ -9,7 +9,7 @@ namespace Shared
             Data = data;
         }
 
-        public PaginatedResult(bool succeeded, List<T> data = default, List<string> messages = null, int count = 0, int pageNumber = 1, int pageSize = 10)
+        public PaginatedResult(bool succeeded, List<T> data = default, List<string> messages = null, int count = 0, int pageNumber = 1, int pageSize = 10, int code = 200)
         {
             Data = data;
             CurrentPage = pageNumber;
@@ -18,6 +18,19 @@ namespace Shared
             PageSize = pageSize;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             TotalCount = count;
+            Code = code;
+        }
+
+        public PaginatedResult(bool succeeded, List<string> messages = null, int code = 200)
+        {
+            Data = null;
+            CurrentPage = 1;
+            Succeeded = succeeded;
+            Messages = messages;
+            PageSize = 1;
+            TotalPages = 1;
+            TotalCount = 1;
+            Code = code;
         }
 
         public new List<T> Data { get; set; }

@@ -11,7 +11,7 @@ namespace Shared
 
         public T Data { get; set; }
 
-        public List<ValidationResult> ValidationErrors { get; set; }
+        //public List<ValidationResult> ValidationErrors { get; set; }
 
         public Exception Exception { get; set; }
 
@@ -25,35 +25,39 @@ namespace Shared
         {
             return new Result<T> 
             { 
-                Succeeded = true
+                Succeeded = true,
+                Code = 200,
             };
         }
 
-        public static Result<T> Success(string message)
+        public static Result<T> Success(string message, int code)
         {
             return new Result<T> 
             {
                 Succeeded = true,
-                Messages = new List<string> { message }
+                Messages = new List<string> { message },
+                Code = code
             };
         }
 
-        public static Result<T> Success(T data)
+        public static Result<T> Success(T data, int code)
         {
             return new Result<T>
             {
                 Succeeded = true,
-                Data = data
+                Data = data,
+                Code = code
             };
         }
 
-        public static Result<T> Success(T data, string message)
+        public static Result<T> Success(T data, string message, int code)
         {
             return new Result<T>
             {
                 Succeeded = true,
                 Messages = new List<string> { message },
-                Data = data
+                Data = data,
+                Code = code
             };
         }
 
@@ -65,63 +69,70 @@ namespace Shared
         {
             return new Result<T>
             {
-                Succeeded = false
-            };
-        }
-
-        public static Result<T> Failure(string message)
-        {
-            return new Result<T>
-            {
                 Succeeded = false,
-                Messages = new List<string> { message }
+                Code = 404,
             };
         }
 
-        public static Result<T> Failure(List<string> messages)
-        {
-            return new Result<T>
-            {
-                Succeeded = false,
-                Messages = messages
-            };
-        }
-
-        public static Result<T> Failure(T data)
-        {
-            return new Result<T>
-            {
-                Succeeded = false,
-                Data = data
-            };
-        }
-
-        public static Result<T> Failure(T data, string message)
+        public static Result<T> Failure(string message, int code)
         {
             return new Result<T>
             {
                 Succeeded = false,
                 Messages = new List<string> { message },
-                Data = data
+                Code = code,
             };
         }
 
-        public static Result<T> Failure(T data, List<string> messages)
+        public static Result<T> Failure(List<string> messages, int code)
         {
             return new Result<T>
             {
                 Succeeded = false,
                 Messages = messages,
-                Data = data
+                Code = code,
             };
         }
 
-        public static Result<T> Failure(Exception exception)
+        public static Result<T> Failure(T data, int code)
         {
             return new Result<T>
             {
                 Succeeded = false,
-                Exception = exception 
+                Data = data,
+                Code = code,
+            };
+        }
+
+        public static Result<T> Failure(T data, string message, int code)
+        {
+            return new Result<T>
+            {
+                Succeeded = false,
+                Messages = new List<string> { message },
+                Data = data,
+                Code = code,
+            };
+        }
+
+        public static Result<T> Failure(T data, List<string> messages, int code)
+        {
+            return new Result<T>
+            {
+                Succeeded = false,
+                Messages = messages,
+                Data = data,
+                Code = code,
+            };
+        }
+
+        public static Result<T> Failure(Exception exception, int code)
+        {
+            return new Result<T>
+            {
+                Succeeded = false,
+                Exception = exception,
+                Code = code,
             };
         }
 
@@ -138,19 +149,19 @@ namespace Shared
             return Task.FromResult(Success());
         }
 
-        public static Task<Result<T>> SuccessAsync(string message)
+        public static Task<Result<T>> SuccessAsync(string message, int code)
         {
-            return Task.FromResult(Success(message));
+            return Task.FromResult(Success(message, code));
         }
 
-        public static Task<Result<T>> SuccessAsync(T data)
+        public static Task<Result<T>> SuccessAsync(T data, int code)
         {
-            return Task.FromResult(Success(data));
+            return Task.FromResult(Success(data, code));
         }
 
-        public static Task<Result<T>> SuccessAsync(T data, string message)
+        public static Task<Result<T>> SuccessAsync(T data, string message, int code)
         {
-            return Task.FromResult(Success(data, message));
+            return Task.FromResult(Success(data, message, code));
         }
 
         #endregion
@@ -162,34 +173,34 @@ namespace Shared
             return Task.FromResult(Failure());
         }
 
-        public static Task<Result<T>> FailureAsync(string message)
+        public static Task<Result<T>> FailureAsync(string message, int code)
         {
-            return Task.FromResult(Failure(message));
+            return Task.FromResult(Failure(message, code));
         }
 
-        public static Task<Result<T>> FailureAsync(List<string> messages)
+        public static Task<Result<T>> FailureAsync(List<string> messages, int code)
         {
-            return Task.FromResult(Failure(messages));
+            return Task.FromResult(Failure(messages, code));
         }
 
-        public static Task<Result<T>> FailureAsync(T data)
+        public static Task<Result<T>> FailureAsync(T data, int code)
         {
-            return Task.FromResult(Failure(data));
+            return Task.FromResult(Failure(data, code));
         }
 
-        public static Task<Result<T>> FailureAsync(T data, string message)
+        public static Task<Result<T>> FailureAsync(T data, string message, int code)
         {
-            return Task.FromResult(Failure(data, message));
+            return Task.FromResult(Failure(data, message, code));
         }
 
-        public static Task<Result<T>> FailureAsync(T data, List<string> messages)
+        public static Task<Result<T>> FailureAsync(T data, List<string> messages, int code)
         {
-            return Task.FromResult(Failure(data, messages));
+            return Task.FromResult(Failure(data, messages, code));
         }
 
         public static Task<Result<T>> FailureAsync(Exception exception)
         {
-            return Task.FromResult(Failure(exception));
+            return Task.FromResult(Failure(exception, 500));
         }
 
         #endregion

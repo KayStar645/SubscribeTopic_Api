@@ -2,6 +2,7 @@
 using Core.Application.Models.Identity;
 using Core.Application.Transform;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace UI.WebApi.Controllers
 {
@@ -43,11 +44,11 @@ namespace UI.WebApi.Controllers
             }
             catch (HttpRequestException ex)
             {
-                return StatusCode(400, new { Error = ex.Message });
+                return StatusCode((int)HttpStatusCode.BadRequest, new { Error = ex.Message });
             }
             catch (Exception)
             {
-                return StatusCode(500, new { Error = ResponseTranform.ServerError });
+                return StatusCode((int)HttpStatusCode.InternalServerError, new { Error = ResponseTranform.ServerError });
             }
         }
     }

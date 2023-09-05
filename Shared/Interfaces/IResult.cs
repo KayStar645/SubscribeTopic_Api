@@ -10,7 +10,7 @@ namespace Shared.Interfaces
 
         T Data { get; set; }
 
-        List<ValidationResult> ValidationErrors { get; set; }
+        //List<ValidationResult> ValidationErrors { get; set; }
 
         Exception Exception { get; set; }
 

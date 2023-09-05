@@ -21,11 +21,11 @@ namespace Infrastructure.Persistence.Repositories
             return entity;
         }
 
-        public Task UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
             T exist = _dbContext.Set<T>().Find(entity.Id);
             _dbContext.Entry(exist).CurrentValues.SetValues(entity);
-            return Task.CompletedTask;
+            return entity;
         }
 
         public Task DeleteAsync(T entity)

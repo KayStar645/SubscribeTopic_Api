@@ -16,38 +16,35 @@ namespace Core.Application.DTOs.Teacher.Validators
 
             RuleFor(p => p.Name)
                 .NotNull().WithMessage(ValidatorTranform.Required("Name"))
-                .MinimumLength(5).WithMessage(ValidatorTranform.MinimumLength("Name", 5))
                 .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("Name", 190));
 
-            //RuleFor(p => p.Gender)
-            //    .Must(gender => gender == CommonTranform.male || gender == CommonTranform.female || gender == CommonTranform.other)
-            //    .WithMessage(ValidatorTranform.MustIn("Gender"));
-                
-            //RuleFor(p => p.DateOfBirth)
-            //    .Must(dateOfBirth => CustomValidator.IsAtLeastNYearsOld(dateOfBirth, 16))
-            //    .WithMessage(ValidatorTranform.MustDate("DateOfBirth", 16));
+            RuleFor(p => p.Gender)
+                .Must(gender => gender == CommonTranform.male || gender == CommonTranform.female || gender == CommonTranform.other)
+                .WithMessage(ValidatorTranform.Must("Gender", CommonTranform.GetGender()));
 
-            //RuleFor(p => p.PhoneNumber)
-            //    .Length(10).WithMessage(ValidatorTranform.Length("PhoneNumber", 10));
+            RuleFor(p => p.DateOfBirth)
+                .Must(dateOfBirth => CustomValidator.IsAtLeastNYearsOld(dateOfBirth, 16))
+                .WithMessage(ValidatorTranform.MustDate("DateOfBirth", 16));
 
-            //RuleFor(p => p.Email)
-            //    .Null()
-            //    .Must(email => CustomValidator.BeValidEmail(email))
-            //    .WithMessage(ValidatorTranform.ValidValue("email"));
+            RuleFor(p => p.PhoneNumber)
+                .Must(phoneNumber => string.IsNullOrEmpty(phoneNumber) || phoneNumber.Length == 10)
+                .WithMessage(ValidatorTranform.Length("PhoneNumber", 10));
 
-            //RuleFor(p => p.AcademicTitle)
-            //    .Null()
-            //    .Must(academicTitle => academicTitle == CommonTranform.bachelor || academicTitle == CommonTranform.engineer ||
-            //    academicTitle == CommonTranform.postgraduate || academicTitle == CommonTranform.master || academicTitle == CommonTranform.doctorate)
-            //    .WithMessage(ValidatorTranform.MustIn("AcademicTitle"));
+            RuleFor(p => p.Email)
+                .Must(email => string.IsNullOrEmpty(email) || CustomValidator.BeValidEmail(email))
+                .WithMessage(ValidatorTranform.ValidValue("email"));
 
-            //RuleFor(p => p.Degree)
-            //    .Null()
-            //    .Must((dto, degree) =>
-            //        string.IsNullOrWhiteSpace(dto.AcademicTitle) || dto.AcademicTitle != CommonTranform.doctorate
-            //        ? string.IsNullOrWhiteSpace(degree)
-            //        : degree == CommonTranform.associateProfessor || degree == CommonTranform.professor || string.IsNullOrWhiteSpace(degree))
-            //    .WithMessage(ValidatorTranform.MustWhen("degree", CommonTranform.GetListDegree(), "AcademicTitle", CommonTranform.professor));
+            RuleFor(p => p.AcademicTitle)
+                .Must(academicTitle => string.IsNullOrEmpty(academicTitle) || academicTitle == CommonTranform.bachelor || academicTitle == CommonTranform.engineer ||
+                academicTitle == CommonTranform.postgraduate || academicTitle == CommonTranform.master || academicTitle == CommonTranform.doctorate)
+                .WithMessage(ValidatorTranform.Must("AcademicTitle", CommonTranform.GetListAcademicTitle()));
+
+            RuleFor(p => p.Degree)
+                .Must((dto, degree) =>
+                    string.IsNullOrEmpty(dto.AcademicTitle) || dto.AcademicTitle != CommonTranform.doctorate
+                    ? string.IsNullOrEmpty(degree)
+                    : degree == CommonTranform.associateProfessor || degree == CommonTranform.professor || string.IsNullOrWhiteSpace(degree))
+                .WithMessage(ValidatorTranform.MustWhen("degree", CommonTranform.GetListDegree(), "AcademicTitle", CommonTranform.doctorate));
         }    
     }
 }

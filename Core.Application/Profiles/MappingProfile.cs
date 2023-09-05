@@ -1,6 +1,7 @@
 ﻿using Core.Application.DTOs.Teacher;
 using Core.Domain.Entities;
 using AutoMapper;
+using Core.Application.Features.Teachers.Requests.Queries;
 
 namespace Core.Application.Profiles
 {
