@@ -1,0 +1,14 @@
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\bin\Debug\net6.0\Core.Domain.deps.json
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\bin\Debug\net6.0\Core.Domain.runtimeconfig.json
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\bin\Debug\net6.0\Core.Domain.dll
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\bin\Debug\net6.0\Core.Domain.pdb
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\obj\Debug\net6.0\Core.Domain.csproj.AssemblyReference.cache
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\obj\Debug\net6.0\Core.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\obj\Debug\net6.0\Core.Domain.AssemblyInfoInputs.cache
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\obj\Debug\net6.0\Core.Domain.AssemblyInfo.cs
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\obj\Debug\net6.0\Core.Domain.csproj.CoreCompileInputs.cache
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\obj\Debug\net6.0\Core.Domain.dll
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\obj\Debug\net6.0\refint\Core.Domain.dll
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\obj\Debug\net6.0\Core.Domain.pdb
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\obj\Debug\net6.0\Core.Domain.genruntimeconfig.cache
+D:\1.Univercity\KhoaLuanTotNghiep\code\SubscribeTopic\Core.Domain\obj\Debug\net6.0\ref\Core.Domain.dll

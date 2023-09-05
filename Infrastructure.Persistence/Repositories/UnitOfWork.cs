@@ -1,0 +1,96 @@
+﻿using Core.Application.Constants;
+using Core.Application.Contracts.Persistence;
+using Core.Domain.Common;
+using Microsoft.AspNetCore.Http;
+using System.Collections;
+
+namespace Infrastructure.Persistence.Repositories
+{
+    public class UnitOfWork : IUnitOfWork
+    {
+        private readonly SubscribeTopicDbContext _dbContext;
+        private Hashtable _repositories;
+        private bool disposed;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        //private ITeacherRepository _teacherRepo;
+
+
+        public UnitOfWork(SubscribeTopicDbContext dbContext, IHttpContextAccessor httpContextAccessor)
+        {
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this._httpContextAccessor = httpContextAccessor;
+        }
+
+        public IGenericRepository<T> Repository<T>() where T : BaseAuditableEntity
+        {
+            if (_repositories == null)
+                _repositories = new Hashtable();
+
+            var type = typeof(T).Name;
+
+            if (!_repositories.ContainsKey(type))
+            {
+                var repositoryType = typeof(GenericRepository<>);
+
+                var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(T)), _dbContext);
+
+                _repositories.Add(type, repositoryInstance);
+            }
+
+            return (IGenericRepository<T>)_repositories[type];
+        }
+
+        public Task Rollback()
+        {
+            _dbContext.ChangeTracker.Entries().ToList().ForEach(x => x.Reload());
+            return Task.CompletedTask;
+        }
+
+        public async Task<int> Save(CancellationToken cancellationToken)
+        {
+            var username = _httpContextAccessor.HttpContext.User.FindFirst(CustomClaimTypes.Uid)?.Value;
+            
+            return await _dbContext.SaveChangesAsync(username);
+        }
+
+        public Task<int> SaveAndRemoveCache(CancellationToken cancellationToken, params string[] cacheKeys)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+            {
+                if (disposing)
+                {
+                    //dispose managed resources
+                    _dbContext.Dispose();
+                }
+            }
+            //dispose unmanaged resources
+            disposed = true;
+        }
+
+        //public ITeacherRepository TeacherRepository =>
+        //    _teacherRepo ??= new TeacherRepository(_context);
+
+        //public void Dispose()
+        //{
+        //    _context.Dispose();
+        //    GC.SuppressFinalize(this);
+        //}
+
+        //public async Task Save() 
+        //{
+        //    var username = _httpContextAccessor.HttpContext.User.FindFirst(CustomClaimTypes.Uid)?.Value;
+        //    await _context.SaveChangesAsync(username);
+        //}
+    }
+}
