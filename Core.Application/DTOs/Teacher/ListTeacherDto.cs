@@ -1,8 +1,10 @@
 ﻿using KLTN.Core.Application.DTOs.Common;
+using Sieve.Attributes;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Application.DTOs.Teacher
 {
-    public class TeacherListDto : BaseDto
+    public class ListTeacherDto : BaseDto
     {
         public string InternalCode { get; set; }
         public int DepartmentId { get; set; }

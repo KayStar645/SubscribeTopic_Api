@@ -41,6 +41,13 @@ namespace Infrastructure.Persistence.Repositories
                 .ToListAsync();
         }
 
+        public IQueryable<T> GetAllSieveAsync()
+        {
+            return _dbContext
+                .Set<T>()
+                .AsNoTracking();
+        }
+
         public async Task<T> GetByIdAsync(int id)
         {
             return await _dbContext.Set<T>().FindAsync(id);

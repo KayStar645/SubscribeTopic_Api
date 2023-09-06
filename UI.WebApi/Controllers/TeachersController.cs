@@ -1,11 +1,14 @@
-﻿using Core.Application.DTOs.Teacher;
+﻿using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Teacher;
 using Core.Application.DTOs.Teacher.Validators;
+using Core.Application.Features.Base.Requests.Queries;
 using Core.Application.Features.Teachers.Requests.Commands;
 using Core.Application.Features.Teachers.Requests.Queries;
 using Core.Application.Transform;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sieve.Models;
 using System.Net;
 
 namespace UI.WebApi.Controllers
@@ -23,18 +26,26 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<TeacherDto>>> Get([FromQuery] GetTeacherListRequest request)
+        public async Task<ActionResult<List<ListTeacherDto>>> Get([FromQuery] GetListRequest request)
         {
-            var validator = new GetTeacherListRequestValidator();
+            var validator = new GetListRequestValidator();
             var result = validator.Validate(request);
 
-            if (result.IsValid)
+            if (!result.IsValid)
             {
-                var teachers = await _mediator.Send(request);
-                return Ok(teachers);
+                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                return BadRequest(errorMessages);
             }
-            var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
-            return BadRequest(errorMessages);
+
+            var response = await _mediator.Send(request);
+            if (response.Succeeded)
+            {
+                return StatusCode(response.Code, response);
+            }
+            else
+            {
+                return StatusCode(response.Code, response);
+            }
         }
 
         [HttpGet("{id}")]

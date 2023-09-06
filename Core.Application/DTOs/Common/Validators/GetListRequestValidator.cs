@@ -1,14 +1,14 @@
-﻿using Core.Application.Features.Teachers.Requests.Queries;
+﻿using Core.Application.Features.Base.Requests.Queries;
 using Core.Application.Transform;
 using FluentValidation;
 
-namespace Core.Application.DTOs.Teacher.Validators
+namespace Core.Application.DTOs.Common.Validators
 {
-    public class GetTeacherListRequestValidator : AbstractValidator<GetTeacherListRequest>
+    public class GetListRequestValidator : AbstractValidator<GetListRequest>
     {
-        public GetTeacherListRequestValidator()
+        public GetListRequestValidator()
         {
-            RuleFor(x => x.PageNumber)
+            RuleFor(x => x.Page)
                 .GreaterThanOrEqualTo(1)
                 .WithMessage(ValidatorTranform.GreaterThanOrEqualTo("PageNumber", 1));
 

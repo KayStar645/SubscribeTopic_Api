@@ -1,4 +1,5 @@
 ﻿using Core.Domain.Common.Interfaces;
+using Sieve.Attributes;
 
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,6 +9,7 @@ namespace Core.Domain.Common
     {
         private readonly List<BaseEvent> _domainEvents = new();
 
+        [Sieve(CanFilter = true, CanSort = true)]
         public int Id { get; set; }
         
         [NotMapped]

@@ -7,7 +7,10 @@ using Infrastructure.Infrastructure;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.OpenApi.Models;
+using Sieve.Services.Interface;
+using Sieve.Services;
 using System.Reflection;
+using Sieve;
 
 namespace UI.WebApi
 {
@@ -27,6 +30,7 @@ namespace UI.WebApi
             AddSwaggerDoc(services);
 
             services.ConfigureApplicationServices();
+            services.ConfigureSieveServices(Configuration);
             services.ConfigureInfrastructureServices(Configuration);
             services.ConfigurePersistenceServices(Configuration);
             services.ConfigureIdentityServices(Configuration);

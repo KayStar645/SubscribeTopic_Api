@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using FluentValidation.Results;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Teacher.Validators;
-using Core.Application.Exceptions;
 using Core.Application.Features.Teachers.Requests.Commands;
 using MediatR;
 using Core.Domain.Entities;

@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.Custom;
 using Core.Application.DTOs.Teacher;
 using Core.Application.DTOs.Teacher.Validators;
 using Core.Application.Features.Teachers.Requests.Commands;
-using Core.Application.Features.Teachers.Requests.Queries;
-using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
 using Shared;
