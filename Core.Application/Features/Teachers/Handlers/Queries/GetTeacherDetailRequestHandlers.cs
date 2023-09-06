@@ -12,20 +12,20 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
 {
     public class GetTeacherDetailRequestHandlers : IRequestHandler<GetTeacherDetailRequest, Result<TeacherDto>>
     {
-        private readonly ITeacherRepository _teacherRepo;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public GetTeacherDetailRequestHandlers(ITeacherRepository teacherRepository, IMapper mapper) 
+        public GetTeacherDetailRequestHandlers(IUnitOfWork unitOfWork, IMapper mapper) 
         {
-            _teacherRepo = teacherRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<TeacherDto>> Handle(GetTeacherDetailRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var teacher = await _teacherRepo.GetByIdAsync(request.Id);
+                var teacher = await _unitOfWork.Repository<Teacher>().GetByIdAsync(request.Id);
 
                 if (teacher is null)
                 {

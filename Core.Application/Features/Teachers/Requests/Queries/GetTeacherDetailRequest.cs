@@ -7,6 +7,5 @@ namespace Core.Application.Features.Teachers.Requests.Queries
     public class GetTeacherDetailRequest : IRequest<Result<TeacherDto>>
     {
         public int Id { get; set; }
-        public bool IsDeleted { get; set; }
     }
 }

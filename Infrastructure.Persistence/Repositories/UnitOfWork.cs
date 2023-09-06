@@ -12,7 +12,6 @@ namespace Infrastructure.Persistence.Repositories
         private Hashtable _repositories;
         private bool disposed;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        //private ITeacherRepository _teacherRepo;
 
 
         public UnitOfWork(SubscribeTopicDbContext dbContext, IHttpContextAccessor httpContextAccessor)
@@ -77,20 +76,5 @@ namespace Infrastructure.Persistence.Repositories
             //dispose unmanaged resources
             disposed = true;
         }
-
-        //public ITeacherRepository TeacherRepository =>
-        //    _teacherRepo ??= new TeacherRepository(_context);
-
-        //public void Dispose()
-        //{
-        //    _context.Dispose();
-        //    GC.SuppressFinalize(this);
-        //}
-
-        //public async Task Save() 
-        //{
-        //    var username = _httpContextAccessor.HttpContext.User.FindFirst(CustomClaimTypes.Uid)?.Value;
-        //    await _context.SaveChangesAsync(username);
-        //}
     }
 }
