@@ -12,40 +12,15 @@ namespace Core.Application.Profiles
     {
         public MappingProfile() 
         {
-            //var teacherDtos = Assembly.GetExecutingAssembly().GetTypes()
-            //    .Where(t => t.Name.EndsWith("TeacherDto"))
-            //    .ToList();
-            //foreach (var dto in teacherDtos)
-            //{
-            //    CreateMap(typeof(Teacher), dto).ReverseMap();
-            //}
-            //var departmentDtos = Assembly.GetExecutingAssembly().GetTypes()
-            //    .Where(t => t.Name.EndsWith("DepartmentDto"))
-            //    .ToList();
-            //foreach (var dto in departmentDtos)
-            //{
-            //    CreateMap(typeof(Department), dto).ReverseMap();
-            //}
-
             CreateMap<SieveModel, ListBaseRequest<TeacherDto>>().ReverseMap();
             CreateMap<Teacher, TeacherDto>().ReverseMap();
             CreateMap<Teacher, CreateTeacherDto>().ReverseMap();
-            CreateMap<Teacher, UpdateTeacherDto>().ReverseMap()
-                .ForMember(dest => dest.DateCreated, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-                .ForMember(dest => dest.LastModifiedDate, opt => opt.Ignore())
-                .ForMember(dest => dest.LastModifiedBy, opt => opt.Ignore())
-                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore());
+            CreateMap<Teacher, UpdateTeacherDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<DepartmentDto>>().ReverseMap();
             CreateMap<Department, DepartmentDto>().ReverseMap();
             CreateMap<Department, CreateDepartmentDto>().ReverseMap();
-            CreateMap<Department, UpdateDepartmentDto>().ReverseMap()
-                .ForMember(dest => dest.DateCreated, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-                .ForMember(dest => dest.LastModifiedDate, opt => opt.Ignore())
-                .ForMember(dest => dest.LastModifiedBy, opt => opt.Ignore())
-                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore());
+            CreateMap<Department, UpdateDepartmentDto>().ReverseMap();
         }
 
         public void ConfigureIgnoreFields<TEntity, TDto>(IMappingExpression<TEntity, TDto> mapping)
@@ -56,5 +31,17 @@ namespace Core.Application.Profiles
             //       .ForMember(dest => dest.LastModifiedBy, opt => opt.Ignore())
             //       .ForMember(dest => dest.IsDeleted, opt => opt.Ignore());
         }
+
+        /*
+            var teacherDtos = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t => t.Name.EndsWith("TeacherDto"))
+                .ToList();
+            foreach (var dto in teacherDtos)
+            {
+                CreateMap(typeof(Teacher), dto).ReverseMap();
+            }
+        
+
+         */
     }
 }

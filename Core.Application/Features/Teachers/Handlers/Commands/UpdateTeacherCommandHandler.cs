@@ -8,6 +8,7 @@ using Core.Application.DTOs.Teacher;
 using System.Net;
 using Core.Application.Transform;
 using Core.Application.Responses;
+using Core.Application.Services;
 
 namespace Core.Application.Features.Teachers.Handlers.Commands
 {
@@ -24,10 +25,10 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
 
         public async Task<Result<TeacherDto>> Handle(UpdateTeacherCommand request, CancellationToken cancellationToken)
         {
-            var validator = new UpdateTeacherDtoValidator();
+            var validator = new UpdateTeacherDtoValidator(_unitOfWork);
             var validationResult = await validator.ValidateAsync(request.UpdateTeacherDto);
 
-            if (!validationResult.IsValid)
+            if (validationResult.IsValid == false)
             {
                 var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
                 return Result<TeacherDto>.Failure(errorMessages, (int)HttpStatusCode.BadRequest);
@@ -40,14 +41,14 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
                 if (findTeacher is null)
                 {
                     return Result<TeacherDto>.Failure(
-                        ValidatorTranform.ExistsValue("Id", request.UpdateTeacherDto.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.UpdateTeacherDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }
 
-                var requestTeacher = _mapper.Map<Teacher>(request.UpdateTeacherDto);
+                findTeacher.CopyPropertiesFrom(request.UpdateTeacherDto);
 
-                var newTeacher = await _unitOfWork.Repository<Teacher>().UpdateAsync(requestTeacher);
+                var newTeacher = await _unitOfWork.Repository<Teacher>().UpdateAsync(findTeacher);
                 await _unitOfWork.Save(cancellationToken);
 
                 var teacherDto = _mapper.Map<TeacherDto>(newTeacher);

@@ -23,7 +23,7 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
 
         public async Task<Result<TeacherDto>> Handle(CreateTeacherCommand request, CancellationToken cancellationToken)
         {
-            var validator = new CreateTeacherDtoValidator();
+            var validator = new CreateTeacherDtoValidator(_unitOfWork);
             var validationResult = await validator.ValidateAsync(request.CreateTeacherDto);
 
             if (validationResult.IsValid == false)

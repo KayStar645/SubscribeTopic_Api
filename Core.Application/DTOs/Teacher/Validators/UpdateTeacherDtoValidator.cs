@@ -1,13 +1,18 @@
 ﻿using FluentValidation;
 using Core.Application.Transform;
+using Core.Application.Contracts.Persistence;
 
 namespace Core.Application.DTOs.Teacher.Validators
 {
     public class UpdateTeacherDtoValidator : AbstractValidator<UpdateTeacherDto>
     {
-        public UpdateTeacherDtoValidator()
+        private readonly IUnitOfWork _unitOfWork;
+
+        public UpdateTeacherDtoValidator(IUnitOfWork unitOfWork)
         {
-            Include(new TeacherDtoValidator());
+            _unitOfWork = unitOfWork;
+
+            Include(new TeacherDtoValidator(_unitOfWork));
 
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("id"));

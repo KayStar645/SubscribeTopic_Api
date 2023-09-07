@@ -21,4 +21,10 @@
     <ProjectReference Include="..\Sieve\Sieve.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\" />
+    <Folder Include="Common\Interfaces" />
+    <Folder Include="Entities\" />
+  </ItemGroup>
+
 </Project>

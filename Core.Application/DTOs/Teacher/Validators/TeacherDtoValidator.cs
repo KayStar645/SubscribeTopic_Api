@@ -1,18 +1,26 @@
 ﻿using FluentValidation;
 using Core.Application.Custom;
 using Core.Application.Transform;
+using Core.Application.Contracts.Persistence;
+using DepartmentEntity = Core.Domain.Entities.Department;
 
 namespace Core.Application.DTOs.Teacher.Validators
 {
     public class TeacherDtoValidator : AbstractValidator<ITeacherDto>
     {
-
-        public TeacherDtoValidator()
+        private readonly IUnitOfWork _unitOfWork;
+        public TeacherDtoValidator(IUnitOfWork unitOfWork)
         {
-            // Ràng buộc chuyên ngành, không có khoa
-            //RuleFor(p => p.FacultyId)
-            //.Must(facultyId => ValidFacultyIds.Contains(facultyId))
-            //.WithMessage("Invalid FacultyId.");
+            _unitOfWork = unitOfWork;
+
+            RuleFor(x => x.DepartmentId)
+                .NotEmpty().WithMessage(ValidatorTranform.Required("departmentId"))
+                .MustAsync(async (id, token) =>
+                {
+                    var teacherExists = await _unitOfWork.Repository<DepartmentEntity>().GetByIdAsync(id);
+                    return teacherExists != null;
+                })
+                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("departmentId", "departments"));
 
             RuleFor(x => x.InternalCode)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"));

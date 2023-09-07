@@ -42,7 +42,7 @@ namespace Core.Application.Features.Departments.Handlers.Commands
                 if (findDepartment is null)
                 {
                     return Result<DepartmentDto>.Failure(
-                        ValidatorTranform.ExistsValue("Id", request.UpdateDepartmentDto.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.UpdateDepartmentDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

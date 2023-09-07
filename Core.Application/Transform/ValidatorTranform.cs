@@ -50,7 +50,17 @@ namespace Core.Application.Transform
 
         public static string ExistsValue(string name, string value)
         {
+            return $"{name} = {value} đã tồn tại!";
+        }
+
+        public static string NotExistsValue(string name, string value)
+        {
             return $"{name} = {value} không tồn tại!";
+        }
+
+        public static string NotExistsValueInTable(string name, string table)
+        {
+            return $"Giá trị của {name} không tồn tại trong bảng {table}!";
         }
 
         public static string AnyIsLower(string name) 

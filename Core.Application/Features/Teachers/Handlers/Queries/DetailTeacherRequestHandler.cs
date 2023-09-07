@@ -30,7 +30,7 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
                 if (findTeacher is null)
                 {
                     return Result<TeacherDto>.Failure(
-                        ValidatorTranform.ExistsValue("Id", request.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

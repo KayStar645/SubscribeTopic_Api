@@ -1,9 +1,9 @@
 ﻿
 namespace Core.Application.Transform
 {
-    public class ModulesTransform
+    public static class ModulesTransform
     {
-
+        
 
 
     }
