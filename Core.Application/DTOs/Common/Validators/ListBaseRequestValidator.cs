@@ -4,9 +4,9 @@ using FluentValidation;
 
 namespace Core.Application.DTOs.Common.Validators
 {
-    public class GetListRequestValidator : AbstractValidator<GetListRequest>
+    public class ListBaseRequestValidator<T> : AbstractValidator<ListBaseRequest<T>>
     {
-        public GetListRequestValidator()
+        public ListBaseRequestValidator()
         {
             RuleFor(x => x.Page)
                 .GreaterThanOrEqualTo(1)

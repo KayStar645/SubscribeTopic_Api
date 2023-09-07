@@ -1,10 +1,9 @@
-﻿using Core.Application.DTOs.Teacher;
+﻿using Core.Application.Responses;
 using MediatR;
-using Shared;
 
 namespace Core.Application.Features.Base.Requests.Queries
 {
-    public class GetListRequest : IRequest<PaginatedResult<List<TeacherDto>>>
+    public class ListBaseRequest<T> : IRequest<PaginatedResult<List<T>>>
     {
         public string? Filters { get; set; }
         public string? Sorts { get; set; }

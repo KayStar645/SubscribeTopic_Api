@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Shared;
 
 namespace Core.Application.Features.Teachers.Requests.Commands
 {

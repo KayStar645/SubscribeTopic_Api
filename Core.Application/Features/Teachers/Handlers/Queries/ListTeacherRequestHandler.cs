@@ -1,33 +1,30 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Teacher;
-using Core.Application.Extensions;
 using Core.Application.Features.Base.Requests.Queries;
+using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Shared;
 using Sieve.Models;
-using Sieve.Services;
 using Sieve.Services.Interface;
 using System.Net;
 
 namespace Core.Application.Features.Teachers.Handlers.Queries
 {
-    public class GetTeacherListRequestHandlers : IRequestHandler<GetListRequest, PaginatedResult<List<TeacherDto>>>
+    public class ListTeacherRequestHandler : IRequestHandler<ListBaseRequest<TeacherDto>, PaginatedResult<List<TeacherDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
 
-        public GetTeacherListRequestHandlers(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
+        public ListTeacherRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
         }
-        public async Task<PaginatedResult<List<TeacherDto>>> Handle(GetListRequest request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<TeacherDto>>> Handle(ListBaseRequest<TeacherDto> request, CancellationToken cancellationToken)
         {
             var sieve = _mapper.Map<SieveModel>(request);
 

@@ -5,6 +5,7 @@ using Core.Application.Features.Teachers.Requests.Commands;
 using Core.Application.Transform;
 using Core.Domain.Entities;
 using MediatR;
+using System.Net;
 
 namespace Core.Application.Features.Teachers.Handlers.Commands
 {
@@ -21,23 +22,17 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
 
         public async Task<Unit> Handle(DeleteTeacherCommand request, CancellationToken cancellationToken)
         {
-            try
+            var teacher = await _unitOfWork.Repository<Teacher>().GetByIdAsync(request.Id);
+
+            if (teacher is null)
             {
-                var teacher = await _unitOfWork.Repository<Teacher>().GetByIdAsync(request.Id);
-
-                if (teacher is null)
-                    throw new NotFoundException(nameof(Teacher), request.Id);
-
-                teacher.IsDeleted = true;
-                await _unitOfWork.Repository<Teacher>().DeleteAsync(teacher);
-                await _unitOfWork.Save(cancellationToken);
-
-                return Unit.Value;
+                throw new NotFoundException(nameof(Teacher), request.Id);
             }
-            catch (Exception ex)
-            {
-                throw new Exception(ResponseTranform.ServerError);
-            }
+
+            await _unitOfWork.Repository<Teacher>().DeleteAsync(teacher);
+            await _unitOfWork.Save(cancellationToken);
+
+            return Unit.Value;
         }
     }
 }

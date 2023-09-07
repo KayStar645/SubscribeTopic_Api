@@ -5,9 +5,9 @@ using Core.Application.Features.Teachers.Requests.Commands;
 using MediatR;
 using Core.Domain.Entities;
 using Core.Application.DTOs.Teacher;
-using Shared;
 using System.Net;
 using Core.Application.Transform;
+using Core.Application.Responses;
 
 namespace Core.Application.Features.Teachers.Handlers.Commands
 {
@@ -35,22 +35,22 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
 
             try
             {
-                var teacher = await _unitOfWork.Repository<Teacher>().GetByIdAsync(request.UpdateTeacherDto.Id);
+                var findTeacher = await _unitOfWork.Repository<Teacher>().GetByIdAsync(request.UpdateTeacherDto.Id);
 
-                if (teacher is null)
+                if (findTeacher is null)
                 {
                     return Result<TeacherDto>.Failure(
                         ValidatorTranform.ExistsValue("Id", request.UpdateTeacherDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
-                }    
+                }
 
-                _mapper.Map(request.UpdateTeacherDto, teacher);
+                var requestTeacher = _mapper.Map<Teacher>(request.UpdateTeacherDto);
 
-                teacher = await _unitOfWork.Repository<Teacher>().UpdateAsync(teacher);
+                var newTeacher = await _unitOfWork.Repository<Teacher>().UpdateAsync(requestTeacher);
                 await _unitOfWork.Save(cancellationToken);
 
-                var teacherDto = _mapper.Map<TeacherDto>(teacher);
+                var teacherDto = _mapper.Map<TeacherDto>(newTeacher);
 
                 return Result<TeacherDto>.Success(teacherDto, (int)HttpStatusCode.OK);
             }

@@ -1,9 +1,9 @@
 ﻿using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Teacher;
+using Core.Application.DTOs.Department;
 using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Queries;
-using Core.Application.Features.Teachers.Requests.Commands;
-using Core.Application.Features.Teachers.Requests.Queries;
+using Core.Application.Features.Departments.Requests.Commands;
+using Core.Application.Features.Departments.Requests.Queries;
 using Core.Application.Transform;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -15,22 +15,22 @@ namespace UI.WebApi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class TeachersController : ControllerBase
+    public class DepartmentsController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public TeachersController(IMediator mediator)
+        public DepartmentsController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<TeacherDto>>> Get([FromQuery] ListBaseRequest<TeacherDto> request)
+        public async Task<ActionResult> Get([FromQuery] ListBaseRequest<DepartmentDto> request)
         {
-            var validator = new ListBaseRequestValidator<TeacherDto>();
+            var validator = new ListBaseRequestValidator<DepartmentDto>();
             var result = validator.Validate(request);
 
-            if (!result.IsValid)
+            if (result.IsValid == false)
             {
                 var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
                 return BadRequest(errorMessages);
@@ -48,9 +48,9 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TeacherDto>> Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
-            var response = await _mediator.Send(new DetailTeacherRequest { Id = id });
+            var response = await _mediator.Send(new DetailDepartmentRequest { Id = id });
 
             if (response.Succeeded)
             {
@@ -63,9 +63,9 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<TeacherDto>> Post([FromBody] CreateTeacherDto teacherRequest)
+        public async Task<ActionResult> Post([FromBody] CreateDepartmentDto request)
         {
-            var command = new CreateTeacherCommand { CreateTeacherDto = teacherRequest };
+            var command = new CreateDepartmentCommand { CreateDepartmentDto = request };
             var response = await _mediator.Send(command);
 
             if (response.Succeeded)
@@ -79,9 +79,9 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] UpdateTeacherDto teacherRequest)
+        public async Task<ActionResult> Put([FromBody] UpdateDepartmentDto request)
         {
-            var command = new UpdateTeacherCommand { UpdateTeacherDto = teacherRequest };
+            var command = new UpdateDepartmentCommand { UpdateDepartmentDto = request };
             var response = await _mediator.Send(command);
             if (response.Succeeded)
             {
@@ -98,7 +98,7 @@ namespace UI.WebApi.Controllers
         {
             try
             {
-                var command = new DeleteTeacherCommand { Id = id };
+                var command = new DeleteDepartmentCommand { Id = id };
                 var response = await _mediator.Send(command);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
@@ -111,6 +111,5 @@ namespace UI.WebApi.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { Error = ResponseTranform.ServerError });
             }
         }
-        
     }
 }

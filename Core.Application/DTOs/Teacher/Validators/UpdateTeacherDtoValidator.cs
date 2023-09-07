@@ -9,7 +9,8 @@ namespace Core.Application.DTOs.Teacher.Validators
         {
             Include(new TeacherDtoValidator());
 
-            RuleFor(p => p.Id).NotNull().WithMessage(ValidatorTranform.Required("Id"));
+            RuleFor(x => x.Id)
+                .NotEmpty().WithMessage(ValidatorTranform.Required("id"));
         }
     }
 }

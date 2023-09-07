@@ -3,9 +3,9 @@ using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Teacher;
 using Core.Application.DTOs.Teacher.Validators;
 using Core.Application.Features.Teachers.Requests.Commands;
+using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
-using Shared;
 using System.Net;
 
 namespace Core.Application.Features.Teachers.Handlers.Commands
@@ -24,9 +24,9 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
         public async Task<Result<TeacherDto>> Handle(CreateTeacherCommand request, CancellationToken cancellationToken)
         {
             var validator = new CreateTeacherDtoValidator();
-            var validationResult = await validator.ValidateAsync(request.TeacherDto);
+            var validationResult = await validator.ValidateAsync(request.CreateTeacherDto);
 
-            if (!validationResult.IsValid)
+            if (validationResult.IsValid == false)
             {
                 var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
                 return Result<TeacherDto>.Failure(errorMessages, (int)HttpStatusCode.BadRequest);
@@ -34,12 +34,12 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
 
             try
             {
-                var teacher = _mapper.Map<Teacher>(request.TeacherDto);
+                var teacher = _mapper.Map<Teacher>(request.CreateTeacherDto);
 
-                teacher = await _unitOfWork.Repository<Teacher>().AddAsync(teacher);
+                var newTeacher = await _unitOfWork.Repository<Teacher>().AddAsync(teacher);
                 await _unitOfWork.Save(cancellationToken);
 
-                var teacherDto = _mapper.Map<TeacherDto>(teacher);
+                var teacherDto = _mapper.Map<TeacherDto>(newTeacher);
 
                 return Result<TeacherDto>.Success(teacherDto, (int)HttpStatusCode.Created);
             }

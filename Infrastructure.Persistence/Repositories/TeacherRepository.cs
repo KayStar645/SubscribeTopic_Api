@@ -11,5 +11,7 @@ namespace Infrastructure.Persistence.Repositories
         {
             _dbContext = dbContext;
         }
+
+        // Thêm các truy vấn khác nếu có
     }
 }

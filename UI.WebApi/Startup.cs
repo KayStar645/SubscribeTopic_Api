@@ -3,12 +3,9 @@ using Autofac;
 using Core.Application;
 using Core.Application.Features.Teachers.Requests.Commands;
 using Infrastructure.Identity;
-using Infrastructure.Infrastructure;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.OpenApi.Models;
-using Sieve.Services.Interface;
-using Sieve.Services;
 using System.Reflection;
 using Sieve;
 
@@ -33,7 +30,6 @@ namespace UI.WebApi
 
             services.ConfigureApplicationServices();
             services.ConfigureSieveServices(Configuration);
-            services.ConfigureInfrastructureServices(Configuration);
             services.ConfigurePersistenceServices(Configuration);
             services.ConfigureIdentityServices(Configuration);
 
