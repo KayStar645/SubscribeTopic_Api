@@ -7,6 +7,7 @@ using Core.Application.Transform;
 using Core.Domain.Entities;
 using System.Net;
 using Core.Application.Responses;
+using Core.Application.DTOs.Department;
 
 namespace Core.Application.Features.Teachers.Handlers.Queries
 {
@@ -36,6 +37,12 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
                 }
 
                 var teacherDto = _mapper.Map<TeacherDto>(findTeacher);
+
+                if(request.IsGetDepartment == true)
+                {
+                    var department = await _unitOfWork.Repository<Department>().GetByIdAsync(findTeacher.DepartmentId);
+                    teacherDto.Department = _mapper.Map<DepartmentDto>(department);
+                }    
 
                 return Result<TeacherDto>.Success(teacherDto, (int)HttpStatusCode.OK);
             }

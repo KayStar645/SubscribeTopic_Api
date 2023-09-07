@@ -47,10 +47,10 @@ namespace UI.WebApi.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult> Get(int id)
+        [HttpGet("Detail")]
+        public async Task<ActionResult> Get([FromQuery] DetailDepartmentRequest request)
         {
-            var response = await _mediator.Send(new DetailDepartmentRequest { Id = id });
+            var response = await _mediator.Send(request);
 
             if (response.Succeeded)
             {

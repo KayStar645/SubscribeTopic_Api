@@ -3,7 +3,7 @@ using KLTN.Core.Application.DTOs.Common;
 
 namespace Core.Application.DTOs.Teacher
 {
-    public class TeacherDto : BaseDto
+    public class AllFormatTeacherDto : BaseDto
     {
         public string InternalCode { get; set; }
         public int DepartmentId { get; set; }

@@ -47,10 +47,10 @@ namespace UI.WebApi.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TeacherDto>> Get(int id)
+        [HttpGet("Detail")]
+        public async Task<ActionResult<TeacherDto>> Get([FromQuery] DetailTeacherRequest request)
         {
-            var response = await _mediator.Send(new DetailTeacherRequest { Id = id });
+            var response = await _mediator.Send(request);
 
             if (response.Succeeded)
             {

@@ -7,5 +7,6 @@ namespace Core.Application.Features.Teachers.Requests.Queries
     public class DetailTeacherRequest : IRequest<Result<TeacherDto>>
     {
         public int Id { get; set; }
+        public bool IsGetDepartment { get; set; }
     }
 }
