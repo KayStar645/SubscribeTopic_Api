@@ -4,7 +4,7 @@ using Shared;
 
 namespace Core.Application.Features.Base.Requests.Queries
 {
-    public class GetListRequest : IRequest<PaginatedResult<List<ListTeacherDto>>>
+    public class GetListRequest : IRequest<PaginatedResult<List<TeacherDto>>>
     {
         public string? Filters { get; set; }
         public string? Sorts { get; set; }

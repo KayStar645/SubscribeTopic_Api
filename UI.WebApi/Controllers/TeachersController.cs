@@ -26,7 +26,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ListTeacherDto>>> Get([FromQuery] GetListRequest request)
+        public async Task<ActionResult<List<TeacherDto>>> Get([FromQuery] GetListRequest request)
         {
             var validator = new GetListRequestValidator();
             var result = validator.Validate(request);

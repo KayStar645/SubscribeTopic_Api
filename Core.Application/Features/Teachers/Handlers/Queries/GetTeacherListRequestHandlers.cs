@@ -15,7 +15,7 @@ using System.Net;
 
 namespace Core.Application.Features.Teachers.Handlers.Queries
 {
-    public class GetTeacherListRequestHandlers : IRequestHandler<GetListRequest, PaginatedResult<List<ListTeacherDto>>>
+    public class GetTeacherListRequestHandlers : IRequestHandler<GetListRequest, PaginatedResult<List<TeacherDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -27,7 +27,7 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
         }
-        public async Task<PaginatedResult<List<ListTeacherDto>>> Handle(GetListRequest request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<TeacherDto>>> Handle(GetListRequest request, CancellationToken cancellationToken)
         {
             var sieve = _mapper.Map<SieveModel>(request);
 
@@ -37,8 +37,8 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
 
             var teachers = await query.ToListAsync();
 
-            var mapTeachers = _mapper.Map<List<ListTeacherDto>>(teachers);
-            return PaginatedResult<List<ListTeacherDto>>.Create(
+            var mapTeachers = _mapper.Map<List<TeacherDto>>(teachers);
+            return PaginatedResult<List<TeacherDto>>.Create(
                 mapTeachers, 0, request.Page,
                 request.PageSize, (int)HttpStatusCode.OK);
         }

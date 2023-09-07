@@ -1,8 +1,5 @@
-﻿using API.WebApi.Middleware;
+﻿using Microsoft.AspNetCore;
 using Autofac.Extensions.DependencyInjection;
-using Cqrs.Hosts;
-using Infrastructure.Identity;
-using Microsoft.OpenApi.Models;
 
 namespace UI.WebApi
 {
@@ -10,26 +7,17 @@ namespace UI.WebApi
     {
         public static void Main(string[] args)
         {
-            var host = Host.CreateDefaultBuilder(args)
-                   .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                   .ConfigureWebHostDefaults(webHostBuilder => {
-                       webHostBuilder
-                        .UseContentRoot(Directory.GetCurrentDirectory())
-                        .UseIISIntegration()
-                        .UseStartup<Startup>();
-                   })
-                   .Build();
-
-            host.Run();
-
-            //CreateHostBuilder(args).Build().Run();
+            CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseIISIntegration()
+                .UseStartup<Startup>()
+                .ConfigureServices(services =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    services.AddAutofac();
                 });
     }
 }

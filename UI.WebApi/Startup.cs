@@ -26,7 +26,7 @@ namespace UI.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+            //services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
             services.AddHttpContextAccessor();
             AddSwaggerDoc(services);
@@ -36,8 +36,6 @@ namespace UI.WebApi
             services.ConfigureInfrastructureServices(Configuration);
             services.ConfigurePersistenceServices(Configuration);
             services.ConfigureIdentityServices(Configuration);
-
-            //services.AddMediatR(typeof(Startup).Assembly);
 
             services.AddControllers();
 
