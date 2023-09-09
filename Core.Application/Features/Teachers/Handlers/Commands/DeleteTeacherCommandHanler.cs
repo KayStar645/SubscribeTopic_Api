@@ -9,7 +9,7 @@ using System.Net;
 
 namespace Core.Application.Features.Teachers.Handlers.Commands
 {
-    public class DeleteTeacherCommandHanler : IRequestHandler<DeleteTeacherCommand, Unit>
+    public class DeleteTeacherCommandHanler : IRequestHandler<DeleteTeacherRequest, Unit>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -20,7 +20,7 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
             _mapper = mapper;
         }
 
-        public async Task<Unit> Handle(DeleteTeacherCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteTeacherRequest request, CancellationToken cancellationToken)
         {
             var teacher = await _unitOfWork.Repository<Teacher>().GetByIdAsync(request.Id);
 

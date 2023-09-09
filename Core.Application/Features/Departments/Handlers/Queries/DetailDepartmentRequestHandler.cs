@@ -6,6 +6,7 @@ using Core.Application.Responses;
 using Core.Application.Transform;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace Core.Application.Features.Departments.Handlers.Queries
@@ -25,7 +26,21 @@ namespace Core.Application.Features.Departments.Handlers.Queries
         {
             try
             {
-                var findDepartment = await _unitOfWork.Repository<Department>().GetByIdAsync(request.Id);
+                var query = _unitOfWork.Repository<Department>().GetByIdInclude(request.Id);
+
+                if (request.IsAllDetail)
+                {
+                    query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.Faculty);
+                }
+                else
+                {
+                    if (request.IsGetFaculty == true)
+                    {
+                        query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.Faculty);
+                    }
+                }
+
+                var findDepartment = await query.SingleAsync();
 
                 if (findDepartment is null)
                 {

@@ -2,6 +2,7 @@
 {
     public interface IDepartmentDto
     {
+        public int? FacultyId { get; set; }
         public string InternalCode { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }

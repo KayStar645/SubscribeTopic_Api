@@ -3,7 +3,7 @@
     public class CreateTeacherDto : ITeacherDto
     {
         public string InternalCode { get; set; }
-        public int DepartmentId { get; set; }
+        public int? DepartmentId { get; set; }
         public string Name { get; set; }
         public string Gender { get; set; }
         public DateTime? DateOfBirth { get; set; }

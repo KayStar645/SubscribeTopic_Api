@@ -1,7 +1,6 @@
 ﻿using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.Teacher;
 using Core.Application.Exceptions;
-using Core.Application.Features.Base.Requests.Queries;
 using Core.Application.Features.Teachers.Requests.Commands;
 using Core.Application.Features.Teachers.Requests.Queries;
 using Core.Application.Transform;
@@ -25,7 +24,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<TeacherDto>>> Get([FromQuery] ListBaseRequest<TeacherDto> request)
+        public async Task<ActionResult<List<TeacherDto>>> Get([FromQuery] ListDepartmentRequest<TeacherDto> request)
         {
             var validator = new ListBaseRequestValidator<TeacherDto>();
             var result = validator.Validate(request);
@@ -65,7 +64,7 @@ namespace UI.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<TeacherDto>> Post([FromBody] CreateTeacherDto teacherRequest)
         {
-            var command = new CreateTeacherCommand { CreateTeacherDto = teacherRequest };
+            var command = new CreateTeacherRequest { CreateTeacherDto = teacherRequest };
             var response = await _mediator.Send(command);
 
             if (response.Succeeded)
@@ -81,7 +80,7 @@ namespace UI.WebApi.Controllers
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateTeacherDto teacherRequest)
         {
-            var command = new UpdateTeacherCommand { UpdateTeacherDto = teacherRequest };
+            var command = new UpdateTeacherRequest { UpdateTeacherDto = teacherRequest };
             var response = await _mediator.Send(command);
             if (response.Succeeded)
             {
@@ -98,7 +97,7 @@ namespace UI.WebApi.Controllers
         {
             try
             {
-                var command = new DeleteTeacherCommand { Id = id };
+                var command = new DeleteTeacherRequest { Id = id };
                 var response = await _mediator.Send(command);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }

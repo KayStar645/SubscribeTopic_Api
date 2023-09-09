@@ -24,7 +24,6 @@
   <ItemGroup>
     <Folder Include="Common\" />
     <Folder Include="Common\Interfaces" />
-    <Folder Include="Entities\" />
   </ItemGroup>
 
 </Project>

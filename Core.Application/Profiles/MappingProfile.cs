@@ -5,6 +5,7 @@ using System.Reflection;
 using Sieve.Models;
 using Core.Application.Features.Base.Requests.Queries;
 using Core.Application.DTOs.Department;
+using Core.Application.DTOs.Faculty;
 
 namespace Core.Application.Profiles
 {
@@ -21,6 +22,11 @@ namespace Core.Application.Profiles
             CreateMap<Department, DepartmentDto>().ReverseMap();
             CreateMap<Department, CreateDepartmentDto>().ReverseMap();
             CreateMap<Department, UpdateDepartmentDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<FacultyDto>>().ReverseMap();
+            CreateMap<Faculty, FacultyDto>().ReverseMap();
+            CreateMap<Faculty, CreateFacultyDto>().ReverseMap();
+            CreateMap<Faculty, UpdateFacultyDto>().ReverseMap();
         }
 
         public void ConfigureIgnoreFields<TEntity, TDto>(IMappingExpression<TEntity, TDto> mapping)

@@ -7,7 +7,7 @@ using Core.Application.Transform;
 using Core.Domain.Entities;
 using System.Net;
 using Core.Application.Responses;
-using Core.Application.DTOs.Department;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core.Application.Features.Teachers.Handlers.Queries
 {
@@ -26,7 +26,21 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
         {
             try
             {
-                var findTeacher = await _unitOfWork.Repository<Teacher>().GetByIdAsync(request.Id);
+                var query = _unitOfWork.Repository<Teacher>().GetByIdInclude(request.Id);
+
+                if (request.IsAllDetail)
+                {
+                    query = _unitOfWork.Repository<Teacher>().AddInclude(query, x => x.Department);
+                }
+                else
+                {
+                    if (request.IsGetDepartment == true)
+                    {
+                        query = _unitOfWork.Repository<Teacher>().AddInclude(query, x => x.Department);
+                    }
+                }
+
+                var findTeacher = await query.SingleAsync();
 
                 if (findTeacher is null)
                 {
@@ -37,12 +51,6 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
                 }
 
                 var teacherDto = _mapper.Map<TeacherDto>(findTeacher);
-
-                if(request.IsGetDepartment == true)
-                {
-                    var department = await _unitOfWork.Repository<Department>().GetByIdAsync(findTeacher.DepartmentId);
-                    teacherDto.Department = _mapper.Map<DepartmentDto>(department);
-                }    
 
                 return Result<TeacherDto>.Success(teacherDto, (int)HttpStatusCode.OK);
             }

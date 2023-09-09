@@ -8,32 +8,35 @@ namespace Core.Domain.Entities
     {
 
         [Sieve(CanFilter = true, CanSort = true)]
-        public string InternalCode { get; set; }
+        public string? InternalCode { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
-        public int DepartmentId { get; set; }
+        public string? Name { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
-        public string Name { get; set; }
-
-        [Sieve(CanFilter = true, CanSort = true)]
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
         [Column(TypeName = "datetime")]
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
-        public string AcademicTitle { get; set; }
+        public string? AcademicTitle { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
-        public string Degree { get; set; }
+        public string? Degree { get; set; }
+
+
+        [Sieve(CanFilter = true, CanSort = true)]
+        public int? DepartmentId { get; set; }
+        [ForeignKey("DepartmentId")]
+        public Department? Department { get; set; }
 
     }
 }

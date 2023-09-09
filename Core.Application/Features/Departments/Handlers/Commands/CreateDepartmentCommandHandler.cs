@@ -10,7 +10,7 @@ using System.Net;
 
 namespace Core.Application.Features.Departments.Handlers.Commands
 {
-    public class CreateDepartmentCommandHandler : IRequestHandler<CreateDepartmentCommand, Result<DepartmentDto>>
+    public class CreateDepartmentCommandHandler : IRequestHandler<CreateDepartmentRequest, Result<DepartmentDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -21,9 +21,9 @@ namespace Core.Application.Features.Departments.Handlers.Commands
             _mapper = mapper;
         }
 
-        public async Task<Result<DepartmentDto>> Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
+        public async Task<Result<DepartmentDto>> Handle(CreateDepartmentRequest request, CancellationToken cancellationToken)
         {
-            var validator = new CreateDepartmentDtoValidator();
+            var validator = new CreateDepartmentDtoValidator(_unitOfWork);
             var validatorResult = await validator.ValidateAsync(request.CreateDepartmentDto);
 
             if(validatorResult.IsValid == false)

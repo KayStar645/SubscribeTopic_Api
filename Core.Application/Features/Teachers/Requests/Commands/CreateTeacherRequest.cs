@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Core.Application.Features.Teachers.Requests.Commands
 {
-    public class CreateTeacherCommand : IRequest<Result<TeacherDto>>
+    public class CreateTeacherRequest : IRequest<Result<TeacherDto>>
     {
         public CreateTeacherDto? CreateTeacherDto { get; set; }
     }

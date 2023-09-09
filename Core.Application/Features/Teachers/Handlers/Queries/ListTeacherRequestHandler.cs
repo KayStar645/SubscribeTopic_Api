@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Teacher;
-using Core.Application.Features.Base.Requests.Queries;
+using Core.Application.Features.Teachers.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
@@ -12,7 +12,7 @@ using System.Net;
 
 namespace Core.Application.Features.Teachers.Handlers.Queries
 {
-    public class ListTeacherRequestHandler : IRequestHandler<ListBaseRequest<TeacherDto>, PaginatedResult<List<TeacherDto>>>
+    public class ListTeacherRequestHandler : IRequestHandler<ListDepartmentRequest<TeacherDto>, PaginatedResult<List<TeacherDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -24,11 +24,23 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
         }
-        public async Task<PaginatedResult<List<TeacherDto>>> Handle(ListBaseRequest<TeacherDto> request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<TeacherDto>>> Handle(ListDepartmentRequest<TeacherDto> request, CancellationToken cancellationToken)
         {
             var sieve = _mapper.Map<SieveModel>(request);
 
-            var query = _unitOfWork.Repository<Teacher>().GetAllSieveAsync();
+            var query = _unitOfWork.Repository<Teacher>().GetAllInclude();
+
+            if (request.IsAllDetail)
+            {
+                query = _unitOfWork.Repository<Teacher>().AddInclude(query, x => x.Department);
+            }
+            else
+            {
+                if (request.IsGetDepartment == true)
+                {
+                    query = _unitOfWork.Repository<Teacher>().AddInclude(query, x => x.Department);
+                }
+            }
 
             query = _sieveProcessor.Apply(sieve, query);
 

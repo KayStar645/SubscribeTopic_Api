@@ -10,7 +10,7 @@ using System.Net;
 
 namespace Core.Application.Features.Teachers.Handlers.Commands
 {
-    public class CreateTeacherCommandHandler : IRequestHandler<CreateTeacherCommand, Result<TeacherDto>>
+    public class CreateTeacherCommandHandler : IRequestHandler<CreateTeacherRequest, Result<TeacherDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -21,7 +21,7 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
             _mapper = mapper;
         }
 
-        public async Task<Result<TeacherDto>> Handle(CreateTeacherCommand request, CancellationToken cancellationToken)
+        public async Task<Result<TeacherDto>> Handle(CreateTeacherRequest request, CancellationToken cancellationToken)
         {
             var validator = new CreateTeacherDtoValidator(_unitOfWork);
             var validationResult = await validator.ValidateAsync(request.CreateTeacherDto);

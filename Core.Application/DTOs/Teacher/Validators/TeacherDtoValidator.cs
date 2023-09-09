@@ -14,11 +14,10 @@ namespace Core.Application.DTOs.Teacher.Validators
             _unitOfWork = unitOfWork;
 
             RuleFor(x => x.DepartmentId)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("departmentId"))
                 .MustAsync(async (id, token) =>
                 {
                     var teacherExists = await _unitOfWork.Repository<DepartmentEntity>().GetByIdAsync(id);
-                    return teacherExists != null;
+                    return teacherExists != null || id == null;
                 })
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("departmentId", "departments"));
 

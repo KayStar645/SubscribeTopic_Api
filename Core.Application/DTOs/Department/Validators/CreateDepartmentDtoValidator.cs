@@ -1,12 +1,17 @@
-﻿using FluentValidation;
+﻿using Core.Application.Contracts.Persistence;
+using FluentValidation;
 
 namespace Core.Application.DTOs.Department.Validators
 {
     public class CreateDepartmentDtoValidator : AbstractValidator<CreateDepartmentDto>
     {
-        public CreateDepartmentDtoValidator() 
+        private readonly IUnitOfWork _unitOfWork;
+
+        public CreateDepartmentDtoValidator(IUnitOfWork unitOfWork) 
         {
-            Include(new DepartmentDtoValidator());
+            _unitOfWork = unitOfWork;
+
+            Include(new DepartmentDtoValidator(_unitOfWork));
         }
     }
 }

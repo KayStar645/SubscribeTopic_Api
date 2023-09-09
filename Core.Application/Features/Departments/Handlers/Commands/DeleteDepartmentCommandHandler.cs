@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Core.Application.Features.Departments.Handlers.Commands
 {
-    public class DeleteDepartmentCommandHandler : IRequestHandler<DeleteDepartmentCommand, Unit>
+    public class DeleteDepartmentCommandHandler : IRequestHandler<DeleteDepartmentRequest, Unit>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -18,7 +18,7 @@ namespace Core.Application.Features.Departments.Handlers.Commands
             _mapper = mapper;
         }
 
-        public async Task<Unit> Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteDepartmentRequest request, CancellationToken cancellationToken)
         {
             var department = await _unitOfWork.Repository<Department>().GetByIdAsync(request.Id);
 

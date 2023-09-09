@@ -1,6 +1,7 @@
 ﻿using Core.Application.Contracts.Persistence;
 using Core.Domain.Common;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Persistence.Repositories
 {
@@ -12,8 +13,18 @@ namespace Infrastructure.Persistence.Repositories
         {
             _dbContext = dbContext;
         }
+        public async Task<List<T>> GetAllAsync()
+        {
+            return await _dbContext
+                .Set<T>()
+                .ToListAsync();
+        }
 
-        public IQueryable<T> Entities => _dbContext.Set<T>();
+        // Async
+        public async Task<T> GetByIdAsync(int? id)
+        {
+            return await _dbContext.Set<T>().FindAsync(id);
+        }
 
         public async Task<T> AddAsync(T entity)
         {
@@ -34,23 +45,56 @@ namespace Infrastructure.Persistence.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task<List<T>> GetAllAsync()
+        // Query
+        public IQueryable<T> Entities => _dbContext.Set<T>();
+
+        public IQueryable<T> GetAllInclude(Expression<Func<T, object>> includeProperties = null)
         {
-            return await _dbContext
-                .Set<T>()
-                .ToListAsync();
+            var query = _dbContext.Set<T>().AsNoTracking();
+
+            if (includeProperties != null)
+            {
+                query = query.Include(includeProperties);
+            }
+
+            return query;
         }
 
-        public IQueryable<T> GetAllSieveAsync()
+        public IQueryable<T> GetByIdInclude(int? id, params Expression<Func<T, object>>[] includeProperties)
+        {
+            var query = _dbContext.Set<T>().AsQueryable();
+
+            if (includeProperties != null)
+            {
+                foreach (var includeProperty in includeProperties)
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
+            if (id != null)
+            {
+                query = query.Where(e => e.Id == id);
+            }
+
+            return query;
+        }
+
+        public IQueryable<T> AddInclude(IQueryable<T> query, Expression<Func<T, object>> includeProperties = null)
+        {
+            if (includeProperties != null)
+            {
+                query = query.Include(includeProperties);
+            }
+            return query;
+        }
+
+
+        public IQueryable<T> GetAllSieve()
         {
             return _dbContext
                 .Set<T>()
                 .AsNoTracking();
-        }
-
-        public async Task<T> GetByIdAsync(int id)
-        {
-            return await _dbContext.Set<T>().FindAsync(id);
         }
     }
 }

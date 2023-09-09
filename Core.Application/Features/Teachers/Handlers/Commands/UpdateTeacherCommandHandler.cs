@@ -12,7 +12,7 @@ using Core.Application.Services;
 
 namespace Core.Application.Features.Teachers.Handlers.Commands
 {
-    public class UpdateTeacherCommandHandler : IRequestHandler<UpdateTeacherCommand, Result<TeacherDto>>
+    public class UpdateTeacherCommandHandler : IRequestHandler<UpdateTeacherRequest, Result<TeacherDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -23,7 +23,7 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
             _mapper = mapper;
         }
 
-        public async Task<Result<TeacherDto>> Handle(UpdateTeacherCommand request, CancellationToken cancellationToken)
+        public async Task<Result<TeacherDto>> Handle(UpdateTeacherRequest request, CancellationToken cancellationToken)
         {
             var validator = new UpdateTeacherDtoValidator(_unitOfWork);
             var validationResult = await validator.ValidateAsync(request.UpdateTeacherDto);

@@ -25,7 +25,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Get([FromQuery] ListBaseRequest<DepartmentDto> request)
+        public async Task<ActionResult> Get([FromQuery] ListDepartmentRequest<DepartmentDto> request)
         {
             var validator = new ListBaseRequestValidator<DepartmentDto>();
             var result = validator.Validate(request);
@@ -65,7 +65,7 @@ namespace UI.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] CreateDepartmentDto request)
         {
-            var command = new CreateDepartmentCommand { CreateDepartmentDto = request };
+            var command = new CreateDepartmentRequest { CreateDepartmentDto = request };
             var response = await _mediator.Send(command);
 
             if (response.Succeeded)
@@ -81,7 +81,7 @@ namespace UI.WebApi.Controllers
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateDepartmentDto request)
         {
-            var command = new UpdateDepartmentCommand { UpdateDepartmentDto = request };
+            var command = new UpdateDepartmentRequest { UpdateDepartmentDto = request };
             var response = await _mediator.Send(command);
             if (response.Succeeded)
             {
@@ -98,7 +98,7 @@ namespace UI.WebApi.Controllers
         {
             try
             {
-                var command = new DeleteDepartmentCommand { Id = id };
+                var command = new DeleteDepartmentRequest { Id = id };
                 var response = await _mediator.Send(command);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }

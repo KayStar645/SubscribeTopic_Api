@@ -4,10 +4,8 @@ using MediatR;
 
 namespace Core.Application.Features.Teachers.Requests.Commands
 {
-    public class UpdateTeacherCommand : IRequest<Result<TeacherDto>>
+    public class UpdateTeacherRequest : IRequest<Result<TeacherDto>>
     {
-        public int Id { get; set; }
-
         public UpdateTeacherDto? UpdateTeacherDto { get; set; }
     }
 }

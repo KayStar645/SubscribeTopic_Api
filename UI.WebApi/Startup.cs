@@ -51,7 +51,7 @@ namespace UI.WebApi
                 .AsImplementedInterfaces();
 
             builder.RegisterAssemblyTypes(
-                                  typeof(CreateTeacherCommand).GetTypeInfo().Assembly).
+                                  typeof(CreateTeacherRequest).GetTypeInfo().Assembly).
                                        AsClosedTypesOf(typeof(IRequestHandler<,>));
         }
 
