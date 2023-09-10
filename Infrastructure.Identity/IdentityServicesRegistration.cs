@@ -1,6 +1,5 @@
 ﻿using Core.Application.Contracts.Identity;
 using Core.Application.Models.Identity;
-using Infrastructure.Identity.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
-
+using Core.Application.Services.Identity;
+using Core.Domain.Entities.Identity;
 
 namespace Infrastructure.Identity
 {
@@ -27,7 +27,7 @@ namespace Infrastructure.Identity
             //    .AddEntityFrameworkStores<SubcribeTopicIdentityDbContext>()
             //    .AddDefaultTokenProviders();
 
-            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            services.AddIdentity<Users, Roles>(options =>
                 {
                     options.User.RequireUniqueEmail = false;
                 })

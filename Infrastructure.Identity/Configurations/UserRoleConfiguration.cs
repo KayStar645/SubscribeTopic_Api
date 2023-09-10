@@ -9,6 +9,8 @@ namespace Infrastructure.Identity.Configurations
     {
         public void Configure(EntityTypeBuilder<UserRoles> builder)
         {
+            builder.ToTable(nameof(UserRoles));
+
             builder.HasKey(x => x.Id);
             builder.Property(x => x.UserId).IsRequired();
             builder.Property(x => x.RoleId).IsRequired();

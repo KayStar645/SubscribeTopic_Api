@@ -4,8 +4,9 @@ namespace Core.Domain.Entities.Identity
 {
     public class Users : IdentityUser<string>
     {
-        public Users() 
+        public Users()
         {
+            Id = Guid.NewGuid().ToString();
             UserRoles = new HashSet<UserRoles>();
         }
 

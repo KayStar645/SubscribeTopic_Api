@@ -1,14 +1,14 @@
 ﻿using Core.Application.Contracts.Identity;
-using Core.Application.Models.Identity;
+using Core.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 
-namespace Infrastructure.Identity.Services
+namespace Core.Application.Services.Identity
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<Users> _userManager;
 
-        public UserService(UserManager<IdentityUser> userManager)
+        public UserService(UserManager<Users> userManager)
         {
             _userManager = userManager;
         }

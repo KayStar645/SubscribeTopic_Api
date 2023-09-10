@@ -1,30 +1,27 @@
-﻿using Core.Application.Config;
-using Core.Application.Constants;
+﻿using Core.Application.Constants;
 using Core.Application.Contracts.Identity;
-using Core.Application.Custom;
 using Core.Application.Models.Identity;
 using Core.Application.Models.Identity.Validators;
 using Core.Application.Transform;
+using Core.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Infrastructure.Identity.Services
+namespace Core.Application.Services.Identity
 {
     public class AuthService : IAuthService
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<Users> _userManager;
+        private readonly SignInManager<Users> _signInManager;
         private readonly JwtSettings _jwtSettings;
 
-        public AuthService(UserManager<IdentityUser> userManager,
+        public AuthService(UserManager<Users> userManager,
             IOptions<JwtSettings> jwtSettings,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<Users> signInManager)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings.Value;
@@ -76,7 +73,7 @@ namespace Infrastructure.Identity.Services
                 throw new HttpRequestException(IdentityTranform.UserAlreadyExists(request.UserName));
             }
 
-            var user = new IdentityUser
+            var user = new Users
             {
                 UserName = request.UserName,
             };
@@ -104,7 +101,7 @@ namespace Infrastructure.Identity.Services
             }
         }
 
-        private async Task<JwtSecurityToken> GenerateToken(IdentityUser user)
+        private async Task<JwtSecurityToken> GenerateToken(Users user)
         {
             var userClaims = await _userManager.GetClaimsAsync(user);
             var roles = await _userManager.GetRolesAsync(user);

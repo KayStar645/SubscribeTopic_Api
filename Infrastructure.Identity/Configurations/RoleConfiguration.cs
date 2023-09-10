@@ -10,6 +10,8 @@ namespace Infrastructure.Identity.Configurations
     {
         public void Configure(EntityTypeBuilder<Roles> builder)
         {
+            builder.ToTable(nameof(Roles));
+
             //builder.HasData(
             //    new Roles
             //    {

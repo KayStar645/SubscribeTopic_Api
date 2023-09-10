@@ -6,6 +6,7 @@ namespace Core.Domain.Entities.Identity
     {
         public Roles()
         {
+            Id = Guid.NewGuid().ToString();
             RolePermissions = new HashSet<RolePermissions>();
             UserRoles = new HashSet<UserRoles>();
         }

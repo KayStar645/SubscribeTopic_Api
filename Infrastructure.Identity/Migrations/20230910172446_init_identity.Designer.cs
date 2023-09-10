@@ -4,6 +4,7 @@ using Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Identity.Migrations
 {
     [DbContext(typeof(SubcribeTopicIdentityDbContext))]
-    partial class SubcribeTopicIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230910172446_init_identity")]
+    partial class init_identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,36 +85,6 @@ namespace Infrastructure.Identity.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Roles", (string)null);
-                });
-
-            modelBuilder.Entity("Core.Domain.Entities.Identity.UserPermissions", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("PermissionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PermissionsId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UsersId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PermissionsId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("UserPermissions", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Identity.UserRoles", b =>
@@ -335,25 +307,6 @@ namespace Infrastructure.Identity.Migrations
                     b.Navigation("Permissions");
 
                     b.Navigation("Roles");
-                });
-
-            modelBuilder.Entity("Core.Domain.Entities.Identity.UserPermissions", b =>
-                {
-                    b.HasOne("Core.Domain.Entities.Identity.Permissions", "Permissions")
-                        .WithMany()
-                        .HasForeignKey("PermissionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Domain.Entities.Identity.Users", "Users")
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Permissions");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Identity.UserRoles", b =>
