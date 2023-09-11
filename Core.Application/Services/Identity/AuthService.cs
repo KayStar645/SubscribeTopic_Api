@@ -103,8 +103,8 @@ namespace Core.Application.Services.Identity
 
         private async Task<JwtSecurityToken> GenerateToken(Users user)
         {
-            var userClaims = await _userManager.GetClaimsAsync(user);
             var roles = await _userManager.GetRolesAsync(user);
+            var permissions = await _userManager.GetClaimsAsync(user);
 
             var roleClaims = new List<Claim>();
 
@@ -113,13 +113,20 @@ namespace Core.Application.Services.Identity
                 roleClaims.Add(new Claim(ClaimTypes.Role, roles[i]));
             }
 
+            var permissionClaims = new List<Claim>();
+
+            for (int i = 0; i < permissions.Count; i++)
+            {
+                permissionClaims.Add(new Claim(CustomClaimTypes.Permission, roles[i]));
+            }
+
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(CustomClaimTypes.Uid, user.Id)
+                new Claim(CustomClaimTypes.Uid, user.Id) 
             }
-            .Union(userClaims)
+            .Union(permissionClaims)
             .Union(roleClaims);
 
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));

@@ -26,11 +26,11 @@ namespace UI.WebApi.Controllers
             }
             catch (HttpRequestException ex)
             {
-                return StatusCode(400, new { Error = ex.Message });
+                return StatusCode((int)HttpStatusCode.OK, new { Error = ex.Message });
             }
             catch (Exception)
             {
-                return StatusCode(500, new { Error = ResponseTranform.ServerError });
+                return StatusCode((int)HttpStatusCode.InternalServerError, new { Error = ResponseTranform.ServerError });
             }
         }
 
