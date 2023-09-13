@@ -12,7 +12,6 @@ using System.Net;
 
 namespace UI.WebApi.Controllers
 {
-    // New
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
