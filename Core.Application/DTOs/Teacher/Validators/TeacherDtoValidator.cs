@@ -17,15 +17,16 @@ namespace Core.Application.DTOs.Teacher.Validators
                 .MustAsync(async (id, token) =>
                 {
                     var teacherExists = await _unitOfWork.Repository<DepartmentEntity>().GetByIdAsync(id);
-                    return teacherExists != null || id == null;
+                    return teacherExists != null;
                 })
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("departmentId", "departments"));
 
+            // Chưa validator trùng code và name trong 1 bảng
             RuleFor(x => x.InternalCode)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"));
 
             RuleFor(x => x.Name)
-                .NotNull().WithMessage(ValidatorTranform.Required("name"))
+                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
                 .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));
 
             RuleFor(x => x.Gender)
