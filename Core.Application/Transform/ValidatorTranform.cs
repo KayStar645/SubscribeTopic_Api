@@ -86,6 +86,5 @@ namespace Core.Application.Transform
             return $"Trường {name} ít nhất lớn hơn hoặc bằng ${number}!";
         }
 
-
     }
 }
