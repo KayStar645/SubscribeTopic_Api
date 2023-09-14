@@ -22,5 +22,6 @@ namespace Core.Domain.Entities
 
 
         public IList<Department> Departments { get; } = new List<Department>();
+        public ICollection<Major> Majors { get; } = new HashSet<Major>();
     }
 }

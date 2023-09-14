@@ -18,5 +18,6 @@ namespace Infrastructure.Persistence
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Faculty> Facultys { get; set; }
+        public DbSet<Major> Majors { get; set; }
     }
 }

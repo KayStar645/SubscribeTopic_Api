@@ -1,0 +1,56 @@
+﻿using AutoMapper;
+using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Major;
+using Core.Application.Features.Majors.Requests.Queries;
+using Core.Application.Responses;
+using Core.Domain.Entities;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Sieve.Models;
+using Sieve.Services.Interface;
+using System.Net;
+
+namespace Core.Application.Features.Majors.Handlers.Queries
+{
+    public class ListMajorRequestHandler : IRequestHandler<ListMajorRequest<MajorDto>, PaginatedResult<List<MajorDto>>>
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        private readonly ISieveProcessor _sieveProcessor;
+        public ListMajorRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor) 
+        {
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _sieveProcessor = sieveProcessor;
+        }
+
+        public async Task<PaginatedResult<List<MajorDto>>> Handle(ListMajorRequest<MajorDto> request, CancellationToken cancellationToken)
+        {
+            var sieve = _mapper.Map<SieveModel>(request);
+
+            var query = _unitOfWork.Repository<Major>().GetAllInclude();
+
+            if (request.IsAllDetail)
+            {
+                query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Faculty);
+            }
+            else
+            {
+                if (request.IsGetFaculty == true)
+                {
+                    query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Faculty);
+                }
+            }
+
+            query = _sieveProcessor.Apply(sieve, query);
+
+            var majors = await query.ToListAsync();
+
+            var mapMajors = _mapper.Map<List<MajorDto>>(majors);
+
+            return PaginatedResult<List<MajorDto>>.Create(
+                mapMajors, 0, request.Page,
+                request.PageSize, (int)HttpStatusCode.OK);
+        }
+    }
+}
