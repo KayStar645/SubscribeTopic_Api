@@ -1,5 +1,4 @@
 # dotNetCleanArchitechure
-Thuận cute
 
 ## GET /GetPosts
 ```
