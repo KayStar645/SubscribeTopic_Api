@@ -2,7 +2,6 @@
 using Core.Application.Contracts.Persistence;
 using Core.Application.Exceptions;
 using Core.Application.Features.Majors.Requests.Commands;
-using Core.Application.Features.Teachers.Requests.Commands;
 using Core.Domain.Entities;
 using MediatR;
 

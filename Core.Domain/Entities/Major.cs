@@ -15,5 +15,8 @@ namespace Core.Domain.Entities
 
         [ForeignKey("FacultyId")]
         public Faculty? Faculty { get; set; }
+        
+        public ICollection<Student> Students { get; } = new HashSet<Student>();
+
     }
 }
