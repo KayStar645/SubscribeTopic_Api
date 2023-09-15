@@ -2,10 +2,7 @@
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Major;
 using Core.Application.DTOs.Major.Validators;
-using Core.Application.DTOs.Teacher;
-using Core.Application.DTOs.Teacher.Validators;
 using Core.Application.Features.Majors.Requests.Commands;
-using Core.Application.Features.Teachers.Requests.Commands;
 using Core.Application.Responses;
 using Core.Application.Services;
 using Core.Application.Transform;

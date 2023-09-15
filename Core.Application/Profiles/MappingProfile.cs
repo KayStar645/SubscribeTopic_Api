@@ -1,12 +1,12 @@
-﻿using Core.Application.DTOs.Teacher;
-using Core.Domain.Entities;
-using AutoMapper;
-using System.Reflection;
-using Sieve.Models;
-using Core.Application.Features.Base.Requests.Queries;
+﻿using AutoMapper;
 using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.Major;
+using Core.Application.DTOs.Student;
+using Core.Application.DTOs.Teacher;
+using Core.Application.Features.Base.Requests.Queries;
+using Core.Domain.Entities;
+using Sieve.Models;
 
 namespace Core.Application.Profiles
 {
@@ -33,6 +33,11 @@ namespace Core.Application.Profiles
             CreateMap<Major, MajorDto>().ReverseMap();
             CreateMap<Major, CreateMajorDto>().ReverseMap();
             CreateMap<Major, UpdateMajorDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<StudentDto>>().ReverseMap();
+            CreateMap<Student, StudentDto>().ReverseMap();
+            CreateMap<Student, CreateStudentDto>().ReverseMap();
+            CreateMap<Student, UpdateStudentDto>().ReverseMap();
         }
 
         public void ConfigureIgnoreFields<TEntity, TDto>(IMappingExpression<TEntity, TDto> mapping)
