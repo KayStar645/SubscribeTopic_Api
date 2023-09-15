@@ -76,7 +76,7 @@ namespace UI.WebApi.Controllers
                 return StatusCode(response.Code, response);
             }
         }
-
+        
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateMajorDto majorRequest)
         {
