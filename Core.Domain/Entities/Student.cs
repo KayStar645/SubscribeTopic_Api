@@ -13,6 +13,7 @@ namespace Core.Domain.Entities
         public string? Name { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
+        [Column(TypeName = "date")]
         public DateTime? DateOfBirth { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]

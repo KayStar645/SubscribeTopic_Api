@@ -9,7 +9,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
-namespace Core.Application.Features.Students.Handlers.Querries
+namespace Core.Application.Features.Students.Handlers.Queries
 {
     public class DetailStudentRequestHandler : IRequestHandler<DetailStudentRequest, Result<StudentDto>>
     {

@@ -10,7 +10,7 @@ using Sieve.Models;
 using Sieve.Services.Interface;
 using System.Net;
 
-namespace Core.Application.Features.Students.Handlers.Querries
+namespace Core.Application.Features.Students.Handlers.Queries
 {
     public class ListStudentRequestHandler : IRequestHandler<ListStudentRequest<StudentDto>, PaginatedResult<List<StudentDto>>>
     {
