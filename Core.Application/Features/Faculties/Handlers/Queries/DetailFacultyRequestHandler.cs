@@ -30,11 +30,14 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
 
                 if (request.IsAllDetail)
                 {
-                    
+                    query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Dean_Teacher);
                 }
                 else
                 {
-                    
+                    if (request.IsGetDean == true)
+                    {
+                        query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Dean_Teacher);
+                    }
                 }
 
                 var findFaculty = await query.SingleAsync();

@@ -31,12 +31,18 @@ namespace Core.Application.Features.Departments.Handlers.Queries
                 if (request.IsAllDetail)
                 {
                     query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.Faculty);
+                    query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.HeadDepartment_Teacher);
                 }
                 else
                 {
                     if (request.IsGetFaculty == true)
                     {
                         query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.Faculty);
+                    }
+
+                    if (request.IsGetHeadDepartment == true)
+                    {
+                        query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.HeadDepartment_Teacher);
                     }
                 }
 

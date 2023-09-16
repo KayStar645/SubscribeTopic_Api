@@ -15,6 +15,6 @@ namespace Core.Application.DTOs.Teacher
         public string? AcademicTitle { get; set; }
         public string? Degree { get; set; }
 
-        public DepartmentDto Department { get; set; }
+        public DepartmentDto? Department { get; set; }
     }
 }
