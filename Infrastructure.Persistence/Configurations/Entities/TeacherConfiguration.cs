@@ -8,7 +8,13 @@ namespace Infrastructure.Persistence.Configurations.Entities
     {
         public void Configure(EntityTypeBuilder<Teacher> builder)
         {
-            
+            builder.HasOne(x => x.Dean_Faculty)
+                .WithOne(x => x.Dean_Teacher)
+                .HasForeignKey<Faculty>(f => f.Dean_TeacherId);
+
+            builder.HasOne(x => x.HeadDepartment_Department)
+                .WithOne(x => x.HeadDepartment_Teacher)
+                .HasForeignKey<Department>(d => d.HeadDepartment_TeacherId);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Core.Domain.Entities
         public string? Gender { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
-        [Column(TypeName = "datetime")]
+        [Column(TypeName = "date")]
         public DateTime? DateOfBirth { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
@@ -37,6 +37,12 @@ namespace Core.Domain.Entities
         public int? DepartmentId { get; set; }
         [ForeignKey("DepartmentId")]
         public Department? Department { get; set; }
+
+        // Trưởng khoa
+        public Faculty? Dean_Faculty { get; set; }
+
+        // Trưởng bộ môn
+        public Department? HeadDepartment_Department { get; set; }
 
     }
 }
