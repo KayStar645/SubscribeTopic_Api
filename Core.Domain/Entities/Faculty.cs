@@ -30,5 +30,8 @@ namespace Core.Domain.Entities
         public ICollection<Department> Departments { get; } = new List<Department>();
         [NotMapped]
         public ICollection<Major> Majors { get; } = new HashSet<Major>();
+        
+        [NotMapped]
+        public ICollection<Notification> Notifications { get; } = new HashSet<Notification>();
     }
 }

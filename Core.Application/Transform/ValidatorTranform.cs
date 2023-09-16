@@ -33,6 +33,16 @@ namespace Core.Application.Transform
             return $"Trường {name} tối thiểu phải đủ {year} tuổi!";
         }
 
+        public static string MustUrl(string name)
+        {
+            return $"Trường {name} phải là một URL hợp lệ!";
+        }
+
+        public static string MustUrls(string name)
+        {
+            return $"Trường {name} phải là một mảng URL hợp lệ!";
+        }
+
         public static string Must(string name, string[] options)
         {
             return $"Trường {name} phải thuộc {string.Join(", ", options)}!";

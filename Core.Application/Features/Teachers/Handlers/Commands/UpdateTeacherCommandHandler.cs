@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Teacher;
 using Core.Application.DTOs.Teacher.Validators;
 using Core.Application.Features.Teachers.Requests.Commands;
-using MediatR;
-using Core.Domain.Entities;
-using Core.Application.DTOs.Teacher;
-using System.Net;
-using Core.Application.Transform;
 using Core.Application.Responses;
 using Core.Application.Services;
+using Core.Application.Transform;
+using Core.Domain.Entities;
+using MediatR;
+using System.Net;
 
 namespace Core.Application.Features.Teachers.Handlers.Commands
 {

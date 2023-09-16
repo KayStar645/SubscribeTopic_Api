@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubscribeTopicDbContext))]
-    partial class SubscribeTopicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230916152040_update_table_notification_internalcode")]
+    partial class update_table_notification_internalcode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,9 +47,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<int?>("FacultyId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("HeadDepartment_TeacherId")
-                        .HasColumnType("int");
-
                     b.Property<string>("InternalCode")
                         .HasColumnType("nvarchar(max)");
 
@@ -70,10 +69,6 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("FacultyId");
 
-                    b.HasIndex("HeadDepartment_TeacherId")
-                        .IsUnique()
-                        .HasFilter("[HeadDepartment_TeacherId] IS NOT NULL");
-
                     b.ToTable("Departments");
                 });
 
@@ -93,9 +88,6 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime");
-
-                    b.Property<int?>("Dean_TeacherId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -119,10 +111,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Dean_TeacherId")
-                        .IsUnique()
-                        .HasFilter("[Dean_TeacherId] IS NOT NULL");
 
                     b.ToTable("Facultys");
                 });
@@ -286,7 +274,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<DateTime?>("DateOfBirth")
-                        .HasColumnType("date");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Degree")
                         .HasColumnType("nvarchar(max)");
@@ -328,31 +316,16 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Core.Domain.Entities.Department", b =>
                 {
                     b.HasOne("Core.Domain.Entities.Faculty", "Faculty")
-                        .WithMany()
+                        .WithMany("Departments")
                         .HasForeignKey("FacultyId");
 
-                    b.HasOne("Core.Domain.Entities.Teacher", "HeadDepartment_Teacher")
-                        .WithOne("HeadDepartment_Department")
-                        .HasForeignKey("Core.Domain.Entities.Department", "HeadDepartment_TeacherId");
-
                     b.Navigation("Faculty");
-
-                    b.Navigation("HeadDepartment_Teacher");
-                });
-
-            modelBuilder.Entity("Core.Domain.Entities.Faculty", b =>
-                {
-                    b.HasOne("Core.Domain.Entities.Teacher", "Dean_Teacher")
-                        .WithOne("Dean_Faculty")
-                        .HasForeignKey("Core.Domain.Entities.Faculty", "Dean_TeacherId");
-
-                    b.Navigation("Dean_Teacher");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Major", b =>
                 {
                     b.HasOne("Core.Domain.Entities.Faculty", "Faculty")
-                        .WithMany()
+                        .WithMany("Majors")
                         .HasForeignKey("FacultyId");
 
                     b.Navigation("Faculty");
@@ -379,17 +352,22 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Core.Domain.Entities.Teacher", b =>
                 {
                     b.HasOne("Core.Domain.Entities.Department", "Department")
-                        .WithMany()
+                        .WithMany("Teachers")
                         .HasForeignKey("DepartmentId");
 
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("Core.Domain.Entities.Teacher", b =>
+            modelBuilder.Entity("Core.Domain.Entities.Department", b =>
                 {
-                    b.Navigation("Dean_Faculty");
+                    b.Navigation("Teachers");
+                });
 
-                    b.Navigation("HeadDepartment_Department");
+            modelBuilder.Entity("Core.Domain.Entities.Faculty", b =>
+                {
+                    b.Navigation("Departments");
+
+                    b.Navigation("Majors");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Major", b =>
