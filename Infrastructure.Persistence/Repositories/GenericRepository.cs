@@ -13,14 +13,20 @@ namespace Infrastructure.Persistence.Repositories
         {
             _dbContext = dbContext;
         }
+
+        // Async
+
         public async Task<List<T>> GetAllAsync()
         {
             return await _dbContext
                 .Set<T>()
                 .ToListAsync();
         }
+        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbContext.Set<T>().FirstOrDefaultAsync(predicate);
+        }
 
-        // Async
         public async Task<T> GetByIdAsync(int? id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
@@ -60,6 +66,11 @@ namespace Infrastructure.Persistence.Repositories
             return query;
         }
 
+        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> predicate)
+        {
+            return _dbContext.Set<T>().Where(predicate);
+        }
+
         public IQueryable<T> GetByIdInclude(int? id, params Expression<Func<T, object>>[] includeProperties)
         {
             var query = _dbContext.Set<T>().AsQueryable();
@@ -87,14 +98,6 @@ namespace Infrastructure.Persistence.Repositories
                 query = query.Include(includeProperties);
             }
             return query;
-        }
-
-
-        public IQueryable<T> GetAllSieve()
-        {
-            return _dbContext
-                .Set<T>()
-                .AsNoTracking();
         }
     }
 }

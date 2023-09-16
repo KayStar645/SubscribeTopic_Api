@@ -30,6 +30,11 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
 
             var query = _unitOfWork.Repository<Teacher>().GetAllInclude();
 
+            if(string.IsNullOrEmpty(request.Type) == false)
+            {
+                query = query.Where(x => x.Type == request.Type);
+            }    
+
             if (request.IsAllDetail)
             {
                 query = _unitOfWork.Repository<Teacher>().AddInclude(query, x => x.Department);
