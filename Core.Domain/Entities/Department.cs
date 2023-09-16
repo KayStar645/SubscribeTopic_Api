@@ -1,5 +1,4 @@
 ﻿using Core.Domain.Common;
-using Microsoft.EntityFrameworkCore;
 using Sieve.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,13 +21,19 @@ namespace Core.Domain.Entities
         [Sieve(CanFilter = true, CanSort = true)]
         public string? Email { get; set; }
 
+        // Trưởng bộ môn
+        public int? HeadDepartment_TeacherId { get; set; }
+        public Teacher? HeadDepartment_Teacher { get; set; }
+
+        // Thuộc khoa nào
         [Sieve(CanFilter = true, CanSort = true)]
         public int? FacultyId { get; set; }
-
-
         [ForeignKey("FacultyId")]
         public Faculty? Faculty { get; set; }
 
-        public IList<Teacher> Teachers { get; } = new List<Teacher>();
+
+        // Danh sách giảng viên trong bộ môn
+        [NotMapped]
+        public ICollection<Teacher> Teachers { get; } = new List<Teacher>();
     }
 }
