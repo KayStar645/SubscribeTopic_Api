@@ -28,6 +28,8 @@
     <Folder Include="Features\Base\Handlers\Commands\" />
     <Folder Include="Features\Base\Handlers\Queries\" />
     <Folder Include="Features\Base\Requests\Commands\" />
+    <Folder Include="Features\Notifications\Handlders\Commands\" />
+    <Folder Include="Features\Notifications\Requests\Commands\" />
   </ItemGroup>
 
 </Project>

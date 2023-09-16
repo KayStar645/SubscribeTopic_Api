@@ -1,5 +1,6 @@
 ﻿using Core.Domain.Common;
 using Sieve.Attributes;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Domain.Entities
 {
@@ -23,5 +24,8 @@ namespace Core.Domain.Entities
 
         public IList<Department> Departments { get; } = new List<Department>();
         public ICollection<Major> Majors { get; } = new HashSet<Major>();
+        
+        [NotMapped]
+        public ICollection<Notification> Notifications { get; } = new HashSet<Notification>();
     }
 }

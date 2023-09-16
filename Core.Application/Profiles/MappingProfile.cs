@@ -2,6 +2,7 @@
 using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.Major;
+using Core.Application.DTOs.Notification;
 using Core.Application.DTOs.Student;
 using Core.Application.DTOs.Teacher;
 using Core.Application.Features.Base.Requests.Queries;
@@ -38,6 +39,11 @@ namespace Core.Application.Profiles
             CreateMap<Student, StudentDto>().ReverseMap();
             CreateMap<Student, CreateStudentDto>().ReverseMap();
             CreateMap<Student, UpdateStudentDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<NotificationDto>>().ReverseMap();
+            CreateMap<Notification, NotificationDto>().ReverseMap();
+            CreateMap<Notification, CreateNotificationDto>().ReverseMap();
+            CreateMap<Notification, UpdateNotificationDto>().ReverseMap();
         }
 
         public void ConfigureIgnoreFields<TEntity, TDto>(IMappingExpression<TEntity, TDto> mapping)
