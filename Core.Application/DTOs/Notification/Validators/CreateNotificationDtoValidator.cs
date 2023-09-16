@@ -1,12 +1,17 @@
-﻿using FluentValidation;
+﻿using Core.Application.Contracts.Persistence;
+using FluentValidation;
 
 namespace Core.Application.DTOs.Notification.Validators
 {
     public class CreateNotificationDtoValidator : AbstractValidator<INotificationDto>
     {
-        public CreateNotificationDtoValidator()
+        private readonly IUnitOfWork _unitOfWork;
+
+        public CreateNotificationDtoValidator(IUnitOfWork unitOfWork)
         {
-            Include(new NotificationDtoValidator());
+            _unitOfWork = unitOfWork;
+
+            Include(new NotificationDtoValidator(_unitOfWork));
         }
     }
 }

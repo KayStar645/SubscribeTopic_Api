@@ -15,6 +15,10 @@ namespace Core.Application.Profiles
     {
         public MappingProfile() 
         {
+
+            CreateMap<string, List<string>>().ConvertUsing<StringToListTypeConverter>();
+            CreateMap<List<string>, string>().ConvertUsing<ListToStringTypeConverter>();
+
             CreateMap<SieveModel, ListBaseRequest<TeacherDto>>().ReverseMap();
             CreateMap<Teacher, TeacherDto>().ReverseMap();
             CreateMap<Teacher, CreateTeacherDto>().ReverseMap();
@@ -45,6 +49,34 @@ namespace Core.Application.Profiles
             CreateMap<Notification, CreateNotificationDto>().ReverseMap();
             CreateMap<Notification, UpdateNotificationDto>().ReverseMap();
         }
+
+        public class StringToListTypeConverter : ITypeConverter<string, List<string>>
+        {
+            public List<string> Convert(string source, List<string> destination, ResolutionContext context)
+            {
+                if (string.IsNullOrEmpty(source))
+                {
+                    return new List<string>();
+                }
+
+                return source.Split(',').ToList();
+            }
+        }
+
+        public class ListToStringTypeConverter : ITypeConverter<List<string>, string>
+        {
+            public string Convert(List<string> source, string destination, ResolutionContext context)
+            {
+                if (source == null || source.Count == 0)
+                {
+                    return null;
+                }
+
+                return string.Join(",", source);
+            }
+        }
+
+
 
         public void ConfigureIgnoreFields<TEntity, TDto>(IMappingExpression<TEntity, TDto> mapping)
         {
