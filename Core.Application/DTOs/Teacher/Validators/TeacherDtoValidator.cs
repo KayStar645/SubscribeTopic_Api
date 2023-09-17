@@ -3,6 +3,7 @@ using Core.Application.Custom;
 using Core.Application.Transform;
 using Core.Application.Contracts.Persistence;
 using DepartmentEntity = Core.Domain.Entities.Department;
+using TeacherEntity = Core.Domain.Entities.Teacher;
 
 namespace Core.Application.DTOs.Teacher.Validators
 {
@@ -21,20 +22,27 @@ namespace Core.Application.DTOs.Teacher.Validators
                 })
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("departmentId", "departments"));
 
-            // Chưa validator trùng code và name trong 1 bảng
             RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"));
+                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"))
+                .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("name", 50))
+                .MustAsync(async (internalCode, token) =>
+                {
+                    var teacher = await _unitOfWork.Repository<TeacherEntity>()
+                        .FirstOrDefaultAsync(x => x.InternalCode == internalCode);
+                    return teacher == null;
+                })
+                .WithMessage(internalCode => ValidatorTranform.Exists("internalCode"));
 
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
                 .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));
 
             RuleFor(x => x.Gender)
-                .Must(gender => gender == CommonTranform.male || gender == CommonTranform.female || gender == CommonTranform.other)
+                .Must(gender => string.IsNullOrEmpty(gender) || gender == CommonTranform.male || gender == CommonTranform.female || gender == CommonTranform.other)
                 .WithMessage(ValidatorTranform.Must("gender", CommonTranform.GetGender()));
 
             RuleFor(x => x.DateOfBirth)
-                .Must(dateOfBirth => CustomValidator.IsAtLeastNYearsOld(dateOfBirth, 16))
+                .Must(dateOfBirth => string.IsNullOrEmpty(dateOfBirth.ToString()) || CustomValidator.IsAtLeastNYearsOld(dateOfBirth, 16))
                 .WithMessage(ValidatorTranform.MustDate("dateOfBirth", 16));
 
             RuleFor(x => x.PhoneNumber)
@@ -56,6 +64,12 @@ namespace Core.Application.DTOs.Teacher.Validators
                     ? string.IsNullOrEmpty(degree)
                     : degree == CommonTranform.associateProfessor || degree == CommonTranform.professor || string.IsNullOrWhiteSpace(degree))
                 .WithMessage(ValidatorTranform.MustWhen("degree", CommonTranform.GetListDegree(), "academicTitle", CommonTranform.doctorate));
+
+            RuleFor(x => x.Type)
+                .Must(type => string.IsNullOrEmpty(type) ||
+                      type == TeacherEntity.TYPE_TEACHER_LECTURERS ||
+                      type == TeacherEntity.TYPE_TEACHER_MINISTRY)
+                .WithMessage(ValidatorTranform.Must("type", TeacherEntity.GetType()));
         }    
     }
 }

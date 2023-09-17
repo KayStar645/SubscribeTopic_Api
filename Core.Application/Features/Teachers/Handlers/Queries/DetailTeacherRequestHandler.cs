@@ -26,7 +26,8 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
         {
             try
             {
-                var query = _unitOfWork.Repository<Teacher>().GetByIdInclude(request.Id);
+                var query = _unitOfWork.Repository<Teacher>().GetByIdInclude(request.Id)
+                                       .Where(x => x.Type == request.Type);
 
                 if (request.IsAllDetail)
                 {
