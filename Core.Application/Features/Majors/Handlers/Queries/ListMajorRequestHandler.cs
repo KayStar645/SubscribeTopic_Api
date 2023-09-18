@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Major;
 using Core.Application.Features.Majors.Requests.Queries;
 using Core.Application.Responses;
@@ -26,6 +28,16 @@ namespace Core.Application.Features.Majors.Handlers.Queries
 
         public async Task<PaginatedResult<List<MajorDto>>> Handle(ListMajorRequest<MajorDto> request, CancellationToken cancellationToken)
         {
+            var validator = new ListBaseRequestValidator<MajorDto>();
+            var result = validator.Validate(request);
+
+            if (result.IsValid == false)
+            {
+                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                return PaginatedResult<List<MajorDto>>
+                    .Failure((int)HttpStatusCode.BadRequest, errorMessages);
+            }
+
             var sieve = _mapper.Map<SieveModel>(request);
 
             var query = _unitOfWork.Repository<Major>().GetAllInclude();
