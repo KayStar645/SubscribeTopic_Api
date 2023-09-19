@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Notification;
 using Core.Application.Features.Notifications.Requests.Queries;
 using Core.Application.Responses;
@@ -27,6 +29,16 @@ namespace Core.Application.Features.Notifications.Handlders.Queries
 
         public async Task<PaginatedResult<List<NotificationDto>>> Handle(ListNotificationRequest<NotificationDto> request, CancellationToken cancellationToken)
         {
+            var validator = new ListBaseRequestValidator<NotificationDto>();
+            var result = validator.Validate(request);
+
+            if (result.IsValid == false)
+            {
+                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                return PaginatedResult<List<NotificationDto>>
+                    .Failure((int)HttpStatusCode.BadRequest, errorMessages);
+            }
+
             var sieve = _mapper.Map<SieveModel>(request);
 
             var query = _unitOfWork.Repository<Notification>().GetAllInclude();

@@ -18,18 +18,22 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<List<T>> GetAllAsync()
         {
-            return await _dbContext
-                .Set<T>()
+            return await _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false)
                 .ToListAsync();
         }
         public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _dbContext.Set<T>().FirstOrDefaultAsync(predicate);
+            return await _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false)
+                .FirstOrDefaultAsync(predicate);
         }
 
         public async Task<T> GetByIdAsync(int? id)
         {
-            return await _dbContext.Set<T>().FindAsync(id);
+            return await _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false && x.Id == id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<T> AddAsync(T entity)
@@ -40,7 +44,9 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<T> UpdateAsync(T entity)
         {
-            T exist = _dbContext.Set<T>().Find(entity.Id);
+            T exist = await _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false && x.Id == entity.Id)
+                .FirstOrDefaultAsync();
             _dbContext.Entry(exist).CurrentValues.SetValues(entity);
             return entity;
         }
@@ -56,7 +62,9 @@ namespace Infrastructure.Persistence.Repositories
 
         public IQueryable<T> GetAllInclude(Expression<Func<T, object>> includeProperties = null)
         {
-            var query = _dbContext.Set<T>().AsNoTracking();
+            var query = _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false)
+                .AsNoTracking();
 
             if (includeProperties != null)
             {
@@ -68,12 +76,16 @@ namespace Infrastructure.Persistence.Repositories
 
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> predicate)
         {
-            return _dbContext.Set<T>().Where(predicate);
+            return _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false)
+                .Where(predicate);
         }
 
         public IQueryable<T> GetByIdInclude(int? id, params Expression<Func<T, object>>[] includeProperties)
         {
-            var query = _dbContext.Set<T>().AsQueryable();
+            var query = _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false)
+                .AsQueryable();
 
             if (includeProperties != null)
             {
