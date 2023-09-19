@@ -44,5 +44,10 @@
         {
             return new PaginatedResult<T>(true, data, null, count, pageNumber, pageSize, code);
         }
+
+        public static PaginatedResult<T> Failure(int code, List<string> messages)
+        {
+            return new PaginatedResult<T>(false, default, messages, 0, 1, 10, code);
+        }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.Major;
 using Core.Application.Exceptions;
+using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Features.Majors.Requests.Commands;
 using Core.Application.Features.Majors.Requests.Queries;
 using Core.Application.Transform;
+using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,24 +28,9 @@ namespace UI.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<MajorDto>>> Get([FromQuery] ListMajorRequest<MajorDto> request)
         {
-            var validator = new ListBaseRequestValidator<MajorDto>();
-            var result = validator.Validate(request);
-
-            if (result.IsValid == false)
-            {
-                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
-                return BadRequest(errorMessages);
-            }
-
             var response = await _mediator.Send(request);
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+
+            return StatusCode(response.Code, response);
         }
 
         [HttpGet("Detail")]
@@ -51,14 +38,7 @@ namespace UI.WebApi.Controllers
         {
             var response = await _mediator.Send(request);
 
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+            return StatusCode(response.Code, response);
         }
 
         [HttpPost]
@@ -67,14 +47,7 @@ namespace UI.WebApi.Controllers
             var command = new CreateMajorRequest { CreateMajorDto = majorRequest };
             var response = await _mediator.Send(command);
 
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+            return StatusCode(response.Code, response);
         }
         
         [HttpPut]
@@ -82,14 +55,8 @@ namespace UI.WebApi.Controllers
         {
             var command = new UpdateMajorRequest { UpdateMajorDto = majorRequest };
             var response = await _mediator.Send(command);
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+
+            return StatusCode(response.Code, response);
         }
 
         [HttpDelete]
@@ -97,7 +64,7 @@ namespace UI.WebApi.Controllers
         {
             try
             {
-                var command = new DeleteMajorRequest { Id = id };
+                var command = new DeleteBaseRequest<Major> { Id = id };
                 var response = await _mediator.Send(command);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }

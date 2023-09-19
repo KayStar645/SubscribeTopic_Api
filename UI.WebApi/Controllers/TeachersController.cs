@@ -1,9 +1,11 @@
 ﻿using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.Teacher;
 using Core.Application.Exceptions;
+using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Features.Teachers.Requests.Commands;
 using Core.Application.Features.Teachers.Requests.Queries;
 using Core.Application.Transform;
+using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,24 +28,9 @@ namespace UI.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<TeacherDto>>> Get([FromQuery] ListDepartmentRequest<TeacherDto> request)
         {
-            var validator = new ListBaseRequestValidator<TeacherDto>();
-            var result = validator.Validate(request);
-
-            if (!result.IsValid)
-            {
-                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
-                return BadRequest(errorMessages);
-            }
-
             var response = await _mediator.Send(request);
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+
+            return StatusCode(response.Code, response);
         }
 
         [HttpGet("Detail")]
@@ -51,14 +38,7 @@ namespace UI.WebApi.Controllers
         {
             var response = await _mediator.Send(request);
 
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+            return StatusCode(response.Code, response);
         }
 
         [HttpPost]
@@ -67,14 +47,7 @@ namespace UI.WebApi.Controllers
             var command = new CreateTeacherRequest { CreateTeacherDto = teacherRequest };
             var response = await _mediator.Send(command);
 
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+            return StatusCode(response.Code, response);
         }
 
         [HttpPut]
@@ -82,14 +55,8 @@ namespace UI.WebApi.Controllers
         {
             var command = new UpdateTeacherRequest { UpdateTeacherDto = teacherRequest };
             var response = await _mediator.Send(command);
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+
+            return StatusCode(response.Code, response);
         }
 
         [HttpDelete]
@@ -97,7 +64,7 @@ namespace UI.WebApi.Controllers
         {
             try
             {
-                var command = new DeleteTeacherRequest { Id = id };
+                var command = new DeleteBaseRequest<Teacher> { Id = id };
                 var response = await _mediator.Send(command);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
@@ -110,6 +77,6 @@ namespace UI.WebApi.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { Error = ResponseTranform.ServerError });
             }
         }
-        
+
     }
 }

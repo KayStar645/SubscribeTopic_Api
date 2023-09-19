@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Faculty;
 using Core.Application.Features.Faculties.Requests.Queries;
 using Core.Application.Responses;
@@ -26,6 +28,17 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
         }
         public async Task<PaginatedResult<List<FacultyDto>>> Handle(ListFacultyRequest<FacultyDto> request, CancellationToken cancellationToken)
         {
+
+            var validator = new ListBaseRequestValidator<FacultyDto>();
+            var result = validator.Validate(request);
+
+            if (result.IsValid == false)
+            {
+                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                return PaginatedResult<List<FacultyDto>>
+                    .Failure((int)HttpStatusCode.BadRequest, errorMessages);
+            }
+
             var sieve = _mapper.Map<SieveModel>(request);
 
             var query = _unitOfWork.Repository<Faculty>().GetAllInclude();

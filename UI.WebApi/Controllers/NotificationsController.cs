@@ -1,9 +1,11 @@
 ﻿using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.Notification;
 using Core.Application.Exceptions;
+using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Features.Notifications.Requests.Commands;
 using Core.Application.Features.Notifications.Requests.Queries;
 using Core.Application.Transform;
+using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,24 +27,9 @@ namespace UI.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult> Get([FromQuery] ListNotificationRequest<NotificationDto> request)
         {
-            var validator = new ListBaseRequestValidator<NotificationDto>();
-            var result = validator.Validate(request);
-
-            if (result.IsValid == false)
-            {
-                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
-                return BadRequest(errorMessages);
-            }
-
             var response = await _mediator.Send(request);
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+
+            return StatusCode(response.Code, response);
         }
 
         [HttpGet("Detail")]
@@ -50,14 +37,7 @@ namespace UI.WebApi.Controllers
         {
             var response = await _mediator.Send(request);
 
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+            return StatusCode(response.Code, response);
         }
 
         [HttpPost]
@@ -66,14 +46,7 @@ namespace UI.WebApi.Controllers
             var command = new CreateNotificationRequest { CreateNotificationDto = request };
             var response = await _mediator.Send(command);
 
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+            return StatusCode(response.Code, response);
         }
 
         [HttpPut]
@@ -81,14 +54,8 @@ namespace UI.WebApi.Controllers
         {
             var command = new UpdateNotificationRequest { UpdateNotificationDto = request };
             var response = await _mediator.Send(command);
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+
+            return StatusCode(response.Code, response);
         }
 
         [HttpDelete]
@@ -96,7 +63,7 @@ namespace UI.WebApi.Controllers
         {
             try
             {
-                var command = new DeleteNotificationRequest { Id = id };
+                var command = new DeleteBaseRequest<Notification> { Id = id };
                 var response = await _mediator.Send(command);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
