@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Major;
-using Core.Application.DTOs.Teacher;
 using Core.Application.Features.Majors.Requests.Queries;
 using Core.Application.Responses;
 using Core.Application.Transform;

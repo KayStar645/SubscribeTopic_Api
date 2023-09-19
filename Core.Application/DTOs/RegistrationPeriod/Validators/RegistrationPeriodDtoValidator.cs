@@ -2,6 +2,7 @@
 using Core.Application.Custom;
 using Core.Application.Transform;
 using FluentValidation;
+using FacultyEntity = Core.Domain.Entities.Faculty;
 
 namespace Core.Application.DTOs.RegistrationPeriod.Validators
 {
@@ -17,18 +18,28 @@ namespace Core.Application.DTOs.RegistrationPeriod.Validators
                 .GreaterThan(0).WithMessage(ValidatorTranform.GreaterThanOrEqualTo("phase", 1));
 
             RuleFor(x => x.Semester)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("semester"))
-                .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("name", 50));
+                .Must(semester => semester == CommonTranform.semester1 || semester == CommonTranform.semester2 || semester == CommonTranform.semester3)
+                .WithMessage(ValidatorTranform.Must("semester", CommonTranform.GetListSemester()));
+
+            RuleFor(x => x.Year)
+                .NotEmpty().WithMessage(ValidatorTranform.Required("year"));
 
             RuleFor(x => x.TimeStart)
                 .Must(timestart => string.IsNullOrEmpty(timestart.ToString()) || CustomValidator.IsAfterToday(timestart))
                 .WithMessage(ValidatorTranform.GreaterThanToday("timestart"));
 
+            //Chưa xử lý được timeEnd phải sau timeStart
             RuleFor(x => x.TimeEnd)
                 .Must(timeEnd => string.IsNullOrEmpty(timeEnd.ToString()) || CustomValidator.IsAfterToday(timeEnd))
                 .WithMessage(ValidatorTranform.GreaterThanToday("timestart"));
 
-            //Chưa xử lý được timeEnd phải sau timeStart
+            RuleFor(x => x.FacultyId)
+                .MustAsync(async (id, token) =>
+                {
+                    var existsFaculty = await _unitOfWork.Repository<FacultyEntity>().GetByIdAsync(id);
+                    return existsFaculty != null;
+                })
+                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "faculty"));
         }
     }
 }

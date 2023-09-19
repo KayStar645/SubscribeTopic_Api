@@ -28,6 +28,18 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Queries
             {
                 var query = _unitOfWork.Repository<RegistrationPeriod>().GetByIdInclude(request.Id);
 
+                if (request.IsAllDetail)
+                {
+                    query = _unitOfWork.Repository<RegistrationPeriod>().AddInclude(query, x => x.Faculty);
+                }
+                else
+                {
+                    if (request.IsGetFaculty == true)
+                    {
+                        query = _unitOfWork.Repository<RegistrationPeriod>().AddInclude(query, x => x.Faculty);
+                    }
+                }
+
                 var findPeriod = await query.SingleAsync();
 
                 if (findPeriod is null)

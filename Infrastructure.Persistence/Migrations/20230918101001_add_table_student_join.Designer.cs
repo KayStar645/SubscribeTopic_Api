@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubscribeTopicDbContext))]
-    partial class SubscribeTopicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230918101001_add_table_student_join")]
+    partial class add_table_student_join
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,8 +245,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<int?>("Phase")
                         .HasColumnType("int");
 
-                    b.Property<string>("Semester")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("Semester")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("TimeEnd")
                         .HasColumnType("date");

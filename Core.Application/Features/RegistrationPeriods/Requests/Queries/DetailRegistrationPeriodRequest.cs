@@ -7,5 +7,6 @@ namespace Core.Application.Features.RegistrationPeriods.Requests.Queries
 {
     public class DetailRegistrationPeriodRequest : DetailBaseRequest, IRequest<Result<RegistrationPeriodDto>>
     {
+        public bool IsGetFaculty { get; set; }
     }
 }

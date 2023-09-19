@@ -33,5 +33,8 @@ namespace Core.Domain.Entities
         
         [NotMapped]
         public ICollection<Notification> Notifications { get; } = new HashSet<Notification>();
+
+        [NotMapped]
+        public ICollection<RegistrationPeriod> RegistrationPeriods { get; } = new HashSet<RegistrationPeriod>();
     }
 }

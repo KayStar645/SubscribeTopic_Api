@@ -30,6 +30,18 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Queries
 
             var query = _unitOfWork.Repository<RegistrationPeriod>().GetAllInclude();
 
+            if (request.IsAllDetail)
+            {
+                query = _unitOfWork.Repository<RegistrationPeriod>().AddInclude(query, x => x.Faculty);
+            }
+            else
+            {
+                if (request.IsGetFaculty == true)
+                {
+                    query = _unitOfWork.Repository<RegistrationPeriod>().AddInclude(query, x => x.Faculty);
+                }
+            }
+
             query = _sieveProcessor.Apply(sieve, query);
 
             var periods = await query.ToListAsync();

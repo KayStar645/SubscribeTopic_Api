@@ -31,5 +31,8 @@ namespace Core.Domain.Entities
 
         [ForeignKey("MajorId")]
         public Major? Major { get; set; }
+
+        [NotMapped]
+        public ICollection<StudentJoin> StudentJoins = new HashSet<StudentJoin>();
     }
 }

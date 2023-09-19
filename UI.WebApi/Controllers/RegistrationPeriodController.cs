@@ -1,15 +1,13 @@
 ﻿using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.RegistrationPeriod;
-using Core.Application.DTOs.Student;
 using Core.Application.Exceptions;
+using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Features.RegistrationPeriods.Requests.Commands;
 using Core.Application.Features.RegistrationPeriods.Requests.Queries;
-using Core.Application.Features.Students.Requests.Commands;
-using Core.Application.Features.Students.Requests.Queries;
 using Core.Application.Transform;
+using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -101,7 +99,7 @@ namespace UI.WebApi.Controllers
         {
             try
             {
-                var command = new DeleteRegistrationPeriodRequest { Id = id };
+                var command = new DeleteBaseRequest<RegistrationPeriod> { Id = id };
                 var response = await _mediator.Send(command);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }

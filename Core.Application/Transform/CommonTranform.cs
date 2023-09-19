@@ -44,5 +44,18 @@ namespace Core.Application.Transform
                 professor
             };
         }
+
+        public static string semester1 = "Học kỳ 1";
+        public static string semester2 = "Học kỳ 2";
+        public static string semester3 = "Học kỳ 3";
+        public static string[] GetListSemester()
+        {
+            return new string[]
+            {
+                semester1,
+                semester2,
+                semester3
+            };
+        }
     }
 }

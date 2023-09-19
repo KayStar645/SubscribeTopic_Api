@@ -1,7 +1,4 @@
-﻿using Core.Application.DTOs.Faculty;
-using Core.Application.Features.Base.Requests.Queries;
-using Core.Application.Responses;
-using MediatR;
+﻿using Core.Application.Features.Base.Requests.Queries;
 
 namespace Core.Application.Features.Faculties.Requests.Queries
 {
