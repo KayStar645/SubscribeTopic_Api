@@ -1,5 +1,4 @@
-﻿using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Major;
+﻿using Core.Application.DTOs.Major;
 using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Features.Majors.Requests.Commands;

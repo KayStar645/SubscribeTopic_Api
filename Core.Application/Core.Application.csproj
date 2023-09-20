@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Base\Handlers\Commands\" />
     <Folder Include="Features\Base\Handlers\Queries\" />
   </ItemGroup>
 

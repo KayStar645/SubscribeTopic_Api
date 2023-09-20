@@ -19,8 +19,5 @@ namespace Core.Application.Contracts.Persistence
         IQueryable<T> FindByCondition(Expression<Func<T, bool>> predicate);
         IQueryable<T> GetByIdInclude(int? id, params Expression<Func<T, object>>[] includeProperties);
         IQueryable<T> AddInclude(IQueryable<T> query, Expression<Func<T, object>> includeProperties = null);
-        
-        
-        
     }
 }

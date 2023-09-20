@@ -214,6 +214,60 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("Notifications");
                 });
 
+            modelBuilder.Entity("Core.Domain.Entities.RegistrationPeriod", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime");
+
+                    b.Property<int?>("FacultyId")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<int?>("Phase")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SchoolYear")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Semester")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("TimeEnd")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("TimeStart")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FacultyId");
+
+                    b.HasIndex("SchoolYear", "Semester", "FacultyId")
+                        .HasDatabaseName("IX_SchoolYear_Semester_FacultyId");
+
+                    b.HasIndex("SchoolYear", "Semester", "Phase", "FacultyId")
+                        .HasDatabaseName("IX_SchoolYear_Semester_Phase_FacultyId");
+
+                    b.ToTable("RegistrationPeriods");
+                });
+
             modelBuilder.Entity("Core.Domain.Entities.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -266,6 +320,49 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("MajorId");
 
                     b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("Core.Domain.Entities.StudentJoin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<int?>("RegistrationPeriodId")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("Score")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<int?>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegistrationPeriodId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("StudentJoins");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Teacher", b =>
@@ -370,6 +467,15 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Faculty");
                 });
 
+            modelBuilder.Entity("Core.Domain.Entities.RegistrationPeriod", b =>
+                {
+                    b.HasOne("Core.Domain.Entities.Faculty", "Faculty")
+                        .WithMany()
+                        .HasForeignKey("FacultyId");
+
+                    b.Navigation("Faculty");
+                });
+
             modelBuilder.Entity("Core.Domain.Entities.Student", b =>
                 {
                     b.HasOne("Core.Domain.Entities.Major", "Major")
@@ -377,6 +483,21 @@ namespace Infrastructure.Persistence.Migrations
                         .HasForeignKey("MajorId");
 
                     b.Navigation("Major");
+                });
+
+            modelBuilder.Entity("Core.Domain.Entities.StudentJoin", b =>
+                {
+                    b.HasOne("Core.Domain.Entities.RegistrationPeriod", "RegistrationPeriod")
+                        .WithMany()
+                        .HasForeignKey("RegistrationPeriodId");
+
+                    b.HasOne("Core.Domain.Entities.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId");
+
+                    b.Navigation("RegistrationPeriod");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Teacher", b =>

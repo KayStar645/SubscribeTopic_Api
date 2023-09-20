@@ -34,6 +34,6 @@ namespace Core.Domain.Entities
 
         // Danh sách giảng viên trong bộ môn
         [NotMapped]
-        public ICollection<Teacher> Teachers { get; } = new List<Teacher>();
+        public ICollection<Teacher> Teachers { get; } = new HashSet<Teacher>();
     }
 }

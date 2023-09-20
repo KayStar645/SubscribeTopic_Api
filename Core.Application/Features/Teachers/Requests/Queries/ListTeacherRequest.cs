@@ -1,5 +1,4 @@
 ﻿using Core.Application.Features.Base.Requests.Queries;
-using Core.Domain.Entities;
 
 namespace Core.Application.Features.Teachers.Requests.Queries
 {

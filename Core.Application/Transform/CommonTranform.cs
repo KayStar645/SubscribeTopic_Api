@@ -3,6 +3,7 @@ namespace Core.Application.Transform
 {
     public class CommonTranform
     {
+        // Giới tính
         public static string male = "Nam";
         public static string female = "Nữ";
         public static string other = "Khác";
@@ -17,6 +18,7 @@ namespace Core.Application.Transform
             };
         }
 
+        // Học hàm
         public static string bachelor = "Cử nhân";
         public static string engineer = "Kỹ sư";
         public static string postgraduate = "Cao học";
@@ -43,6 +45,32 @@ namespace Core.Application.Transform
                 associateProfessor,
                 professor
             };
+        }
+
+        public static string semester1 = "Học kỳ 1";
+        public static string semester2 = "Học kỳ 2";
+        public static string semester3 = "Học kỳ 3";
+        public static string[] GetListSemester()
+        {
+            return new string[]
+            {
+                semester1,
+                semester2,
+                semester3
+            };
+        }
+
+        public static string[] GetListSchoolYear()
+        {
+            int currentYear = DateTime.Now.Year;
+            string[] result = new string[6];
+            int index = 0;
+            for(int year = currentYear - 3; year < currentYear + 3; year++, index++)
+            {
+                result[index] = (year) + "-" + (year + 1);
+            }
+
+            return result;
         }
     }
 }
