@@ -8,22 +8,14 @@ namespace Core.Domain.Entities
     {
         [Sieve(CanFilter = true, CanSort = true)]
         public int? StudentId { get; set; }
-        [Sieve(CanFilter = true, CanSort = true)]
-
         [ForeignKey("StudentId")]
         public Student? Student { get; set;}
 
-        [Sieve(CanFilter = true, CanSort = true)]
-        public int? Phase { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
-        public int? Semester { get; set; }
-
-        [Sieve(CanFilter = true, CanSort = true)]
-        public string? Year { get; set; }
-
+        public int? RegistrationPeriodId { get; set; }
         [ForeignKey("PeriodId")]
-        public RegistrationPeriod? Period { get; set; }
+        public RegistrationPeriod? RegistrationPeriod { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
         public double? Score { get; set; }
