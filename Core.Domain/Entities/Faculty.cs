@@ -27,7 +27,7 @@ namespace Core.Domain.Entities
 
         // Danh sách bộ môn và chuyên ngành của khoa
         [NotMapped]
-        public ICollection<Department> Departments { get; } = new List<Department>();
+        public ICollection<Department> Departments { get; } = new HashSet<Department>();
         [NotMapped]
         public ICollection<Major> Majors { get; } = new HashSet<Major>();
         

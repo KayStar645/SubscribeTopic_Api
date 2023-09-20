@@ -25,7 +25,8 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Commands
 
         public async Task<Result<RegistrationPeriodDto>> Handle(UpdateRegistrationPeriodRequest request, CancellationToken cancellationToken)
         {
-            var validator = new UpdateRegistrationPeriodDtoValidator(_unitOfWork);
+            var validator = new UpdateRegistrationPeriodDtoValidator(_unitOfWork,
+                request.UpdateRegistrationPeriodDto.TimeStart ?? DateTime.Now);
             var validationResult = await validator.ValidateAsync(request.UpdateRegistrationPeriodDto);
 
             if (validationResult.IsValid == false)

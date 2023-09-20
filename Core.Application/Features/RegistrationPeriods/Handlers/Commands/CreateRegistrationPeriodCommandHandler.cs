@@ -3,6 +3,8 @@ using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.RegistrationPeriod;
 using Core.Application.DTOs.RegistrationPeriod.Validators;
 using Core.Application.Features.RegistrationPeriods.Requests.Commands;
+using Core.Application.Features.RegistrationPeriods.Requests.Queries;
+using Core.Application.Interfaces.Repositories;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
@@ -13,17 +15,21 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Commands
     public class CreateRegistrationPeriodCommandHandler : IRequestHandler<CreateRegistrationPeriodRequest, Result<RegistrationPeriodDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IRegistrationPeriodRepository _registrationPeriodRepo;
         private readonly IMapper _mapper;
 
-        public CreateRegistrationPeriodCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateRegistrationPeriodCommandHandler(IUnitOfWork unitOfWork, IMapper mapper,
+            IRegistrationPeriodRepository registrationPeriodRepository)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _registrationPeriodRepo = registrationPeriodRepository;
         }
 
         public async Task<Result<RegistrationPeriodDto>> Handle(CreateRegistrationPeriodRequest request, CancellationToken cancellationToken)
         {
-            var validator = new CreateRegistrationPeriodDtoValidator(_unitOfWork);
+            var validator = new CreateRegistrationPeriodDtoValidator(_unitOfWork,
+                request.CreateRegistrationPeriodDto.TimeStart ?? DateTime.Now);
             var validationResult = await validator.ValidateAsync(request.CreateRegistrationPeriodDto);
 
             if (validationResult.IsValid == false)
@@ -35,6 +41,23 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Commands
             try
             {
                 var period = _mapper.Map<RegistrationPeriod>(request.CreateRegistrationPeriodDto);
+
+                var curent = await _registrationPeriodRepo.GetCurrentRegistrationPeriodAsync(
+                    new CurrentRegistrationPeriodRequest() {
+                        SchoolYear = period.SchoolYear,
+                        Semester = period.Semester,
+                        FacultyId = period.FacultyId,
+                    });
+                period.Phase = curent == null ? 1 : curent.Phase + 1;
+                
+                if(period.TimeStart.Value.Month >= 8)
+                {
+                    period.SchoolYear = (period.TimeStart.Value.Year) + "-" + (period.TimeStart.Value.Year + 1);
+                }    
+                else
+                {
+                    period.SchoolYear = (period.TimeStart.Value.Year - 1) + "-" + (period.TimeStart.Value.Year);
+                }    
 
                 var newRegistrationPeriod = await _unitOfWork.Repository<RegistrationPeriod>()
                                                              .AddAsync(period);

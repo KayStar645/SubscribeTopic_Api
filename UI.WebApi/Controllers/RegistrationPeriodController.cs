@@ -28,24 +28,9 @@ namespace UI.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<RegistrationPeriodDto>>> Get([FromQuery] ListRegistrationPeriodRequest<RegistrationPeriodDto> request)
         {
-            var validator = new ListBaseRequestValidator<RegistrationPeriodDto>();
-            var result = validator.Validate(request);
-
-            if (result.IsValid == false)
-            {
-                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
-                return BadRequest(errorMessages);
-            }
-
             var response = await _mediator.Send(request);
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+
+            return StatusCode(response.Code, response);
         }
 
         [HttpGet("Detail")]
@@ -53,14 +38,7 @@ namespace UI.WebApi.Controllers
         {
             var response = await _mediator.Send(request);
 
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+            return StatusCode(response.Code, response);
         }
 
         [HttpPost]
@@ -69,14 +47,7 @@ namespace UI.WebApi.Controllers
             var command = new CreateRegistrationPeriodRequest { CreateRegistrationPeriodDto = periodRequest };
             var response = await _mediator.Send(command);
 
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+            return StatusCode(response.Code, response);
         }
 
         [HttpPut]
@@ -84,14 +55,8 @@ namespace UI.WebApi.Controllers
         {
             var command = new UpdateRegistrationPeriodRequest { UpdateRegistrationPeriodDto = periodRequest };
             var response = await _mediator.Send(command);
-            if (response.Succeeded)
-            {
-                return StatusCode(response.Code, response);
-            }
-            else
-            {
-                return StatusCode(response.Code, response);
-            }
+
+            return StatusCode(response.Code, response);
         }
 
         [HttpDelete]

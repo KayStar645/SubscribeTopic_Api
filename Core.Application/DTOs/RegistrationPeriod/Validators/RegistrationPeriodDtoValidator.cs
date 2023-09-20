@@ -9,35 +9,27 @@ namespace Core.Application.DTOs.RegistrationPeriod.Validators
     public class RegistrationPeriodDtoValidator : AbstractValidator<IRegistrationPeriodDto>
     {
         private readonly IUnitOfWork _unitOfWork;
-        public RegistrationPeriodDtoValidator(IUnitOfWork unitOfWork)
+        public RegistrationPeriodDtoValidator(IUnitOfWork unitOfWork, DateTime start)
         {
             _unitOfWork = unitOfWork;
 
-            RuleFor(x => x.Phase)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("phase"))
-                .GreaterThan(0).WithMessage(ValidatorTranform.GreaterThanOrEqualTo("phase", 1));
-
             RuleFor(x => x.Semester)
-                .Must(semester => semester == CommonTranform.semester1 || semester == CommonTranform.semester2 || semester == CommonTranform.semester3)
+                .Must(semester => CommonTranform.GetListSemester().Any(value => value == semester))
                 .WithMessage(ValidatorTranform.Must("semester", CommonTranform.GetListSemester()));
 
-            RuleFor(x => x.Year)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("year"));
-
             RuleFor(x => x.TimeStart)
-                .Must(timestart => string.IsNullOrEmpty(timestart.ToString()) || CustomValidator.IsAfterToday(timestart))
-                .WithMessage(ValidatorTranform.GreaterThanToday("timestart"));
+                .Must(timeStart => CustomValidator.IsEqualOrAfterDay(timeStart, DateTime.Now))
+                .WithMessage(ValidatorTranform.GreaterEqualOrThanDay("timestart", DateTime.Now));
 
-            //Chưa xử lý được timeEnd phải sau timeStart
             RuleFor(x => x.TimeEnd)
-                .Must(timeEnd => string.IsNullOrEmpty(timeEnd.ToString()) || CustomValidator.IsAfterToday(timeEnd))
-                .WithMessage(ValidatorTranform.GreaterThanToday("timestart"));
+                .Must(timeEnd => CustomValidator.IsAfterDay(timeEnd, start))
+                .WithMessage(ValidatorTranform.GreaterThanDay("timeEnd", start));
 
             RuleFor(x => x.FacultyId)
                 .MustAsync(async (id, token) =>
                 {
                     var existsFaculty = await _unitOfWork.Repository<FacultyEntity>().GetByIdAsync(id);
-                    return existsFaculty != null;
+                    return existsFaculty == null;
                 })
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "faculty"));
         }

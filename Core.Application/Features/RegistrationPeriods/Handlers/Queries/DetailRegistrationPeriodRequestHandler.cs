@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.RegistrationPeriod;
 using Core.Application.Features.RegistrationPeriods.Requests.Queries;
+using Core.Application.Interfaces.Repositories;
 using Core.Application.Responses;
 using Core.Application.Transform;
-using Core.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -14,29 +13,29 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Queries
     public class DetailRegistrationPeriodRequestHandler : IRequestHandler<DetailRegistrationPeriodRequest, Result<RegistrationPeriodDto>>
     {
         private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRegistrationPeriodRepository _registrationPeriodRepo;
 
-        public DetailRegistrationPeriodRequestHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public DetailRegistrationPeriodRequestHandler(IRegistrationPeriodRepository registrationPeriodRepository, IMapper mapper)
         {
             _mapper = mapper;
-            _unitOfWork = unitOfWork;
+            _registrationPeriodRepo = registrationPeriodRepository;
         }
 
         public async Task<Result<RegistrationPeriodDto>> Handle(DetailRegistrationPeriodRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var query = _unitOfWork.Repository<RegistrationPeriod>().GetByIdInclude(request.Id);
+                var query = _registrationPeriodRepo.GetByIdInclude(request.Id);
 
                 if (request.IsAllDetail)
                 {
-                    query = _unitOfWork.Repository<RegistrationPeriod>().AddInclude(query, x => x.Faculty);
+                    query = _registrationPeriodRepo.AddInclude(query, x => x.Faculty);
                 }
                 else
                 {
                     if (request.IsGetFaculty == true)
                     {
-                        query = _unitOfWork.Repository<RegistrationPeriod>().AddInclude(query, x => x.Faculty);
+                        query = _registrationPeriodRepo.AddInclude(query, x => x.Faculty);
                     }
                 }
 

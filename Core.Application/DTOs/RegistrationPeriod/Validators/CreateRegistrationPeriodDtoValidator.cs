@@ -7,11 +7,11 @@ namespace Core.Application.DTOs.RegistrationPeriod.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateRegistrationPeriodDtoValidator(IUnitOfWork unitOfWork)
+        public CreateRegistrationPeriodDtoValidator(IUnitOfWork unitOfWork, DateTime start)
         {
             _unitOfWork = unitOfWork;
 
-            Include(new RegistrationPeriodDtoValidator(_unitOfWork));
+            Include(new RegistrationPeriodDtoValidator(_unitOfWork, start));
         }
     }
 }
