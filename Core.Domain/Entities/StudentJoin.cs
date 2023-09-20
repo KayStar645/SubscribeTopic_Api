@@ -14,13 +14,11 @@ namespace Core.Domain.Entities
 
         [Sieve(CanFilter = true, CanSort = true)]
         public int? RegistrationPeriodId { get; set; }
-        [ForeignKey("PeriodId")]
+        [ForeignKey("RegistrationPeriodId")]
         public RegistrationPeriod? RegistrationPeriod { get; set; }
+
 
         [Sieve(CanFilter = true, CanSort = true)]
         public double? Score { get; set; }
-
-        [Sieve(CanFilter = true, CanSort = true)]
-        public bool? isLeader { get; set; }
     }
 }

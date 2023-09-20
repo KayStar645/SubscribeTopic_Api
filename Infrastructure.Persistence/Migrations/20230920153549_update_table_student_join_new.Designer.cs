@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubscribeTopicDbContext))]
-    partial class SubscribeTopicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230920153549_update_table_student_join_new")]
+    partial class update_table_student_join_new
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -345,20 +347,21 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime");
 
+                    b.Property<int?>("PeriodId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("RegistrationPeriodId")
                         .HasColumnType("int");
 
                     b.Property<double?>("Score")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(0.0);
+                        .HasColumnType("float");
 
                     b.Property<int?>("StudentId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RegistrationPeriodId");
+                    b.HasIndex("PeriodId");
 
                     b.HasIndex("StudentId");
 
@@ -489,7 +492,7 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("Core.Domain.Entities.RegistrationPeriod", "RegistrationPeriod")
                         .WithMany()
-                        .HasForeignKey("RegistrationPeriodId");
+                        .HasForeignKey("PeriodId");
 
                     b.HasOne("Core.Domain.Entities.Student", "Student")
                         .WithMany()

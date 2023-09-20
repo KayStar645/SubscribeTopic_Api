@@ -5,6 +5,7 @@ using Core.Application.DTOs.Major;
 using Core.Application.DTOs.Notification;
 using Core.Application.DTOs.RegistrationPeriod;
 using Core.Application.DTOs.Student;
+using Core.Application.DTOs.StudentJoin;
 using Core.Application.DTOs.Teacher;
 using Core.Application.Features.Base.Requests.Queries;
 using Core.Domain.Entities;
@@ -54,6 +55,11 @@ namespace Core.Application.Profiles
             CreateMap<RegistrationPeriod, RegistrationPeriodDto>().ReverseMap();
             CreateMap<RegistrationPeriod, CreateRegistrationPeriodDto>().ReverseMap();
             CreateMap<RegistrationPeriod, UpdateRegistrationPeriodDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<StudentJoinDto>>().ReverseMap();
+            CreateMap<StudentJoin, StudentJoinDto>().ReverseMap();
+            CreateMap<StudentJoin, CreateStudentJoinDto>().ReverseMap();
+            CreateMap<StudentJoin, UpdateStudentJoinDto>().ReverseMap();
         }
 
         public class StringToListTypeConverter : ITypeConverter<string, List<string>>
