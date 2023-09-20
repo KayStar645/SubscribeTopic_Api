@@ -24,7 +24,7 @@ namespace Core.Application.Features.Notifications.Handlers.Commands
         public async Task<Result<NotificationDto>> Handle(CreateNotificationRequest request, CancellationToken cancellationToken)
         {
             var validator = new CreateNotificationDtoValidator(_unitOfWork);
-            var validationResult = await validator.ValidateAsync(request.CreateNotificationDto);
+            var validationResult = await validator.ValidateAsync(request.createNotificationDto);
 
             if (validationResult.IsValid == false)
             {
@@ -34,7 +34,7 @@ namespace Core.Application.Features.Notifications.Handlers.Commands
 
             try
             {
-                var notification = _mapper.Map<Notification>(request.CreateNotificationDto);
+                var notification = _mapper.Map<Notification>(request.createNotificationDto);
 
                 var newNotification = await _unitOfWork.Repository<Notification>().AddAsync(notification);
                 await _unitOfWork.Save(cancellationToken);

@@ -4,6 +4,7 @@ using Core.Application.Transform;
 using FluentValidation;
 using FacultyEntity = Core.Domain.Entities.Faculty;
 using TeacherEntity = Core.Domain.Entities.Teacher;
+using DepartmentEntity = Core.Domain.Entities.Department;
 
 namespace Core.Application.DTOs.Department.Validators
 {
@@ -32,10 +33,18 @@ namespace Core.Application.DTOs.Department.Validators
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("headDepartment_TeacherId", "teachers"));
 
             RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"));
+                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"))
+                .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
+                .MustAsync(async (internalCode, token) =>
+                {
+                    var department = await _unitOfWork.Repository<DepartmentEntity>()
+                        .FirstOrDefaultAsync(x => x.InternalCode == internalCode);
+                    return department != null;
+                }).WithMessage(ValidatorTranform.Exists("internalCode"));
 
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("name"));
+                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
+                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));
 
             RuleFor(x => x.PhoneNumber)
                 .Must(phoneNumber => string.IsNullOrEmpty(phoneNumber) || phoneNumber.Length == 10)

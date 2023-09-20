@@ -24,7 +24,7 @@ namespace Core.Application.Features.Departments.Handlers.Commands
         public async Task<Result<DepartmentDto>> Handle(CreateDepartmentRequest request, CancellationToken cancellationToken)
         {
             var validator = new CreateDepartmentDtoValidator(_unitOfWork);
-            var validatorResult = await validator.ValidateAsync(request.CreateDepartmentDto);
+            var validatorResult = await validator.ValidateAsync(request.createDepartmentDto);
 
             if(validatorResult.IsValid == false)
             {
@@ -34,7 +34,7 @@ namespace Core.Application.Features.Departments.Handlers.Commands
 
             try
             {
-                var department = _mapper.Map<Department>(request.CreateDepartmentDto);
+                var department = _mapper.Map<Department>(request.createDepartmentDto);
 
                 var newDepartment = await _unitOfWork.Repository<Department>().AddAsync(department);
                 await _unitOfWork.Save(cancellationToken);

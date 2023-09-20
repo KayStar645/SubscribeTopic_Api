@@ -26,7 +26,7 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
         public async Task<Result<TeacherDto>> Handle(UpdateTeacherRequest request, CancellationToken cancellationToken)
         {
             var validator = new UpdateTeacherDtoValidator(_unitOfWork);
-            var validationResult = await validator.ValidateAsync(request.UpdateTeacherDto);
+            var validationResult = await validator.ValidateAsync(request.updateTeacherDto);
 
             if (validationResult.IsValid == false)
             {
@@ -36,17 +36,17 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
 
             try
             {
-                var findTeacher = await _unitOfWork.Repository<Teacher>().GetByIdAsync(request.UpdateTeacherDto.Id);
+                var findTeacher = await _unitOfWork.Repository<Teacher>().GetByIdAsync(request.updateTeacherDto.Id);
 
                 if (findTeacher is null)
                 {
                     return Result<TeacherDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.UpdateTeacherDto.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.updateTeacherDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }
 
-                findTeacher.CopyPropertiesFrom(request.UpdateTeacherDto);
+                findTeacher.CopyPropertiesFrom(request.updateTeacherDto);
 
                 var newTeacher = await _unitOfWork.Repository<Teacher>().UpdateAsync(findTeacher);
                 await _unitOfWork.Save(cancellationToken);

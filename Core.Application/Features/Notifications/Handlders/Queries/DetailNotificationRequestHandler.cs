@@ -34,7 +34,7 @@ namespace Core.Application.Features.Notifications.Handlers.Queries
                 }
                 else
                 {
-                    if (request.IsGetFaculty == true)
+                    if (request.isGetFaculty == true)
                     {
                         query = _unitOfWork.Repository<Notification>().AddInclude(query, x => x.Faculty);
                     }

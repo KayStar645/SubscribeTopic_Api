@@ -42,9 +42,9 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
 
             var query = _unitOfWork.Repository<Teacher>().GetAllInclude();
 
-            if(string.IsNullOrEmpty(request.Type) == false)
+            if(string.IsNullOrEmpty(request.type) == false)
             {
-                query = query.Where(x => x.Type == request.Type);
+                query = query.Where(x => x.Type == request.type);
             }    
 
             if (request.IsAllDetail)
@@ -53,7 +53,7 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
             }
             else
             {
-                if (request.IsGetDepartment == true)
+                if (request.isGetDepartment == true)
                 {
                     query = _unitOfWork.Repository<Teacher>().AddInclude(query, x => x.Department);
                 }

@@ -46,13 +46,18 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
             if (request.IsAllDetail)
             {
                 query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Dean_Teacher);
+                query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Departments);
             }
             else
             {
-                if(request.IsGetDean == true)
+                if(request.isGetDean == true)
                 {
                     query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Dean_Teacher);
                 }    
+                if(request.isGetDepartment == true)
+                {
+                    query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Departments);
+                }
             }
 
             query = _sieveProcessor.Apply(sieve, query);

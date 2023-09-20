@@ -24,7 +24,7 @@ namespace Core.Application.DTOs.Teacher.Validators
 
             RuleFor(x => x.InternalCode)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"))
-                .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("name", 50))
+                .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
                 .MustAsync(async (internalCode, token) =>
                 {
                     var teacher = await _unitOfWork.Repository<TeacherEntity>()

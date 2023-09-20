@@ -7,6 +7,6 @@ namespace Core.Application.Features.Notifications.Requests.Queries
 {
     public class DetailNotificationRequest : DetailBaseRequest, IRequest<Result<NotificationDto>>
     {
-        public bool IsGetFaculty { get; set; }
+        public bool isGetFaculty { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace Core.Application.Features.Majors.Handlers.Commands
         public async Task<Result<MajorDto>> Handle(UpdateMajorRequest request, CancellationToken cancellationToken)
         {
             var validator = new UpdateMajorDtoValidator(_unitOfWork);
-            var validationResult = await validator.ValidateAsync(request.UpdateMajorDto);
+            var validationResult = await validator.ValidateAsync(request.updateMajorDto);
 
             if (validationResult.IsValid == false)
             {
@@ -35,17 +35,17 @@ namespace Core.Application.Features.Majors.Handlers.Commands
 
             try
             {
-                var findMajor = await _unitOfWork.Repository<Major>().GetByIdAsync(request.UpdateMajorDto.Id);
+                var findMajor = await _unitOfWork.Repository<Major>().GetByIdAsync(request.updateMajorDto.Id);
 
                 if (findMajor is null)
                 {
                     return Result<MajorDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.UpdateMajorDto.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.updateMajorDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }
 
-                findMajor.CopyPropertiesFrom(request.UpdateMajorDto);
+                findMajor.CopyPropertiesFrom(request.updateMajorDto);
 
                 var newMajor = await _unitOfWork.Repository<Major>().UpdateAsync(findMajor);
                 await _unitOfWork.Save(cancellationToken);

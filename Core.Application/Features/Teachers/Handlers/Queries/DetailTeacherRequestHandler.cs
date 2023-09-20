@@ -27,7 +27,7 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
             try
             {
                 var query = _unitOfWork.Repository<Teacher>().GetByIdInclude(request.Id)
-                                       .Where(x => x.Type == request.Type);
+                                       .Where(x => x.Type == request.type);
 
                 if (request.IsAllDetail)
                 {
@@ -35,7 +35,7 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
                 }
                 else
                 {
-                    if (request.IsGetDepartment == true)
+                    if (request.isGetDepartment == true)
                     {
                         query = _unitOfWork.Repository<Teacher>().AddInclude(query, x => x.Department);
                     }

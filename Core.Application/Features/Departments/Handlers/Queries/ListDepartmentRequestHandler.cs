@@ -48,12 +48,12 @@ namespace Core.Application.Features.Departments.Handlers.Queries
             }
             else
             {
-                if (request.IsGetFaculty == true)
+                if (request.isGetFaculty == true)
                 {
                     query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.Faculty);
                 }
 
-                if (request.IsGetHeadDepartment == true)
+                if (request.isGetHeadDepartment == true)
                 {
                     query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.HeadDepartment_Teacher);
                 }

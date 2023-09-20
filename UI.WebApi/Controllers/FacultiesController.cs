@@ -45,7 +45,7 @@ namespace UI.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<FacultyDto>> Post([FromBody] CreateFacultyDto FacultyRequest)
         {
-            var command = new CreateFacultyRequest { CreateFacultyDto = FacultyRequest };
+            var command = new CreateFacultyRequest { createFacultyDto = FacultyRequest };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
@@ -54,7 +54,7 @@ namespace UI.WebApi.Controllers
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateFacultyDto FacultyRequest)
         {
-            var command = new UpdateFacultyRequest { UpdateFacultyDto = FacultyRequest };
+            var command = new UpdateFacultyRequest { updateFacultyDto = FacultyRequest };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);

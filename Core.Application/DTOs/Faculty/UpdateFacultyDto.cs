@@ -4,7 +4,7 @@ namespace Core.Application.DTOs.Faculty
 {
     public class UpdateFacultyDto : BaseDto, IFacultyDto
     {
-        public string? InternalCode { get; set; }
+        public string InternalCode { get; set; }
         public string? Name { get; set; }
         public string? Address { get; set; }
         public string? PhoneNumber { get; set; }

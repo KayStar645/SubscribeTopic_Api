@@ -6,6 +6,6 @@ namespace Core.Application.Features.Teachers.Requests.Commands
 {
     public class CreateTeacherRequest : IRequest<Result<TeacherDto>>
     {
-        public CreateTeacherDto? CreateTeacherDto { get; set; }
+        public CreateTeacherDto? createTeacherDto { get; set; }
     }
 }

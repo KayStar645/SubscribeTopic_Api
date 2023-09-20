@@ -48,7 +48,7 @@ namespace Core.Application.Features.Majors.Handlers.Queries
             }
             else
             {
-                if (request.IsGetFaculty == true)
+                if (request.isGetFaculty == true)
                 {
                     query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Faculty);
                 }

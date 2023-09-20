@@ -24,7 +24,7 @@ namespace Core.Application.Features.Students.Handlers.Commands
         public async Task<Result<StudentDto>> Handle(CreateStudentRequest request, CancellationToken cancellationToken)
         {
             var validator = new CreateStudentDtoValidator(_unitOfWork);
-            var validationResult = await validator.ValidateAsync(request.CreateStudentDto);
+            var validationResult = await validator.ValidateAsync(request.createStudentDto);
 
             if (validationResult.IsValid == false)
             {
@@ -34,7 +34,7 @@ namespace Core.Application.Features.Students.Handlers.Commands
 
             try
             {
-                var student = _mapper.Map<Student>(request.CreateStudentDto);
+                var student = _mapper.Map<Student>(request.createStudentDto);
 
                 var newStudent = await _unitOfWork.Repository<Student>().AddAsync(student);
                 await _unitOfWork.Save(cancellationToken);

@@ -4,6 +4,6 @@ namespace Core.Application.Features.Notifications.Requests.Queries
 {
     public class ListNotificationRequest<T> : ListBaseRequest<T>
     {
-        public bool IsGetFaculty { get; set; }
+        public bool isGetFaculty { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace Core.Application.Features.Departments.Handlers.Commands
         public async Task<Result<DepartmentDto>> Handle(UpdateDepartmentRequest request, CancellationToken cancellationToken)
         {
             var validator = new UpdateDepartmentDtoValidator(_unitOfWork);
-            var errorValidator = await validator.ValidateAsync(request.UpdateDepartmentDto);
+            var errorValidator = await validator.ValidateAsync(request.updateDepartmentDto);
 
             if(errorValidator.IsValid == false) 
             {
@@ -37,17 +37,17 @@ namespace Core.Application.Features.Departments.Handlers.Commands
 
             try
             {
-                var findDepartment = await _unitOfWork.Repository<Department>().GetByIdAsync(request.UpdateDepartmentDto.Id);
+                var findDepartment = await _unitOfWork.Repository<Department>().GetByIdAsync(request.updateDepartmentDto.Id);
 
                 if (findDepartment is null)
                 {
                     return Result<DepartmentDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.UpdateDepartmentDto.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.updateDepartmentDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }
 
-                findDepartment.CopyPropertiesFrom(request.UpdateDepartmentDto);
+                findDepartment.CopyPropertiesFrom(request.updateDepartmentDto);
 
                 var newDepartment = await _unitOfWork.Repository<Department>().UpdateAsync(findDepartment);
                 await _unitOfWork.Save(cancellationToken);
