@@ -22,5 +22,10 @@ namespace Core.Application.Transform
         {
             return $"Thông tin xác thực của người dùng ${userName} không hợp lệ!";
         }
+
+        public static string ForbiddenException()
+        {
+            return "Bạn không được phép truy cập tài nguyên này!";
+        }
     }
 }
