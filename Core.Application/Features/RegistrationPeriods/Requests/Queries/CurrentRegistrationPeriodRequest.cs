@@ -2,8 +2,8 @@
 {
     public class CurrentRegistrationPeriodRequest
     {
-        public string? SchoolYear { get; set; }
-        public string? Semester { get; set; }
-        public int? FacultyId { get; set; }
+        public string? schoolYear { get; set; }
+        public string? semester { get; set; }
+        public int? facultyId { get; set; }
     }
 }

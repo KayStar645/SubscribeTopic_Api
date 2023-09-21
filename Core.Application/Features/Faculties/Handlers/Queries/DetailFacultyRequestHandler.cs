@@ -26,15 +26,15 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
         {
             try
             {
-                var query = _unitOfWork.Repository<Faculty>().GetByIdInclude(request.Id);
+                var query = _unitOfWork.Repository<Faculty>().GetByIdInclude(request.id);
 
-                if (request.IsAllDetail)
+                if (request.isAllDetail)
                 {
                     query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Dean_Teacher);
                 }
                 else
                 {
-                    if (request.IsGetDean == true)
+                    if (request.isGetDean == true)
                     {
                         query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Dean_Teacher);
                     }
@@ -45,7 +45,7 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
                 if (findFaculty is null)
                 {
                     return Result<FacultyDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

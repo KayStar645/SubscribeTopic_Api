@@ -5,10 +5,10 @@ namespace Core.Application.Features.Base.Requests.Queries
 {
     public class ListBaseRequest<T> : IRequest<PaginatedResult<List<T>>>
     {
-        public string? Filters { get; set; }
-        public string? Sorts { get; set; }
-        public int? Page { get; set; } = 1;
-        public int? PageSize { get; set; } = 10;
-        public bool IsAllDetail { get; set; }
+        public string? filters { get; set; }
+        public string? sorts { get; set; }
+        public int? page { get; set; } = 1;
+        public int? pageSize { get; set; } = 10;
+        public bool isAllDetail { get; set; }
     }
 }

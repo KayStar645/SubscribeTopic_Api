@@ -8,7 +8,7 @@ namespace Core.Application.Features.Teachers.Requests.Queries
 {
     public class DetailTeacherRequest : DetailBaseRequest, IRequest<Result<TeacherDto>>
     {
-        public bool IsGetDepartment { get; set; }
-        public string? Type { get; set; } = Teacher.TYPE_TEACHER_LECTURERS;
+        public bool isGetDepartment { get; set; }
+        public string? type { get; set; } = Teacher.TYPE_TEACHER_LECTURERS;
     }
 }

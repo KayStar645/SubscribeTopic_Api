@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Faculty.Validators;
 using Core.Application.DTOs.Faculty;
-using Core.Application.Features.Faculties.Requests.Commands;
+using Core.Application.DTOs.Faculty.Validators;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;

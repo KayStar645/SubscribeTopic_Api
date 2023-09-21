@@ -1,37 +1,40 @@
-﻿using Core.Application.DTOs.StudentJoin;
+﻿using Core.Application.DTOs.Faculty;
 using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
-using Core.Application.Features.StudentJoins.Requests.Commands;
-using Core.Application.Features.StudentJoins.Requests.Queries;
+using Core.Application.Features.Faculties.Requests.Commands;
+using Core.Application.Features.Faculties.Requests.Queries;
 using Core.Application.Transform;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace UI.WebApi.Controllers
 {
-    [Route("api/studentJoin")]
+    [Route("api/faculty")]
     [ApiController]
-    public class StudentJoinsController : ControllerBase
+    [Authorize]
+    public class FacultyController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public StudentJoinsController(IMediator mediator)
+        public FacultyController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<StudentJoinDto>>> Get([FromQuery] ListStudentJoinRequest<StudentJoinDto> request)
+        public async Task<ActionResult<List<FacultyDto>>> Get([FromQuery] ListFacultyRequest<FacultyDto> request)
         {
             var response = await _mediator.Send(request);
+
 
             return StatusCode(response.Code, response);
         }
 
-        [HttpGet("Detail")]
-        public async Task<ActionResult<StudentJoinDto>> Get([FromQuery] DetailStudentJoinRequest request)
+        [HttpGet("detail")]
+        public async Task<ActionResult<FacultyDto>> Get([FromQuery] DetailFacultyRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -39,30 +42,29 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<StudentJoinDto>> Post([FromBody] CreateStudentJoinDto StudentJoinRequest)
+        public async Task<ActionResult<FacultyDto>> Post([FromBody] CreateFacultyDto FacultyRequest)
         {
-            var command = new CreateStudentJoinRequest { createStudentJoinDto = StudentJoinRequest };
+            var command = new CreateFacultyRequest { CreateFacultyDto = FacultyRequest };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] UpdateStudentJoinDto StudentJoinRequest)
+        public async Task<ActionResult> Put([FromBody] UpdateFacultyDto FacultyRequest)
         {
-            var command = new UpdateStudentJoinRequest { updateStudentJoinDto = StudentJoinRequest };
+            var command = new UpdateFacultyRequest { UpdateFacultyDto = FacultyRequest };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
         }
 
         [HttpDelete]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Faculty> request)
         {
             try
             {
-                var command = new DeleteBaseRequest<StudentJoin> { Id = id };
-                var response = await _mediator.Send(command);
+                var response = await _mediator.Send(request);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
             catch (NotFoundException ex)

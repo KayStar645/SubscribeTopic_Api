@@ -40,17 +40,19 @@ namespace Core.Application.Features.Students.Handlers.Queries
 
             var query = _unitOfWork.Repository<Student>().GetAllInclude();
 
-            if (request.IsAllDetail)
+            if (request.isAllDetail)
             {
                 query = _unitOfWork.Repository<Student>().AddInclude(query, x => x.Major);
             }
             else
             {
-                if (request.IsGetMajor == true)
+                if (request.isGetMajor == true)
                 {
                     query = _unitOfWork.Repository<Student>().AddInclude(query, x => x.Major);
                 }
             }
+
+            int totalCount = await query.CountAsync();
 
             query = _sieveProcessor.Apply(sieve, query);
 
@@ -58,9 +60,9 @@ namespace Core.Application.Features.Students.Handlers.Queries
 
             var mapStudents = _mapper.Map<List<StudentDto>>(students);
 
-            return PaginatedResult<List<StudentDto>>.Create(
-                mapStudents, 0, request.Page,
-                request.PageSize, (int)HttpStatusCode.OK);
+            return PaginatedResult<List<StudentDto>>.Success(
+                mapStudents, totalCount, request.page,
+                request.pageSize);
         }
     }
 }

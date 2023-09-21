@@ -18,9 +18,9 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await _dbContext.Set<RegistrationPeriod>()
             .Where(p =>
-                    p.SchoolYear == request.SchoolYear &&
-                    p.Semester == request.Semester &&
-                    p.FacultyId == request.FacultyId &&
+                    p.SchoolYear == request.schoolYear &&
+                    p.Semester == request.semester &&
+                    p.FacultyId == request.facultyId &&
                     p.IsDeleted == false)
             .FirstOrDefaultAsync();
         }

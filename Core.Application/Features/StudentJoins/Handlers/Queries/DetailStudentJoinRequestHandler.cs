@@ -26,9 +26,9 @@ namespace Core.Application.Features.StudentJoins.Handlers.Queries
         {
             try
             {
-                var query = _unitOfWork.Repository<StudentJoin>().GetByIdInclude(request.Id);
+                var query = _unitOfWork.Repository<StudentJoin>().GetByIdInclude(request.id);
 
-                if (request.IsAllDetail)
+                if (request.isAllDetail)
                 {
                     query = _unitOfWork.Repository<StudentJoin>().AddInclude(query, x => x.Student);
                     query = _unitOfWork.Repository<StudentJoin>().AddInclude(query, x => x.RegistrationPeriod);
@@ -51,7 +51,7 @@ namespace Core.Application.Features.StudentJoins.Handlers.Queries
                 if (findStudentJoin is null)
                 {
                     return Result<StudentJoinDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

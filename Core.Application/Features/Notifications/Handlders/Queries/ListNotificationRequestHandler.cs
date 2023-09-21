@@ -42,17 +42,19 @@ namespace Core.Application.Features.Notifications.Handlders.Queries
 
             var query = _unitOfWork.Repository<Notification>().GetAllInclude();
 
-            if (request.IsAllDetail)
+            if (request.isAllDetail)
             {
                 query = _unitOfWork.Repository<Notification>().AddInclude(query, x => x.Faculty);
             }
             else
             {
-                if (request.IsGetFaculty == true)
+                if (request.isGetFaculty == true)
                 {
                     query = _unitOfWork.Repository<Notification>().AddInclude(query, x => x.Faculty);
                 }
             }
+
+            int totalCount = await query.CountAsync();
 
             query = _sieveProcessor.Apply(sieve, query);
 
@@ -60,9 +62,9 @@ namespace Core.Application.Features.Notifications.Handlders.Queries
 
             var mapNotifications = _mapper.Map<List<NotificationDto>>(notifications);
 
-            return PaginatedResult<List<NotificationDto>>.Create(
-                mapNotifications, 0, request.Page,
-                request.PageSize, (int)HttpStatusCode.OK);
+            return PaginatedResult<List<NotificationDto>>.Success(
+                mapNotifications, totalCount, request.page,
+                request.pageSize);
         }
     }
 }

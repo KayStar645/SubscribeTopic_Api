@@ -43,7 +43,7 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Queries
 
             var query = _registrationPeriodRepo.GetAllInclude();
 
-            if (request.IsAllDetail)
+            if (request.isAllDetail)
             {
                 query = _registrationPeriodRepo.AddInclude(query, x => x.Faculty);
             }
@@ -55,14 +55,16 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Queries
                 }
             }
 
+            int totalCount = await query.CountAsync();
+
             query = _sieveProcessor.Apply(sieve, query);
 
             var periods = await query.ToListAsync();
 
             var mapPeriods = _mapper.Map<List<RegistrationPeriodDto>>(periods);
-            return PaginatedResult<List<RegistrationPeriodDto>>.Create(
-                mapPeriods, 0, request.Page,
-                request.PageSize, (int)HttpStatusCode.OK);
+            return PaginatedResult<List<RegistrationPeriodDto>>.Success(
+                mapPeriods, totalCount, request.page,
+                request.pageSize);
         }
     }
 }
