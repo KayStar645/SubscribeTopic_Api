@@ -24,8 +24,8 @@ namespace Core.Application.Features.Students.Handlers.Commands
         }
         public async Task<Result<StudentDto>> Handle(UpdateStudentRequest request, CancellationToken cancellationToken)
         {
-            var validator = new UpdateStudentDtoValidator(_unitOfWork);
-            var validationResult = await validator.ValidateAsync(request.UpdateStudentDto);
+            var validator = new UpdateStudentDtoValidator(_unitOfWork, request.updateStudentDto.Id);
+            var validationResult = await validator.ValidateAsync(request.updateStudentDto);
 
             if (validationResult.IsValid == false)
             {
@@ -35,17 +35,17 @@ namespace Core.Application.Features.Students.Handlers.Commands
 
             try
             {
-                var findStudent = await _unitOfWork.Repository<Student>().GetByIdAsync(request.UpdateStudentDto.Id);
+                var findStudent = await _unitOfWork.Repository<Student>().GetByIdAsync(request.updateStudentDto.Id);
 
                 if (findStudent is null)
                 {
                     return Result<StudentDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.UpdateStudentDto.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.updateStudentDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }
 
-                findStudent.CopyPropertiesFrom(request.UpdateStudentDto);
+                findStudent.CopyPropertiesFrom(request.updateStudentDto);
 
                 var newStudent = await _unitOfWork.Repository<Student>().UpdateAsync(findStudent);
                 await _unitOfWork.Save(cancellationToken);

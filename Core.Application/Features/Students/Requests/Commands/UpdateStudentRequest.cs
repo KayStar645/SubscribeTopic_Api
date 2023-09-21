@@ -6,6 +6,6 @@ namespace Core.Application.Features.Students.Requests.Commands
 {
     public class UpdateStudentRequest : IRequest<Result<StudentDto>>
     {
-        public UpdateStudentDto? UpdateStudentDto { get; set; }
+        public UpdateStudentDto? updateStudentDto { get; set; }
     }
 }

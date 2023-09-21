@@ -24,7 +24,7 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
         public async Task<Result<TeacherDto>> Handle(CreateTeacherRequest request, CancellationToken cancellationToken)
         {
             var validator = new CreateTeacherDtoValidator(_unitOfWork);
-            var validationResult = await validator.ValidateAsync(request.CreateTeacherDto);
+            var validationResult = await validator.ValidateAsync(request.createTeacherDto);
 
             if (validationResult.IsValid == false)
             {
@@ -34,7 +34,7 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
 
             try
             {
-                var teacher = _mapper.Map<Teacher>(request.CreateTeacherDto);
+                var teacher = _mapper.Map<Teacher>(request.createTeacherDto);
 
                 var newTeacher = await _unitOfWork.Repository<Teacher>().AddAsync(teacher);
                 await _unitOfWork.Save(cancellationToken);

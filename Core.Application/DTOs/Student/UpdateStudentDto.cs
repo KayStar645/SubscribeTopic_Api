@@ -4,7 +4,7 @@ namespace Core.Application.DTOs.Student
 {
     public class UpdateStudentDto : BaseDto, IStudentDto
     {
-        public string? InternalCode { get; set; }
+        public string InternalCode { get; set; }
         public string? Name { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string? Gender { get; set; }

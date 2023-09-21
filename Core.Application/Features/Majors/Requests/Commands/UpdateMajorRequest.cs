@@ -6,6 +6,6 @@ namespace Core.Application.Features.Majors.Requests.Commands
 {
     public class UpdateMajorRequest : IRequest<Result<MajorDto>>
     {
-        public UpdateMajorDto? UpdateMajorDto { get; set; }
+        public UpdateMajorDto? updateMajorDto { get; set; }
     }
 }

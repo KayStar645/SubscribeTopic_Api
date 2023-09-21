@@ -11,7 +11,6 @@ namespace Core.Application.DTOs.Notification
         public string? Content { get; set; }
         public string? Image { get; set; }
         public List<string>? Images { get; set; }
-
         public FacultyDto? Faculty { get; set; }
     }
 }

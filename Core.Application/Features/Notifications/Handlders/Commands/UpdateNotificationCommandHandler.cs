@@ -26,7 +26,7 @@ namespace Core.Application.Features.Notifications.Handlers.Commands
         public async Task<Result<NotificationDto>> Handle(UpdateNotificationRequest request, CancellationToken cancellationToken)
         {
             var validator = new UpdateNotificationDtoValidator(_unitOfWork);
-            var validationResult = await validator.ValidateAsync(request.UpdateNotificationDto);
+            var validationResult = await validator.ValidateAsync(request.updateNotificationDto);
 
             if (validationResult.IsValid == false)
             {
@@ -36,17 +36,17 @@ namespace Core.Application.Features.Notifications.Handlers.Commands
 
             try
             {
-                var findNotification = await _unitOfWork.Repository<Notification>().GetByIdAsync(request.UpdateNotificationDto.Id);
+                var findNotification = await _unitOfWork.Repository<Notification>().GetByIdAsync(request.updateNotificationDto.Id);
 
                 if (findNotification is null)
                 {
                     return Result<NotificationDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.UpdateNotificationDto.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.updateNotificationDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }
 
-                findNotification.CopyPropertiesFrom(request.UpdateNotificationDto);
+                findNotification.CopyPropertiesFrom(request.updateNotificationDto);
 
                 var newNotification = await _unitOfWork.Repository<Notification>().UpdateAsync(findNotification);
                 await _unitOfWork.Save(cancellationToken);

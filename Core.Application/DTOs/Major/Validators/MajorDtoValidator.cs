@@ -21,9 +21,6 @@ namespace Core.Application.DTOs.Major.Validators
                 })
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "facultys"));
 
-            RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"));
-
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
                 .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));

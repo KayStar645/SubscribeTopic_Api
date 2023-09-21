@@ -43,7 +43,7 @@ namespace UI.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<MajorDto>> Post([FromBody] CreateMajorDto majorRequest)
         {
-            var command = new CreateMajorRequest { CreateMajorDto = majorRequest };
+            var command = new CreateMajorRequest { createMajorDto = majorRequest };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
@@ -52,7 +52,7 @@ namespace UI.WebApi.Controllers
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateMajorDto majorRequest)
         {
-            var command = new UpdateMajorRequest { UpdateMajorDto = majorRequest };
+            var command = new UpdateMajorRequest { updateMajorDto = majorRequest };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);

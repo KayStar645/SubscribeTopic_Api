@@ -31,11 +31,9 @@ namespace Core.Application.DTOs.Department.Validators
                 })
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("headDepartment_TeacherId", "teachers"));
 
-            RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"));
-
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("name"));
+                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
+                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));
 
             RuleFor(x => x.PhoneNumber)
                 .Must(phoneNumber => string.IsNullOrEmpty(phoneNumber) || phoneNumber.Length == 10)

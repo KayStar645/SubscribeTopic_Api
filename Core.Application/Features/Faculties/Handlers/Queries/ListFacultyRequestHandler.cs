@@ -45,6 +45,7 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
             if (request.isAllDetail)
             {
                 query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Dean_Teacher);
+                query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Departments);
             }
             else
             {
@@ -52,6 +53,10 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
                 {
                     query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Dean_Teacher);
                 }    
+                if(request.isGetDepartment == true)
+                {
+                    query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Departments);
+                }
             }
 
             int totalCount = await query.CountAsync();

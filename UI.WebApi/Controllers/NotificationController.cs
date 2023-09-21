@@ -42,7 +42,7 @@ namespace UI.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<NotificationDto>> Post([FromBody] CreateNotificationDto request)
         {
-            var command = new CreateNotificationRequest { CreateNotificationDto = request };
+            var command = new CreateNotificationRequest { createNotificationDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
@@ -51,7 +51,7 @@ namespace UI.WebApi.Controllers
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateNotificationDto request)
         {
-            var command = new UpdateNotificationRequest { UpdateNotificationDto = request };
+            var command = new UpdateNotificationRequest { updateNotificationDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);

@@ -25,8 +25,8 @@ namespace Core.Application.Features.Faculties.Handlers.Commands
 
         public async Task<Result<FacultyDto>> Handle(UpdateFacultyRequest request, CancellationToken cancellationToken)
         {
-            var validator = new UpdateFacultyDtoValidator(_unitOfWork);
-            var errorValidator = await validator.ValidateAsync(request.UpdateFacultyDto);
+            var validator = new UpdateFacultyDtoValidator(_unitOfWork, request.updateFacultyDto.Id);
+            var errorValidator = await validator.ValidateAsync(request.updateFacultyDto);
 
             if (errorValidator.IsValid == false)
             {
@@ -37,17 +37,17 @@ namespace Core.Application.Features.Faculties.Handlers.Commands
 
             try
             {
-                var findFaculty = await _unitOfWork.Repository<Faculty>().GetByIdAsync(request.UpdateFacultyDto.Id);
+                var findFaculty = await _unitOfWork.Repository<Faculty>().GetByIdAsync(request.updateFacultyDto.Id);
 
                 if (findFaculty is null)
                 {
                     return Result<FacultyDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.UpdateFacultyDto.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.updateFacultyDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }
 
-                findFaculty.CopyPropertiesFrom(request.UpdateFacultyDto);
+                findFaculty.CopyPropertiesFrom(request.updateFacultyDto);
 
                 var newFaculty = await _unitOfWork.Repository<Faculty>().UpdateAsync(findFaculty);
                 await _unitOfWork.Save(cancellationToken);

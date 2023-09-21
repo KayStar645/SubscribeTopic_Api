@@ -6,6 +6,6 @@ namespace Core.Application.Features.Notifications.Requests.Commands
 {
     public class CreateNotificationRequest : IRequest<Result<NotificationDto>>
     {
-        public CreateNotificationDto? CreateNotificationDto { get; set; }
+        public CreateNotificationDto? createNotificationDto { get; set; }
     }
 }

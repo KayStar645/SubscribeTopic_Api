@@ -10,7 +10,7 @@ namespace Core.Application.DTOs.Faculty.Validators
     {
         private readonly IUnitOfWork unitOfWork;
 
-        public FacultyDtoValidator(IUnitOfWork _unitOfWork) 
+        public FacultyDtoValidator(IUnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
 
@@ -22,11 +22,9 @@ namespace Core.Application.DTOs.Faculty.Validators
                 })
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("dean_TeacherId", "teachers"));
 
-            RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"));
-
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("name"));
+                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
+                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));
 
             RuleFor(x => x.PhoneNumber)
                 .Must(phoneNumber => string.IsNullOrEmpty(phoneNumber) || phoneNumber.Length == 10)

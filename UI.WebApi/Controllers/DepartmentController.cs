@@ -43,7 +43,7 @@ namespace UI.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] CreateDepartmentDto request)
         {
-            var command = new CreateDepartmentRequest { CreateDepartmentDto = request };
+            var command = new CreateDepartmentRequest { createDepartmentDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
@@ -52,7 +52,7 @@ namespace UI.WebApi.Controllers
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateDepartmentDto request)
         {
-            var command = new UpdateDepartmentRequest { UpdateDepartmentDto = request };
+            var command = new UpdateDepartmentRequest { updateDepartmentDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
