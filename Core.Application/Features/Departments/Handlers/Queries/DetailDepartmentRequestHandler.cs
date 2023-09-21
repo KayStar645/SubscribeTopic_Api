@@ -26,21 +26,21 @@ namespace Core.Application.Features.Departments.Handlers.Queries
         {
             try
             {
-                var query = _unitOfWork.Repository<Department>().GetByIdInclude(request.Id);
+                var query = _unitOfWork.Repository<Department>().GetByIdInclude(request.id);
 
-                if (request.IsAllDetail)
+                if (request.isAllDetail)
                 {
                     query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.Faculty);
                     query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.HeadDepartment_Teacher);
                 }
                 else
                 {
-                    if (request.IsGetFaculty == true)
+                    if (request.isGetFaculty == true)
                     {
                         query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.Faculty);
                     }
 
-                    if (request.IsGetHeadDepartment == true)
+                    if (request.isGetHeadDepartment == true)
                     {
                         query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.HeadDepartment_Teacher);
                     }
@@ -51,7 +51,7 @@ namespace Core.Application.Features.Departments.Handlers.Queries
                 if (findDepartment is null)
                 {
                     return Result<DepartmentDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

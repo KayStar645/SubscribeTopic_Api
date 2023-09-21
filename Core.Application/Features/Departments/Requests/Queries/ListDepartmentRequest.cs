@@ -4,7 +4,7 @@ namespace Core.Application.Features.Departments.Requests.Queries
 {
     public class ListDepartmentRequest<T> : ListBaseRequest<T>
     {
-        public bool IsGetFaculty { get; set; }
-        public bool IsGetHeadDepartment { get; set; }
+        public bool isGetFaculty { get; set; }
+        public bool isGetHeadDepartment { get; set; }
     }
 }

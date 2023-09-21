@@ -41,7 +41,7 @@ namespace Core.Application.Features.StudentJoins.Handlers.Queries
 
             var query = _unitOfWork.Repository<StudentJoin>().GetAllInclude();
 
-            if (request.IsAllDetail)
+            if (request.isAllDetail)
             {
                 query = _unitOfWork.Repository<StudentJoin>().AddInclude(query, x => x.Student);
                 query = _unitOfWork.Repository<StudentJoin>().AddInclude(query, x => x.RegistrationPeriod);
@@ -59,15 +59,17 @@ namespace Core.Application.Features.StudentJoins.Handlers.Queries
                 }
             }
 
+            int totalCount = await query.CountAsync();
+
             query = _sieveProcessor.Apply(sieve, query);
 
             var studentJoins = await query.ToListAsync();
 
             var mapStudentJoins = _mapper.Map<List<StudentJoinDto>>(studentJoins);
 
-            return PaginatedResult<List<StudentJoinDto>>.Create(
-                mapStudentJoins, 0, request.Page,
-                request.PageSize, (int)HttpStatusCode.OK);
+            return PaginatedResult<List<StudentJoinDto>>.Success(
+                mapStudentJoins, totalCount, request.page,
+                request.pageSize);
         }
     }
 }

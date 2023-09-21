@@ -26,16 +26,16 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
         {
             try
             {
-                var query = _unitOfWork.Repository<Teacher>().GetByIdInclude(request.Id)
-                                       .Where(x => x.Type == request.Type);
+                var query = _unitOfWork.Repository<Teacher>().GetByIdInclude(request.id)
+                                       .Where(x => x.Type == request.type);
 
-                if (request.IsAllDetail)
+                if (request.isAllDetail)
                 {
                     query = _unitOfWork.Repository<Teacher>().AddInclude(query, x => x.Department);
                 }
                 else
                 {
-                    if (request.IsGetDepartment == true)
+                    if (request.isGetDepartment == true)
                     {
                         query = _unitOfWork.Repository<Teacher>().AddInclude(query, x => x.Department);
                     }
@@ -46,7 +46,7 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
                 if (findTeacher is null)
                 {
                     return Result<TeacherDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

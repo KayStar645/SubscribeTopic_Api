@@ -26,9 +26,9 @@ namespace Core.Application.Features.Majors.Handlers.Queries
         {
             try
             {
-                var query = _unitOfWork.Repository<Major>().GetByIdInclude(request.Id);
+                var query = _unitOfWork.Repository<Major>().GetByIdInclude(request.id);
 
-                if (request.IsAllDetail)
+                if (request.isAllDetail)
                 {
                     query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Faculty);
                 }
@@ -45,7 +45,7 @@ namespace Core.Application.Features.Majors.Handlers.Queries
                 if (findMajor is null)
                 {
                     return Result<MajorDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

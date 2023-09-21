@@ -25,15 +25,15 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Queries
         {
             try
             {
-                var query = _registrationPeriodRepo.GetByIdInclude(request.Id);
+                var query = _registrationPeriodRepo.GetByIdInclude(request.id);
 
-                if (request.IsAllDetail)
+                if (request.isAllDetail)
                 {
                     query = _registrationPeriodRepo.AddInclude(query, x => x.Faculty);
                 }
                 else
                 {
-                    if (request.IsGetFaculty == true)
+                    if (request.isGetFaculty == true)
                     {
                         query = _registrationPeriodRepo.AddInclude(query, x => x.Faculty);
                     }
@@ -44,7 +44,7 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Queries
                 if (findPeriod is null)
                 {
                     return Result<RegistrationPeriodDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

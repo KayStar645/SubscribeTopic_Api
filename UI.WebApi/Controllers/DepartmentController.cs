@@ -1,9 +1,8 @@
-﻿using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Teacher;
+﻿using Core.Application.DTOs.Department;
 using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
-using Core.Application.Features.Teachers.Requests.Commands;
-using Core.Application.Features.Teachers.Requests.Queries;
+using Core.Application.Features.Departments.Requests.Commands;
+using Core.Application.Features.Departments.Requests.Queries;
 using Core.Application.Transform;
 using Core.Domain.Entities;
 using MediatR;
@@ -13,28 +12,28 @@ using System.Net;
 
 namespace UI.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/department")]
     [ApiController]
     [Authorize]
-    public class TeachersController : ControllerBase
+    public class DepartmentController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public TeachersController(IMediator mediator)
+        public DepartmentController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<TeacherDto>>> Get([FromQuery] ListDepartmentRequest<TeacherDto> request)
+        public async Task<ActionResult> Get([FromQuery] ListDepartmentRequest<DepartmentDto> request)
         {
             var response = await _mediator.Send(request);
 
             return StatusCode(response.Code, response);
         }
 
-        [HttpGet("Detail")]
-        public async Task<ActionResult<TeacherDto>> Get([FromQuery] DetailTeacherRequest request)
+        [HttpGet("detail")]
+        public async Task<ActionResult> Get([FromQuery] DetailDepartmentRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -42,30 +41,29 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<TeacherDto>> Post([FromBody] CreateTeacherDto teacherRequest)
+        public async Task<ActionResult> Post([FromBody] CreateDepartmentDto request)
         {
-            var command = new CreateTeacherRequest { CreateTeacherDto = teacherRequest };
+            var command = new CreateDepartmentRequest { CreateDepartmentDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] UpdateTeacherDto teacherRequest)
+        public async Task<ActionResult> Put([FromBody] UpdateDepartmentDto request)
         {
-            var command = new UpdateTeacherRequest { UpdateTeacherDto = teacherRequest };
+            var command = new UpdateDepartmentRequest { UpdateDepartmentDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
         }
 
         [HttpDelete]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Department> request)
         {
             try
             {
-                var command = new DeleteBaseRequest<Teacher> { Id = id };
-                var response = await _mediator.Send(command);
+                var response = await _mediator.Send(request);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
             catch (NotFoundException ex)
@@ -77,6 +75,5 @@ namespace UI.WebApi.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { Error = ResponseTranform.ServerError });
             }
         }
-
     }
 }

@@ -41,31 +41,33 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
 
             var query = _unitOfWork.Repository<Teacher>().GetAllInclude();
 
-            if(string.IsNullOrEmpty(request.Type) == false)
+            if(string.IsNullOrEmpty(request.type) == false)
             {
-                query = query.Where(x => x.Type == request.Type);
+                query = query.Where(x => x.Type == request.type);
             }    
 
-            if (request.IsAllDetail)
+            if (request.isAllDetail)
             {
                 query = _unitOfWork.Repository<Teacher>().AddInclude(query, x => x.Department);
             }
             else
             {
-                if (request.IsGetDepartment == true)
+                if (request.isGetDepartment == true)
                 {
                     query = _unitOfWork.Repository<Teacher>().AddInclude(query, x => x.Department);
                 }
             }
+            
+            int totalCount = await query.CountAsync();
 
             query = _sieveProcessor.Apply(sieve, query);
 
             var teachers = await query.ToListAsync();
 
             var mapTeachers = _mapper.Map<List<TeacherDto>>(teachers);
-            return PaginatedResult<List<TeacherDto>>.Create(
-                mapTeachers, 0, request.Page,
-                request.PageSize, (int)HttpStatusCode.OK);
+            return PaginatedResult<List<TeacherDto>>.Success(
+                mapTeachers, totalCount, request.page,
+                request.pageSize);
         }
     }
 }

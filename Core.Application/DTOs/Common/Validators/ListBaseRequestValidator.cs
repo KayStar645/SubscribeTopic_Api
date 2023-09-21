@@ -8,13 +8,13 @@ namespace Core.Application.DTOs.Common.Validators
     {
         public ListBaseRequestValidator()
         {
-            RuleFor(x => x.Page)
+            RuleFor(x => x.page)
                 .GreaterThanOrEqualTo(1)
-                .WithMessage(ValidatorTranform.GreaterThanOrEqualTo("PageNumber", 1));
+                .WithMessage(ValidatorTranform.GreaterThanOrEqualTo("pageNumber", 1));
 
-            RuleFor(x => x.PageSize)
+            RuleFor(x => x.pageSize)
                 .GreaterThanOrEqualTo(1)
-                .WithMessage(ValidatorTranform.GreaterThanOrEqualTo("PageSize", 1));
+                .WithMessage(ValidatorTranform.GreaterThanOrEqualTo("pageSize", 1));
         }
     }
 }

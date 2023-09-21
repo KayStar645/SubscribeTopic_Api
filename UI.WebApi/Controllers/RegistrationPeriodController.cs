@@ -1,5 +1,4 @@
-﻿using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.RegistrationPeriod;
+﻿using Core.Application.DTOs.RegistrationPeriod;
 using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Features.RegistrationPeriods.Requests.Commands;
@@ -13,7 +12,7 @@ using System.Net;
 
 namespace UI.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/registrationPeriod")]
     [ApiController]
     [Authorize]
     public class RegistrationPeriodController : ControllerBase
@@ -33,7 +32,7 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
-        [HttpGet("Detail")]
+        [HttpGet("detail")]
         public async Task<ActionResult<RegistrationPeriodDto>> Get([FromQuery] DetailRegistrationPeriodRequest request)
         {
             var response = await _mediator.Send(request);
@@ -51,7 +50,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] UpdateRegistrationPeriodDto periodRequest)
+        public async Task<ActionResult> Put([FromForm] UpdateRegistrationPeriodDto periodRequest)
         {
             var command = new UpdateRegistrationPeriodRequest { UpdateRegistrationPeriodDto = periodRequest };
             var response = await _mediator.Send(command);
@@ -60,12 +59,11 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete([FromBody] DeleteBaseRequest<RegistrationPeriod> request)
         {
             try
             {
-                var command = new DeleteBaseRequest<RegistrationPeriod> { Id = id };
-                var response = await _mediator.Send(command);
+                var response = await _mediator.Send(request);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
             catch (NotFoundException ex)

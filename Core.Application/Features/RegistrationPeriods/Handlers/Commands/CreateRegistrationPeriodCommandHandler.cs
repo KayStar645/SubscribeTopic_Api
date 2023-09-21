@@ -44,9 +44,9 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Commands
 
                 var curent = await _registrationPeriodRepo.GetCurrentRegistrationPeriodAsync(
                     new CurrentRegistrationPeriodRequest() {
-                        SchoolYear = period.SchoolYear,
-                        Semester = period.Semester,
-                        FacultyId = period.FacultyId,
+                        schoolYear = period.SchoolYear,
+                        semester = period.Semester,
+                        facultyId = period.FacultyId,
                     });
                 period.Phase = curent == null ? 1 : curent.Phase + 1;
                 

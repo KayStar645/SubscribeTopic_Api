@@ -7,6 +7,6 @@ namespace Core.Application.Features.Students.Requests.Queries
 {
     public class DetailStudentRequest : DetailBaseRequest, IRequest<Result<StudentDto>>
     {
-        public bool IsGetMajor { get; set; }
+        public bool isGetMajor { get; set; }
     }
 }

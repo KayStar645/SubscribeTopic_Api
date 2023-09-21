@@ -4,6 +4,6 @@ namespace Core.Application.Features.Majors.Requests.Queries
 {
     public class ListMajorRequest<T> : ListBaseRequest<T>
     {
-        public bool IsGetFaculty { get; set; }
+        public bool isGetFaculty { get; set; }
     }
 }
