@@ -1,8 +1,7 @@
 ﻿using Core.Application.Contracts.Identity;
 using Core.Application.Models.Identity;
-using Core.Application.Transform;
+using Core.Application.Responses;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace UI.WebApi.Controllers
 {
@@ -17,39 +16,19 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AuthResponse>> Login(AuthRequest request)
+        public async Task<ActionResult<Result<AuthResponse>>> Login(AuthRequest request)
         {
-            try
-            {
-                AuthResponse response = await _authenticationService.Login(request);
-                return Ok(response);
-            }
-            catch (HttpRequestException ex)
-            {
-                return StatusCode((int)HttpStatusCode.OK, new { Error = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new { Error = ResponseTranform.ServerError });
-            }
+            Result<AuthResponse> response = await _authenticationService.Login(request);
+
+            return StatusCode(response.Code, response);
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<RegistrationResponse>> Register(RegistrationRequest request)
+        public async Task<ActionResult<Result<RegistrationResponse>>> Register(RegistrationRequest request)
         {
-            try
-            {
-                RegistrationResponse response = await _authenticationService.Register(request);
-                return Ok(response);
-            }
-            catch (HttpRequestException ex)
-            {
-                return StatusCode((int)HttpStatusCode.BadRequest, new { Error = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new { Error = ResponseTranform.ServerError });
-            }
+            Result<RegistrationResponse> response = await _authenticationService.Register(request);
+
+            return StatusCode(response.Code, response);
         }
     }
 }
