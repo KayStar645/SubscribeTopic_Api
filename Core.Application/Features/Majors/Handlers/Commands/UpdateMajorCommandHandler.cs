@@ -24,7 +24,7 @@ namespace Core.Application.Features.Majors.Handlers.Commands
         }
         public async Task<Result<MajorDto>> Handle(UpdateMajorRequest request, CancellationToken cancellationToken)
         {
-            var validator = new UpdateMajorDtoValidator(_unitOfWork);
+            var validator = new UpdateMajorDtoValidator(_unitOfWork, request.updateMajorDto.Id);
             var validationResult = await validator.ValidateAsync(request.updateMajorDto);
 
             if (validationResult.IsValid == false)

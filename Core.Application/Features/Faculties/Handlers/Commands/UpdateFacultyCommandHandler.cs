@@ -25,7 +25,7 @@ namespace Core.Application.Features.Faculties.Handlers.Commands
 
         public async Task<Result<FacultyDto>> Handle(UpdateFacultyRequest request, CancellationToken cancellationToken)
         {
-            var validator = new UpdateFacultyDtoValidator(_unitOfWork);
+            var validator = new UpdateFacultyDtoValidator(_unitOfWork, request.updateFacultyDto.Id);
             var errorValidator = await validator.ValidateAsync(request.updateFacultyDto);
 
             if (errorValidator.IsValid == false)

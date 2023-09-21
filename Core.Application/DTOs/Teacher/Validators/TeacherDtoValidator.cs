@@ -22,17 +22,6 @@ namespace Core.Application.DTOs.Teacher.Validators
                 })
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("departmentId", "departments"));
 
-            RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"))
-                .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
-                .MustAsync(async (internalCode, token) =>
-                {
-                    var teacher = await _unitOfWork.Repository<TeacherEntity>()
-                        .FirstOrDefaultAsync(x => x.InternalCode == internalCode);
-                    return teacher == null;
-                })
-                .WithMessage(internalCode => ValidatorTranform.Exists("internalCode"));
-
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
                 .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));

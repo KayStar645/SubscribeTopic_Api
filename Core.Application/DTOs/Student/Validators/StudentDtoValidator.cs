@@ -3,7 +3,6 @@ using Core.Application.Custom;
 using Core.Application.Transform;
 using FluentValidation;
 using MajorEntity = Core.Domain.Entities.Major;
-using StudentEntity = Core.Domain.Entities.Student;
 
 namespace Core.Application.DTOs.Student.Validators
 {
@@ -22,16 +21,6 @@ namespace Core.Application.DTOs.Student.Validators
                     return majorEntityExists != null;
                 })
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("majorId", "major"));
-
-            RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"))
-                .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
-                .MustAsync(async (internalCode, token) =>
-                {
-                    var student = await _unitOfWork.Repository<StudentEntity>()
-                                        .FirstOrDefaultAsync(x => x.InternalCode == internalCode);
-                    return student != null;
-                }).WithMessage(ValidatorTranform.Exists("internalCode"));
 
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("name"))

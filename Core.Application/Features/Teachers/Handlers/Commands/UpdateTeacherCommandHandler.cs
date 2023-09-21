@@ -25,7 +25,7 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
 
         public async Task<Result<TeacherDto>> Handle(UpdateTeacherRequest request, CancellationToken cancellationToken)
         {
-            var validator = new UpdateTeacherDtoValidator(_unitOfWork);
+            var validator = new UpdateTeacherDtoValidator(_unitOfWork, request.updateTeacherDto.Id);
             var validationResult = await validator.ValidateAsync(request.updateTeacherDto);
 
             if (validationResult.IsValid == false)

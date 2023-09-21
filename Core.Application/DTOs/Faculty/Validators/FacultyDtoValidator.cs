@@ -3,7 +3,6 @@ using Core.Application.Custom;
 using Core.Application.Transform;
 using FluentValidation;
 using TeacherEntity = Core.Domain.Entities.Teacher;
-using FacultyEntity = Core.Domain.Entities.Faculty;
 
 namespace Core.Application.DTOs.Faculty.Validators
 {
@@ -22,16 +21,6 @@ namespace Core.Application.DTOs.Faculty.Validators
                     return HeadDepartmentExists != null;
                 })
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("dean_TeacherId", "teachers"));
-
-            RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"))
-                .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
-                .MustAsync(async (internalCode, token) =>
-                {
-                    var faculty = await _unitOfWork.Repository<FacultyEntity>()
-                                        .FirstOrDefaultAsync(x => x.InternalCode == internalCode);
-                    return faculty != null;
-                }).WithMessage(ValidatorTranform.Exists("internalCode"));
 
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
