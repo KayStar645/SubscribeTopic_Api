@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Major;
 using Core.Application.Features.Majors.Requests.Queries;
 using Core.Application.Responses;
@@ -14,12 +13,12 @@ using System.Net;
 
 namespace Core.Application.Features.Majors.Handlers.Queries
 {
-    public class ListMajorRequestHandler : IRequestHandler<ListMajorRequest<MajorDto>, PaginatedResult<List<MajorDto>>>
+    public class ListStudentJoinRequestHandler : IRequestHandler<ListMajorRequest<MajorDto>, PaginatedResult<List<MajorDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
-        public ListMajorRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor) 
+        public ListStudentJoinRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor) 
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -42,7 +41,7 @@ namespace Core.Application.Features.Majors.Handlers.Queries
 
             var query = _unitOfWork.Repository<Major>().GetAllInclude();
 
-            if (request.IsAllDetail)
+            if (request.isAllDetail)
             {
                 query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Faculty);
             }
@@ -54,15 +53,17 @@ namespace Core.Application.Features.Majors.Handlers.Queries
                 }
             }
 
+            int totalCount = await query.CountAsync();
+
             query = _sieveProcessor.Apply(sieve, query);
 
             var majors = await query.ToListAsync();
 
             var mapMajors = _mapper.Map<List<MajorDto>>(majors);
 
-            return PaginatedResult<List<MajorDto>>.Create(
-                mapMajors, 0, request.Page,
-                request.PageSize, (int)HttpStatusCode.OK);
+            return PaginatedResult<List<MajorDto>>.Success(
+                mapMajors, totalCount, request.page,
+                request.pageSize);
         }
     }
 }

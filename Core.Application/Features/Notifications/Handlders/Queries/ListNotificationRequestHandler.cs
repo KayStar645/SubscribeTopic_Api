@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Notification;
 using Core.Application.Features.Notifications.Requests.Queries;
 using Core.Application.Responses;
@@ -43,7 +42,7 @@ namespace Core.Application.Features.Notifications.Handlders.Queries
 
             var query = _unitOfWork.Repository<Notification>().GetAllInclude();
 
-            if (request.IsAllDetail)
+            if (request.isAllDetail)
             {
                 query = _unitOfWork.Repository<Notification>().AddInclude(query, x => x.Faculty);
             }
@@ -55,15 +54,17 @@ namespace Core.Application.Features.Notifications.Handlders.Queries
                 }
             }
 
+            int totalCount = await query.CountAsync();
+
             query = _sieveProcessor.Apply(sieve, query);
 
             var notifications = await query.ToListAsync();
 
             var mapNotifications = _mapper.Map<List<NotificationDto>>(notifications);
 
-            return PaginatedResult<List<NotificationDto>>.Create(
-                mapNotifications, 0, request.Page,
-                request.PageSize, (int)HttpStatusCode.OK);
+            return PaginatedResult<List<NotificationDto>>.Success(
+                mapNotifications, totalCount, request.page,
+                request.pageSize);
         }
     }
 }

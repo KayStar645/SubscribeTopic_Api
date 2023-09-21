@@ -98,8 +98,22 @@ namespace Core.Application.Transform
 
         public static string GreaterThanOrEqualTo(string name, int number)
         {
-            return $"Trường {name} ít nhất lớn hơn hoặc bằng ${number}!";
+            return $"Trường {name} ít nhất lớn hơn hoặc bằng {number}!";
         }
 
+        public static string GreaterThanToday(string name)
+        {
+            return $"Trường {name} ít nhất phải lớn hơn hôm nay!";
+        }
+
+        public static string GreaterThanDay(string name, DateTime day)
+        {
+            return $"Trường {name} ít nhất phải lớn hơn ngày {day}!";
+        }
+
+        public static string GreaterEqualOrThanDay(string name, DateTime day)
+        {
+            return $"Trường {name} ít nhất phải lớn hơn hoặc bằng ngày {day}!";
+        }
     }
 }

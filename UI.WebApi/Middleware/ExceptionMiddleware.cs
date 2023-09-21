@@ -2,6 +2,8 @@
 using Core.Application.Transform;
 using Newtonsoft.Json;
 using System.Net;
+using System.Security.Claims;
+using UI.WebApi.Middleware;
 
 namespace API.WebApi.Middleware
 {
@@ -16,6 +18,11 @@ namespace API.WebApi.Middleware
         {
             try
             {
+                //if (IsUserAuthorized(httpContext.User) == true)
+                //{
+                //    throw new ForbiddenException(IdentityTranform.ForbiddenException());
+                //}
+
                 await _next(httpContext);
             }
             catch (Exception ex)
@@ -23,6 +30,12 @@ namespace API.WebApi.Middleware
                 await HandleExceptionAsync(httpContext, ex);
             }
         }
+
+        private bool IsUserAuthorized(ClaimsPrincipal user)
+        {
+            return user.IsInRole("Admin");
+        }
+
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";

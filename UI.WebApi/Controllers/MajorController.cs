@@ -1,9 +1,8 @@
-﻿using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Faculty;
+﻿using Core.Application.DTOs.Major;
 using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
-using Core.Application.Features.Faculties.Requests.Commands;
-using Core.Application.Features.Faculties.Requests.Queries;
+using Core.Application.Features.Majors.Requests.Commands;
+using Core.Application.Features.Majors.Requests.Queries;
 using Core.Application.Transform;
 using Core.Domain.Entities;
 using MediatR;
@@ -13,29 +12,28 @@ using System.Net;
 
 namespace UI.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/major")]
     [ApiController]
     [Authorize]
-    public class FacultiesController : ControllerBase
+    public class MajorController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public FacultiesController(IMediator mediator)
+        public MajorController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<FacultyDto>>> Get([FromQuery] ListFacultyRequest<FacultyDto> request)
+        public async Task<ActionResult<List<MajorDto>>> Get([FromQuery] ListMajorRequest<MajorDto> request)
         {
             var response = await _mediator.Send(request);
-
 
             return StatusCode(response.Code, response);
         }
 
-        [HttpGet("Detail")]
-        public async Task<ActionResult<FacultyDto>> Get([FromQuery] DetailFacultyRequest request)
+        [HttpGet("detail")]
+        public async Task<ActionResult<MajorDto>> Get([FromQuery] DetailMajorRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -43,30 +41,29 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<FacultyDto>> Post([FromBody] CreateFacultyDto FacultyRequest)
+        public async Task<ActionResult<MajorDto>> Post([FromBody] CreateMajorDto majorRequest)
         {
-            var command = new CreateFacultyRequest { createFacultyDto = FacultyRequest };
+            var command = new CreateMajorRequest { createMajorDto = majorRequest };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
         }
-
+        
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] UpdateFacultyDto FacultyRequest)
+        public async Task<ActionResult> Put([FromBody] UpdateMajorDto majorRequest)
         {
-            var command = new UpdateFacultyRequest { updateFacultyDto = FacultyRequest };
+            var command = new UpdateMajorRequest { updateMajorDto = majorRequest };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
         }
 
         [HttpDelete]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Major> request)
         {
             try
             {
-                var command = new DeleteBaseRequest<Faculty> { Id = id };
-                var response = await _mediator.Send(command);
+                var response = await _mediator.Send(request);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
             catch (NotFoundException ex)

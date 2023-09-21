@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Faculty;
 using Core.Application.Features.Faculties.Requests.Queries;
 using Core.Application.Responses;
@@ -43,7 +42,7 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
 
             var query = _unitOfWork.Repository<Faculty>().GetAllInclude();
 
-            if (request.IsAllDetail)
+            if (request.isAllDetail)
             {
                 query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Dean_Teacher);
                 query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Departments);
@@ -60,14 +59,16 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
                 }
             }
 
+            int totalCount = await query.CountAsync();
+
             query = _sieveProcessor.Apply(sieve, query);
 
             var facultys = await query.ToListAsync();
 
             var mapFacultys = _mapper.Map<List<FacultyDto>>(facultys);
-            return PaginatedResult<List<FacultyDto>>.Create(
-                mapFacultys, 0, request.Page,
-                request.PageSize, (int)HttpStatusCode.OK);
+            return PaginatedResult<List<FacultyDto>>.Success(
+                mapFacultys, totalCount, request.page,
+                request.pageSize);
         }
     }
 }

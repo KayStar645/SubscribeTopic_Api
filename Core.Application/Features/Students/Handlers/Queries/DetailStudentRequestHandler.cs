@@ -26,9 +26,9 @@ namespace Core.Application.Features.Students.Handlers.Queries
         {
             try
             {
-                var query = _unitOfWork.Repository<Student>().GetByIdInclude(request.Id);
+                var query = _unitOfWork.Repository<Student>().GetByIdInclude(request.id);
 
-                if (request.IsAllDetail)
+                if (request.isAllDetail)
                 {
                     query = _unitOfWork.Repository<Student>().AddInclude(query, x => x.Major);
                 }
@@ -45,7 +45,7 @@ namespace Core.Application.Features.Students.Handlers.Queries
                 if (findStudent is null)
                 {
                     return Result<StudentDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

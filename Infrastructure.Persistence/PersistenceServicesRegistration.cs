@@ -1,4 +1,5 @@
 ﻿using Core.Application.Contracts.Persistence;
+using Core.Application.Interfaces.Repositories;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,7 +19,8 @@ namespace Infrastructure.Persistence
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            //services.AddScoped<ITeacherRepository, TeacherRepository>();
+            services.AddScoped<ITeacherRepository, TeacherRepository>();
+            services.AddScoped<IRegistrationPeriodRepository, RegistrationPeriodRepository>();
 
             return services;
         }

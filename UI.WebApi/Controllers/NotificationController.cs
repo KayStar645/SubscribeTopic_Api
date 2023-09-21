@@ -1,9 +1,8 @@
-﻿using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Student;
+﻿using Core.Application.DTOs.Notification;
 using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
-using Core.Application.Features.Students.Requests.Commands;
-using Core.Application.Features.Students.Requests.Queries;
+using Core.Application.Features.Notifications.Requests.Commands;
+using Core.Application.Features.Notifications.Requests.Queries;
 using Core.Application.Transform;
 using Core.Domain.Entities;
 using MediatR;
@@ -13,28 +12,27 @@ using System.Net;
 
 namespace UI.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/notification")]
     [ApiController]
     [Authorize]
-    public class StudentsController : ControllerBase
+    public class NotificationController : ControllerBase
     {
         private readonly IMediator _mediator;
-
-        public StudentsController(IMediator mediator)
+        public NotificationController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<StudentDto>>> Get([FromQuery] ListStudentRequest<StudentDto> request)
+        public async Task<ActionResult> Get([FromQuery] ListNotificationRequest<NotificationDto> request)
         {
             var response = await _mediator.Send(request);
 
             return StatusCode(response.Code, response);
         }
 
-        [HttpGet("Detail")]
-        public async Task<ActionResult<StudentDto>> Get([FromQuery] DetailStudentRequest request)
+        [HttpGet("detail")]
+        public async Task<ActionResult<NotificationDto>> Get([FromQuery] DetailNotificationRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -42,30 +40,29 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<StudentDto>> Post([FromBody] CreateStudentDto studentRequest)
+        public async Task<ActionResult<NotificationDto>> Post([FromBody] CreateNotificationDto request)
         {
-            var command = new CreateStudentRequest { createStudentDto = studentRequest };
+            var command = new CreateNotificationRequest { createNotificationDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] UpdateStudentDto studentRequest)
+        public async Task<ActionResult> Put([FromBody] UpdateNotificationDto request)
         {
-            var command = new UpdateStudentRequest { updateStudentDto = studentRequest };
+            var command = new UpdateNotificationRequest { updateNotificationDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
         }
 
         [HttpDelete]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Notification> request)
         {
             try
             {
-                var command = new DeleteBaseRequest<Student> { Id = id };
-                var response = await _mediator.Send(command);
+                var response = await _mediator.Send(request);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
             catch (NotFoundException ex)

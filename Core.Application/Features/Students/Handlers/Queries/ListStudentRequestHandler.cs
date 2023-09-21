@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Student;
 using Core.Application.Features.Students.Requests.Queries;
 using Core.Application.Responses;
@@ -41,7 +40,7 @@ namespace Core.Application.Features.Students.Handlers.Queries
 
             var query = _unitOfWork.Repository<Student>().GetAllInclude();
 
-            if (request.IsAllDetail)
+            if (request.isAllDetail)
             {
                 query = _unitOfWork.Repository<Student>().AddInclude(query, x => x.Major);
             }
@@ -53,15 +52,17 @@ namespace Core.Application.Features.Students.Handlers.Queries
                 }
             }
 
+            int totalCount = await query.CountAsync();
+
             query = _sieveProcessor.Apply(sieve, query);
 
             var students = await query.ToListAsync();
 
             var mapStudents = _mapper.Map<List<StudentDto>>(students);
 
-            return PaginatedResult<List<StudentDto>>.Create(
-                mapStudents, 0, request.Page,
-                request.PageSize, (int)HttpStatusCode.OK);
+            return PaginatedResult<List<StudentDto>>.Success(
+                mapStudents, totalCount, request.page,
+                request.pageSize);
         }
     }
 }

@@ -2,7 +2,6 @@
 using Core.Application.Transform;
 using FluentValidation;
 using FacultyEntity = Core.Domain.Entities.Faculty;
-using NotificationEntity = Core.Domain.Entities.Notification;
 
 namespace Core.Application.DTOs.Notification.Validators
 {

@@ -2,16 +2,10 @@
 {
     public interface IResult<T>
     {
-        List<string> Messages { get; set; }
-
-        bool Succeeded { get; set; }
-
         T Data { get; set; }
-
-        //List<ValidationResult> ValidationErrors { get; set; }
-
+        List<string> Messages { get; set; }
         Exception Exception { get; set; }
-
+        bool Succeeded { get; set; }
         int Code { get; set; }
     }
 }

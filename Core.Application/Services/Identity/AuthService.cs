@@ -2,12 +2,14 @@
 using Core.Application.Contracts.Identity;
 using Core.Application.Models.Identity;
 using Core.Application.Models.Identity.Validators;
+using Core.Application.Responses;
 using Core.Application.Transform;
 using Core.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -28,76 +30,106 @@ namespace Core.Application.Services.Identity
             _signInManager = signInManager;
         }
 
-        public async Task<AuthResponse> Login(AuthRequest request)
+        public async Task<Result<AuthResponse>> Login(AuthRequest request)
         {
-            var user = await _userManager.FindByNameAsync(request.UserName);
-
-            if (user == null)
+            try
             {
-                throw new HttpRequestException(IdentityTranform.UserNotExists(request.UserName));
+                var user = await _userManager.FindByNameAsync(request.UserName);
+
+                if (user == null)
+                {
+                    return Result<AuthResponse>
+                        .Failure(IdentityTranform.UserNotExists(request.UserName),
+                        (int)HttpStatusCode.BadRequest);
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
+
+                if (result.Succeeded == false)
+                {
+                    return Result<AuthResponse>
+                        .Failure(IdentityTranform.InvalidCredentials(request.UserName),
+                        (int)HttpStatusCode.BadRequest);
+                }
+
+                JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
+
+                AuthResponse auth = new AuthResponse
+                {
+                    Id = user.Id,
+                    Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+                    UserName = user.UserName
+                };
+
+                return Result<AuthResponse>.Success(auth, (int)HttpStatusCode.OK);
             }
-
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
-
-            if (result.Succeeded == false)
+            catch (Exception ex)
             {
-                throw new HttpRequestException(IdentityTranform.InvalidCredentials(request.UserName));
+                return Result<AuthResponse>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
             }
-
-            JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
-
-            AuthResponse response = new AuthResponse
-            {
-                Id = user.Id,
-                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-                UserName = user.UserName
-            };
-
-            return response;
         }
 
-        public async Task<RegistrationResponse> Register(RegistrationRequest request)
+        public async Task<Result<RegistrationResponse>> Register(RegistrationRequest request)
         {
-            RegistrationRequestValidator validator = new RegistrationRequestValidator();
-            var validationResult = await validator.ValidateAsync(request);
-
-            if (validationResult.IsValid == false)
+            try
             {
-                throw new HttpRequestException(validationResult.Errors.Select(q => q.ErrorMessage).First());
-            }
+                RegistrationRequestValidator validator = new RegistrationRequestValidator();
+                var validationResult = await validator.ValidateAsync(request);
 
-            var existingUser = await _userManager.FindByNameAsync(request.UserName);
-
-            if (existingUser != null)
-            {
-                throw new HttpRequestException(IdentityTranform.UserAlreadyExists(request.UserName));
-            }
-
-            var user = new Users
-            {
-                UserName = request.UserName,
-            };
-
-            var existingUserName = await _userManager.FindByEmailAsync(request.UserName);
-
-            if (existingUserName == null)
-            {
-                var result = await _userManager.CreateAsync(user, request.Password);
-
-                if (result.Succeeded)
+                if (validationResult.IsValid == false)
                 {
-                    // Add quyền nè
-                    //await _userManager.AddToRoleAsync(user, RoleConfig.Ministry());
-                    return new RegistrationResponse() { UserId = user.Id };
+                    return Result<RegistrationResponse>
+                        .Failure(validationResult.Errors.Select(q => q.ErrorMessage).First(),
+                        (int)HttpStatusCode.BadRequest);
+                }
+
+                var existingUser = await _userManager.FindByNameAsync(request.UserName);
+
+                if (existingUser != null)
+                {
+                    return Result<RegistrationResponse>
+                        .Failure(IdentityTranform.UserAlreadyExists(request.UserName),
+                        (int)HttpStatusCode.BadRequest);
+                }
+
+                var user = new Users
+                {
+                    UserName = request.UserName,
+                };
+
+                var existingUserName = await _userManager.FindByEmailAsync(request.UserName);
+
+                if (existingUserName == null)
+                {
+                    var result = await _userManager.CreateAsync(user, request.Password);
+
+                    if (result.Succeeded)
+                    {
+                        // Add quyền nè
+                        //await _userManager.AddToRoleAsync(user, RoleConfig.Ministry());
+
+                        return Result<RegistrationResponse>
+                            .Success(new RegistrationResponse() { UserId = user.Id },
+                            (int)HttpStatusCode.Created);
+                    }
+                    else
+                    {
+                        return Result<RegistrationResponse>
+                        .Failure(result.Errors.First().ToString(),
+                        (int)HttpStatusCode.BadRequest);
+                    }
                 }
                 else
                 {
-                    throw new Exception($"{result.Errors}");
+                    return Result<RegistrationResponse>
+                        .Failure(IdentityTranform.UserAlreadyExists(request.UserName),
+                        (int)HttpStatusCode.BadRequest);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                throw new HttpRequestException(IdentityTranform.UserAlreadyExists(request.UserName));
+                return Result<RegistrationResponse>.Failure(ex.Message,
+                    (int)HttpStatusCode.InternalServerError);
             }
         }
 

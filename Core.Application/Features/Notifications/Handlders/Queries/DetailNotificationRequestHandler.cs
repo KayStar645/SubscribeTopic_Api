@@ -26,9 +26,9 @@ namespace Core.Application.Features.Notifications.Handlers.Queries
         {
             try
             {
-                var query = _unitOfWork.Repository<Notification>().GetByIdInclude(request.Id);
+                var query = _unitOfWork.Repository<Notification>().GetByIdInclude(request.id);
 
-                if (request.IsAllDetail)
+                if (request.isAllDetail)
                 {
                     query = _unitOfWork.Repository<Notification>().AddInclude(query, x => x.Faculty);
                 }
@@ -45,7 +45,7 @@ namespace Core.Application.Features.Notifications.Handlers.Queries
                 if (findNotification is null)
                 {
                     return Result<NotificationDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

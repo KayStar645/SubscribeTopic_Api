@@ -21,10 +21,10 @@ namespace Core.Application.Features.Base.Handlers.Commands
 
         public async Task<Unit> Handle(DeleteBaseRequest<T> request, CancellationToken cancellationToken)
         {
-            var entity = await _unitOfWork.Repository<T>().GetByIdAsync(request.Id);
+            var entity = await _unitOfWork.Repository<T>().GetByIdAsync(request.id);
 
             if (entity == null)
-                throw new NotFoundException(nameof(T), request.Id);
+                throw new NotFoundException(nameof(T), request.id);
 
             await _unitOfWork.Repository<T>().DeleteAsync(entity);
             await _unitOfWork.Save(cancellationToken);

@@ -41,7 +41,7 @@ namespace Core.Application.Features.Departments.Handlers.Queries
 
             var query = _unitOfWork.Repository<Department>().GetAllInclude();
 
-            if (request.IsAllDetail)
+            if (request.isAllDetail)
             {
                 query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.Faculty);
                 query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.HeadDepartment_Teacher);
@@ -58,15 +58,16 @@ namespace Core.Application.Features.Departments.Handlers.Queries
                     query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.HeadDepartment_Teacher);
                 }
             }
+            int totalCount = await query.CountAsync();
 
             query = _sieveProcessor.Apply(sieve, query);
 
             var departments = await query.ToListAsync();
 
             var mapTeachers = _mapper.Map<List<DepartmentDto>>(departments);
-            return PaginatedResult<List<DepartmentDto>>.Create(
-                mapTeachers, 0, request.Page,
-                request.PageSize, (int)HttpStatusCode.OK);
+            return PaginatedResult<List<DepartmentDto>>.Success(
+                mapTeachers, totalCount, request.page,
+                request.pageSize);
         }
     }
 }
