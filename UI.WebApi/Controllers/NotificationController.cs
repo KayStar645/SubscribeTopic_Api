@@ -23,6 +23,12 @@ namespace UI.WebApi.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Lấy danh sách thông báo
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// </remarks>
         [HttpGet]
         public async Task<ActionResult> Get([FromQuery] ListNotificationRequest<NotificationDto> request)
         {
@@ -31,6 +37,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Lấy thông tin thông báo theo mã
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpGet("detail")]
         public async Task<ActionResult<NotificationDto>> Get([FromQuery] DetailNotificationRequest request)
         {
@@ -39,6 +52,16 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Thêm thông báo
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Name: string, required, max(190)
+        /// - Describe: string, max(5000)
+        /// - Image: string, url_format
+        /// - Images: [string], url_format
+        /// </remarks>
         [HttpPost]
         public async Task<ActionResult<NotificationDto>> Post([FromBody] CreateNotificationDto request)
         {
@@ -48,6 +71,17 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Sửa thông báo
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// - Name: string, required, max(190)
+        /// - Describe: string, max(5000)
+        /// - Image: string, url_format
+        /// - Images: [string], url_format
+        /// </remarks>
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateNotificationDto request)
         {
@@ -57,6 +91,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Xóa thông báo
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpDelete]
         public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Notification> request)
         {

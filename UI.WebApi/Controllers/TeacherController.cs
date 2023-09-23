@@ -24,6 +24,12 @@ namespace UI.WebApi.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Lấy danh sách giảng viên
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// </remarks>
         [HttpGet]
         public async Task<ActionResult<List<TeacherDto>>> Get([FromQuery] ListDepartmentRequest<TeacherDto> request)
         {
@@ -32,6 +38,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Lấy thông tin giảng viên theo mã
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpGet("detail")]
         public async Task<ActionResult<TeacherDto>> Get([FromQuery] DetailTeacherRequest request)
         {
@@ -40,6 +53,20 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Thêm giảng viên
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc:
+        /// - Name: string, required, max(190)
+        /// - Gender: string, in ["Nam", "Nữ", "Khác"]
+        /// - DateOfBirth: DateTime, đủ 16 tuổi
+        /// - PhoneNumber: string, lenght(10)
+        /// - Email: string, email_format
+        /// - AcademicTitle: string, in ["Cử nhân", "Kỹ sư", "Cao học", "Thạc sĩ", "Tiến sĩ"]
+        /// - Degree: string, Nếu AcademicTitle = "Tiến sĩ" -> in ["Phó giáo sư", "Giáo sư"], nếu không -> null
+        /// - Type: string, in ["M", "L"]
+        /// </remarks>
         [HttpPost]
         public async Task<ActionResult<TeacherDto>> Post([FromBody] CreateTeacherDto teacherRequest)
         {
@@ -49,6 +76,21 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Sửa giảng viên
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// - Name: string, required, max(190)
+        /// - Gender: string, in ["Nam", "Nữ", "Khác"]
+        /// - DateOfBirth: DateTime, đủ 16 tuổi
+        /// - PhoneNumber: string, lenght(10)
+        /// - Email: string, email_format
+        /// - AcademicTitle: string, in ["Cử nhân", "Kỹ sư", "Cao học", "Thạc sĩ", "Tiến sĩ"]
+        /// - Degree: string, Nếu AcademicTitle = "Tiến sĩ" -> in ["Phó giáo sư", "Giáo sư"], nếu không -> null
+        /// - Type: string, in ["M", "L"]
+        /// </remarks>
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateTeacherDto teacherRequest)
         {
@@ -58,6 +100,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Xóa giảng viên
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpDelete]
         public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Teacher> request)
         {

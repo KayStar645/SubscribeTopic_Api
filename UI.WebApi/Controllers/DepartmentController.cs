@@ -24,6 +24,12 @@ namespace UI.WebApi.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Lấy danh sách bộ môn theo khoa
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// </remarks>
         [HttpGet]
         public async Task<ActionResult> Get([FromQuery] ListDepartmentRequest<DepartmentDto> request)
         {
@@ -32,6 +38,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Lấy thông tin bộ môn theo mã
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpGet("detail")]
         public async Task<ActionResult> Get([FromQuery] DetailDepartmentRequest request)
         {
@@ -40,6 +53,15 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Thêm bộ môn
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Name: string, required, max(190)
+        /// - PhoneNumber: string, length(10)
+        /// - Email: string, email_format
+        /// </remarks>
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] CreateDepartmentDto request)
         {
@@ -49,6 +71,16 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Sửa bộ môn
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// - Name: string, required, max(190)
+        /// - PhoneNumber: string, length(10)
+        /// - Email: string, email_format
+        /// </remarks>
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateDepartmentDto request)
         {
@@ -58,6 +90,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Xóa bộ môn
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpDelete]
         public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Department> request)
         {

@@ -24,6 +24,12 @@ namespace UI.WebApi.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Lấy danh sách sinh viên
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// </remarks>
         [HttpGet]
         public async Task<ActionResult<List<StudentDto>>> Get([FromQuery] ListStudentRequest<StudentDto> request)
         {
@@ -32,6 +38,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Lấy thông tin sinh viên theo mã
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpGet("detail")]
         public async Task<ActionResult<StudentDto>> Get([FromQuery] DetailStudentRequest request)
         {
@@ -40,6 +53,18 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Thêm sinh viên
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc:
+        /// - Name: string, required, max(190)
+        /// - Gender: string, in ["Nam", "Nữ", "Khác"]
+        /// - DateOfBirth: DateTime, đủ 16 tuổi
+        /// - PhoneNumber: string, lenght(10)
+        /// - Email: string, email_format
+        /// - Class: string, required
+        /// </remarks>
         [HttpPost]
         public async Task<ActionResult<StudentDto>> Post([FromBody] CreateStudentDto studentRequest)
         {
@@ -49,6 +74,19 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Sửa sinh viên
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// - Name: string, required, max(190)
+        /// - Gender: string, in ["Nam", "Nữ", "Khác"]
+        /// - DateOfBirth: DateTime, đủ 16 tuổi
+        /// - PhoneNumber: string, lenght(10)
+        /// - Email: string, email_format
+        /// - Class: string, required
+        /// </remarks>
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateStudentDto studentRequest)
         {
@@ -58,6 +96,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Xóa sinh viên
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpDelete]
         public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Student> request)
         {

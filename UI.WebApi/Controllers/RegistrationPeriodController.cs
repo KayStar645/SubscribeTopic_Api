@@ -24,6 +24,12 @@ namespace UI.WebApi.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Lấy danh sách đợt đăng ký
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// </remarks>
         [HttpGet]
         public async Task<ActionResult<List<RegistrationPeriodDto>>> Get([FromQuery] ListRegistrationPeriodRequest<RegistrationPeriodDto> request)
         {
@@ -32,6 +38,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Lấy thông tin đợt đăng ký theo mã
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpGet("detail")]
         public async Task<ActionResult<RegistrationPeriodDto>> Get([FromQuery] DetailRegistrationPeriodRequest request)
         {
@@ -40,6 +53,15 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Thêm đợt đăng ký
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc:
+        /// - Semester: string, in ["Học kỳ 1", "Học kỳ 2", "Học kỳ 3"]
+        /// - TimeStart: DateTime, In or after Today (TimeStart >= Now)
+        /// - TimeEnd: DateTime, After TimeStart (TimeEnd > TimeStart)
+        /// </remarks>
         [HttpPost]
         public async Task<ActionResult<RegistrationPeriodDto>> Post([FromBody] CreateRegistrationPeriodDto periodRequest)
         {
@@ -49,6 +71,15 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Sửa đợt đăng ký
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Semester: string, in ["Học kỳ 1", "Học kỳ 2", "Học kỳ 3"]
+        /// - TimeStart: DateTime, In or after Today (TimeStart >= Now)
+        /// - TimeEnd: DateTime, After TimeStart (TimeEnd > TimeStart)
+        /// </remarks>
         [HttpPut]
         public async Task<ActionResult> Put([FromForm] UpdateRegistrationPeriodDto periodRequest)
         {
@@ -58,6 +89,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Xóa đợt đăng ký
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpDelete]
         public async Task<ActionResult> Delete([FromBody] DeleteBaseRequest<RegistrationPeriod> request)
         {

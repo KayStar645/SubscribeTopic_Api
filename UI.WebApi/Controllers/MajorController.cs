@@ -24,6 +24,12 @@ namespace UI.WebApi.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Lấy danh sách chuyên ngành
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// </remarks>
         [HttpGet]
         public async Task<ActionResult<List<MajorDto>>> Get([FromQuery] ListMajorRequest<MajorDto> request)
         {
@@ -32,6 +38,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Lấy thông tin chuyên ngành theo mã
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpGet("detail")]
         public async Task<ActionResult<MajorDto>> Get([FromQuery] DetailMajorRequest request)
         {
@@ -40,6 +53,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Thêm chuyên ngành
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Name: string, required, max(190)
+        /// </remarks>
         [HttpPost]
         public async Task<ActionResult<MajorDto>> Post([FromBody] CreateMajorDto majorRequest)
         {
@@ -48,7 +68,15 @@ namespace UI.WebApi.Controllers
 
             return StatusCode(response.Code, response);
         }
-        
+
+        /// <summary>
+        /// Sửa chuyên ngành
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// - Name: string, required, max(190)
+        /// </remarks>
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateMajorDto majorRequest)
         {
@@ -58,6 +86,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Xóa chuyên ngành
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpDelete]
         public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Major> request)
         {
