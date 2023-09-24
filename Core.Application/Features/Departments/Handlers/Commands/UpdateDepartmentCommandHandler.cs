@@ -62,8 +62,6 @@ namespace Core.Application.Features.Departments.Handlers.Commands
             {
                 return Result<DepartmentDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
             }
-
-            throw new NotImplementedException();
         }
     }
 }
