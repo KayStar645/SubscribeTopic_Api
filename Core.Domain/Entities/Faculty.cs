@@ -6,6 +6,13 @@ namespace Core.Domain.Entities
 {
     public class Faculty : BaseAuditableEntity
     {
+        #region CONST
+
+        #endregion
+
+
+        #region PROPERTIES
+
         [Sieve(CanFilter = true, CanSort = true)]
         public string? InternalCode { get; set; }
 
@@ -21,20 +28,46 @@ namespace Core.Domain.Entities
         [Sieve(CanFilter = true, CanSort = true)]
         public string? Email { get; set; }
 
+        #endregion
+
+
+        #region FOREIGN KEY
+
         // Trưởng khoa
         public int? Dean_TeacherId { get; set; }
         public Teacher? Dean_Teacher { get; set; }
 
-        // Danh sách bộ môn và chuyên ngành của khoa
-        [NotMapped]
-        public ICollection<Department> Departments { get; } = new HashSet<Department>();
-        [NotMapped]
-        public ICollection<Major> Majors { get; } = new HashSet<Major>();
-        
-        [NotMapped]
-        public ICollection<Notification> Notifications { get; } = new HashSet<Notification>();
+        #endregion
 
+
+        #region ICOLECTION
+
+        // Bộ môn của khoa
         [NotMapped]
-        public ICollection<RegistrationPeriod> RegistrationPeriods { get; } = new HashSet<RegistrationPeriod>();
+        public ICollection<Department>? Departments { get; } = new HashSet<Department>();
+
+        // Ngành của khoa
+        [NotMapped]
+        public ICollection<Industry>? Industríes { get; } = new HashSet<Industry>();
+
+        // Thông báo của khoa
+        [NotMapped]
+        public ICollection<Notification>? Notifications { get; } = new HashSet<Notification>();
+
+        // Đợt đăng ký của khoa
+        [NotMapped]
+        public ICollection<RegistrationPeriod>? RegistrationPeriods { get; } = new HashSet<RegistrationPeriod>();
+
+        #endregion
+
+
+        #region FUNCTION
+
+        #endregion
+
+
+
+
+
     }
 }

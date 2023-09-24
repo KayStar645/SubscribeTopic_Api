@@ -9,7 +9,7 @@ namespace Core.Application.DTOs.Faculty.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateFacultyDtoValidator(IUnitOfWork unitOfWork, int currentFacultyId)
+        public UpdateFacultyDtoValidator(IUnitOfWork unitOfWork, int currentId)
         {
             _unitOfWork = unitOfWork;
 
@@ -20,10 +20,20 @@ namespace Core.Application.DTOs.Faculty.Validators
                 .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
                 .MustAsync(async (internalCode, token) =>
                 {
-                    var faculty = await _unitOfWork.Repository<FacultyEntity>()
-                               .FirstOrDefaultAsync(x => x.Id != currentFacultyId && x.InternalCode == internalCode);
-                    return faculty == null;
+                    var exists = await _unitOfWork.Repository<FacultyEntity>()
+                               .FirstOrDefaultAsync(x => x.Id != currentId && x.InternalCode == internalCode);
+                    return exists == null;
                 }).WithMessage(ValidatorTranform.Exists("internalCode"));
+
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
+                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190))
+                .MustAsync(async (name, token) =>
+                {
+                    var exists = await _unitOfWork.Repository<FacultyEntity>()
+                                        .FirstOrDefaultAsync(x => x.Id != currentId && x.Name == name);
+                    return exists == null;
+                }).WithMessage(ValidatorTranform.Exists("name"));
         }
     }
 }

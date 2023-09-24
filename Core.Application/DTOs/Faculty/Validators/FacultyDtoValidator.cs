@@ -18,13 +18,9 @@ namespace Core.Application.DTOs.Faculty.Validators
                 .MustAsync(async (id, token) =>
                 {
                     var HeadDepartmentExists = await _unitOfWork.Repository<TeacherEntity>().GetByIdAsync(id);
-                    return HeadDepartmentExists != null;
+                    return HeadDepartmentExists != null || id == null;
                 })
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("dean_TeacherId", "teachers"));
-
-            RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
-                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));
 
             RuleFor(x => x.PhoneNumber)
                 .Must(phoneNumber => string.IsNullOrEmpty(phoneNumber) || phoneNumber.Length == 10)

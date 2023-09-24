@@ -6,11 +6,18 @@ namespace Core.Domain.Entities
 {
     public class Teacher : BaseAuditableEntity
     {
+        #region CONST
+
+        // Type
         [NotMapped]
         public const string TYPE_TEACHER_MINISTRY = "M";
         [NotMapped]
         public const string TYPE_TEACHER_LECTURERS = "L";
 
+        #endregion
+
+
+        #region PROPERTIES
 
         [Sieve(CanFilter = true, CanSort = true)]
         public string? InternalCode { get; set; }
@@ -40,17 +47,32 @@ namespace Core.Domain.Entities
         [Sieve(CanFilter = true, CanSort = true)]
         public string? Type { get; set; }
 
+        #endregion
 
+
+        #region FOREIGN KEY
+
+        // Thuộc bộ môn nào
         [Sieve(CanFilter = true, CanSort = true)]
         public int? DepartmentId { get; set; }
         [ForeignKey("DepartmentId")]
         public Department? Department { get; set; }
 
-        // Trưởng khoa
+        // Là trưởng khoa của khoa nào
         public Faculty? Dean_Faculty { get; set; }
 
-        // Trưởng bộ môn
+        // Là trưởng bộ môn của bộ môn nào nào
         public Department? HeadDepartment_Department { get; set; }
+
+        #endregion
+
+
+        #region ICOLECTION
+
+        #endregion
+
+
+        #region FUNCTION
 
         public static string[] GetType()
         {
@@ -61,5 +83,6 @@ namespace Core.Domain.Entities
             };
         }
 
+        #endregion
     }
 }

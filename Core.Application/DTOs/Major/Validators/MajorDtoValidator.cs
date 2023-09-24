@@ -1,7 +1,7 @@
 ﻿using Core.Application.Contracts.Persistence;
 using Core.Application.Transform;
 using FluentValidation;
-using FacultyEntity = Core.Domain.Entities.Faculty;
+using IndustryEntity = Core.Domain.Entities.Industry;
 
 namespace Core.Application.DTOs.Major.Validators
 {
@@ -13,13 +13,13 @@ namespace Core.Application.DTOs.Major.Validators
         {
             _unitOfWork = unitOfWork;
 
-            RuleFor(x => x.FacultyId)
+            RuleFor(x => x.IndustryId)
                 .MustAsync(async (id, token) =>
                 {
-                    var facultyEntityExists = await _unitOfWork.Repository<FacultyEntity>().GetByIdAsync(id);
-                    return facultyEntityExists != null;
+                    var exists = await _unitOfWork.Repository<IndustryEntity>().GetByIdAsync(id);
+                    return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "facultys"));
+                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("industryId", "industries"));
 
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("name"))

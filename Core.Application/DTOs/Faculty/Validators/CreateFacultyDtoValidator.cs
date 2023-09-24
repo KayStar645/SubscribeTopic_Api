@@ -20,10 +20,20 @@ namespace Core.Application.DTOs.Faculty.Validators
                 .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
                 .MustAsync(async (internalCode, token) =>
                 {
-                    var faculty = await _unitOfWork.Repository<FacultyEntity>()
+                    var exists = await _unitOfWork.Repository<FacultyEntity>()
                                         .FirstOrDefaultAsync(x => x.InternalCode == internalCode);
-                    return faculty == null;
+                    return exists == null;
                 }).WithMessage(ValidatorTranform.Exists("internalCode"));
+
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
+                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190))
+                .MustAsync(async (name, token) =>
+                {
+                    var exists = await _unitOfWork.Repository<FacultyEntity>()
+                                        .FirstOrDefaultAsync(x => x.Name == name);
+                    return exists == null;
+                }).WithMessage(ValidatorTranform.Exists("name"));
         }
     }
 }

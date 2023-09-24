@@ -127,7 +127,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("Facultys");
                 });
 
-            modelBuilder.Entity("Core.Domain.Entities.Major", b =>
+            modelBuilder.Entity("Core.Domain.Entities.Industry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -162,6 +162,45 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FacultyId");
+
+                    b.ToTable("Industry");
+                });
+
+            modelBuilder.Entity("Core.Domain.Entities.Major", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime");
+
+                    b.Property<int?>("IndustryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InternalCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IndustryId");
 
                     b.ToTable("Majors");
                 });
@@ -449,13 +488,22 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Dean_Teacher");
                 });
 
-            modelBuilder.Entity("Core.Domain.Entities.Major", b =>
+            modelBuilder.Entity("Core.Domain.Entities.Industry", b =>
                 {
                     b.HasOne("Core.Domain.Entities.Faculty", "Faculty")
                         .WithMany()
                         .HasForeignKey("FacultyId");
 
                     b.Navigation("Faculty");
+                });
+
+            modelBuilder.Entity("Core.Domain.Entities.Major", b =>
+                {
+                    b.HasOne("Core.Domain.Entities.Industry", "Industry")
+                        .WithMany()
+                        .HasForeignKey("IndustryId");
+
+                    b.Navigation("Industry");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Notification", b =>
@@ -479,7 +527,7 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Core.Domain.Entities.Student", b =>
                 {
                     b.HasOne("Core.Domain.Entities.Major", "Major")
-                        .WithMany("Students")
+                        .WithMany()
                         .HasForeignKey("MajorId");
 
                     b.Navigation("Major");
@@ -507,11 +555,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasForeignKey("DepartmentId");
 
                     b.Navigation("Department");
-                });
-
-            modelBuilder.Entity("Core.Domain.Entities.Major", b =>
-                {
-                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Teacher", b =>

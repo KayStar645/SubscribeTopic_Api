@@ -14,7 +14,7 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/department")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class DepartmentController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -29,9 +29,10 @@ namespace UI.WebApi.Controllers
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
+        /// - facultyId: required
         /// </remarks>
         [HttpGet]
-        public async Task<ActionResult> Get([FromQuery] ListDepartmentRequest<DepartmentDto> request)
+        public async Task<ActionResult> Get([FromQuery] ListDepartmentRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -98,7 +99,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Department> request)
+        public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Department> request)
         {
             try
             {

@@ -9,11 +9,12 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services.Interface;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 
 namespace Core.Application.Features.Departments.Handlers.Queries
 {
-    public class ListDepartmentRequestHandler : IRequestHandler<ListDepartmentRequest<DepartmentDto>, PaginatedResult<List<DepartmentDto>>>
+    public class ListDepartmentRequestHandler : IRequestHandler<ListDepartmentRequest, PaginatedResult<List<DepartmentDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -25,10 +26,10 @@ namespace Core.Application.Features.Departments.Handlers.Queries
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
         }
-        public async Task<PaginatedResult<List<DepartmentDto>>> Handle(ListDepartmentRequest<DepartmentDto> request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<DepartmentDto>>> Handle(ListDepartmentRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListBaseRequestValidator<DepartmentDto>();
-            var result = validator.Validate(request);
+            var validator = new DepartmentDtoValidator(_unitOfWork);
+            var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {
@@ -37,9 +38,22 @@ namespace Core.Application.Features.Departments.Handlers.Queries
                     .Failure((int)HttpStatusCode.BadRequest, errorMessages);
             }
 
+            var validationContext = new ValidationContext(request, null, null);
+            var validationResults = new List<ValidationResult>();
+
+            bool isValid = Validator.TryValidateObject(request, validationContext, validationResults, true);
+
+            if (isValid == false)
+            {
+                var errorMessages = validationResults.Select(x => x.ErrorMessage).ToList();
+                return PaginatedResult<List<DepartmentDto>>
+                    .Failure((int)HttpStatusCode.BadRequest, errorMessages);
+            }
+
             var sieve = _mapper.Map<SieveModel>(request);
 
-            var query = _unitOfWork.Repository<Department>().GetAllInclude();
+            var query = _unitOfWork.Repository<Department>().GetAllInclude()
+                                   .Where(x => x.FacultyId == request.facultyId);
 
             if (request.isAllDetail)
             {

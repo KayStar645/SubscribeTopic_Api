@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Faculty;
+using Core.Application.DTOs.Industry;
 using Core.Application.DTOs.Major;
 using Core.Application.DTOs.Notification;
 using Core.Application.DTOs.RegistrationPeriod;
@@ -40,6 +41,11 @@ namespace Core.Application.Profiles
             CreateMap<Major, MajorDto>().ReverseMap();
             CreateMap<Major, CreateMajorDto>().ReverseMap();
             CreateMap<Major, UpdateMajorDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<IndustryDto>>().ReverseMap();
+            CreateMap<Industry, IndustryDto>().ReverseMap();
+            CreateMap<Industry, CreateIndustryDto>().ReverseMap();
+            CreateMap<Industry, UpdateIndustryDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<StudentDto>>().ReverseMap();
             CreateMap<Student, StudentDto>().ReverseMap();

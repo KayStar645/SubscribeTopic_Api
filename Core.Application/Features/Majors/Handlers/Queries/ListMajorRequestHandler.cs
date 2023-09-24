@@ -13,19 +13,19 @@ using System.Net;
 
 namespace Core.Application.Features.Majors.Handlers.Queries
 {
-    public class ListStudentJoinRequestHandler : IRequestHandler<ListMajorRequest<MajorDto>, PaginatedResult<List<MajorDto>>>
+    public class ListMajorRequestHandler : IRequestHandler<ListMajorRequest, PaginatedResult<List<MajorDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
-        public ListStudentJoinRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor) 
+        public ListMajorRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor) 
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
         }
 
-        public async Task<PaginatedResult<List<MajorDto>>> Handle(ListMajorRequest<MajorDto> request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<MajorDto>>> Handle(ListMajorRequest request, CancellationToken cancellationToken)
         {
             var validator = new ListBaseRequestValidator<MajorDto>();
             var result = validator.Validate(request);
@@ -43,13 +43,13 @@ namespace Core.Application.Features.Majors.Handlers.Queries
 
             if (request.isAllDetail)
             {
-                query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Faculty);
+                query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Industry);
             }
             else
             {
-                if (request.isGetFaculty == true)
+                if (request.isGetIndustry == true)
                 {
-                    query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Faculty);
+                    query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Industry);
                 }
             }
 

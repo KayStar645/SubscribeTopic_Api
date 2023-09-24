@@ -14,7 +14,7 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/faculty")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class FacultyController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -34,7 +34,6 @@ namespace UI.WebApi.Controllers
         public async Task<ActionResult<List<FacultyDto>>> Get([FromQuery] ListFacultyRequest<FacultyDto> request)
         {
             var response = await _mediator.Send(request);
-
 
             return StatusCode(response.Code, response);
         }
@@ -99,7 +98,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Faculty> request)
+        public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Faculty> request)
         {
             try
             {

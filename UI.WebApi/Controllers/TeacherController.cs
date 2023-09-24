@@ -14,7 +14,7 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/teacher")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class TeacherController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -108,7 +108,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Teacher> request)
+        public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Teacher> request)
         {
             try
             {

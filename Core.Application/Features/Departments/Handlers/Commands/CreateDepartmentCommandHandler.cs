@@ -23,7 +23,8 @@ namespace Core.Application.Features.Departments.Handlers.Commands
 
         public async Task<Result<DepartmentDto>> Handle(CreateDepartmentRequest request, CancellationToken cancellationToken)
         {
-            var validator = new CreateDepartmentDtoValidator(_unitOfWork);
+            var validator = new CreateDepartmentDtoValidator(_unitOfWork,
+                request.createDepartmentDto.FacultyId ?? 0);
             var validatorResult = await validator.ValidateAsync(request.createDepartmentDto);
 
             if(validatorResult.IsValid == false)

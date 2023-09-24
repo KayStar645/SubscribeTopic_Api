@@ -1,9 +1,10 @@
-﻿using Core.Application.Features.Base.Requests.Queries;
+﻿using Core.Application.DTOs.Major;
+using Core.Application.Features.Base.Requests.Queries;
 
 namespace Core.Application.Features.Majors.Requests.Queries
 {
-    public class ListMajorRequest<T> : ListBaseRequest<T>
+    public class ListMajorRequest : ListBaseRequest<MajorDto>
     {
-        public bool isGetFaculty { get; set; }
+        public bool isGetIndustry { get; set; }
     }
 }

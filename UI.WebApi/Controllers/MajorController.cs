@@ -6,7 +6,6 @@ using Core.Application.Features.Majors.Requests.Queries;
 using Core.Application.Transform;
 using Core.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -14,7 +13,7 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/major")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class MajorController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -25,13 +24,13 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Lấy danh sách chuyên ngành
+        /// Lấy danh sách chuyên ngành theo khoa, nên có thêm cái ngành
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
         /// </remarks>
         [HttpGet]
-        public async Task<ActionResult<List<MajorDto>>> Get([FromQuery] ListMajorRequest<MajorDto> request)
+        public async Task<ActionResult<List<MajorDto>>> Get([FromQuery] ListMajorRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -94,7 +93,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Major> request)
+        public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Major> request)
         {
             try
             {

@@ -14,7 +14,7 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/notification")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class NotificationController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -99,7 +99,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Notification> request)
+        public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Notification> request)
         {
             try
             {

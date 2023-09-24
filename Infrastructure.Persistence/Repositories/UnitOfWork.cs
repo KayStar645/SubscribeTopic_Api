@@ -47,9 +47,10 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<int> Save(CancellationToken cancellationToken)
         {
-            var username = _httpContextAccessor.HttpContext.User.FindFirst(CustomClaimTypes.Uid)?.Value;
-            
-            return await _dbContext.SaveChangesAsync(username);
+            //var username = _httpContextAccessor.HttpContext.User.FindFirst(CustomClaimTypes.Uid)?.Value;
+
+            //return await _dbContext.SaveChangesAsync(username);
+            return await _dbContext.SaveChangesAsync("");
         }
 
         public Task<int> SaveAndRemoveCache(CancellationToken cancellationToken, params string[] cacheKeys)

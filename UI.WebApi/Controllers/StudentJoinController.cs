@@ -12,7 +12,7 @@ using System.Net;
 namespace UI.WebApi.Controllers
 {
     [Route("api/studentJoin")]
-    [ApiController]
+    //[ApiController]
     public class StudentJoinController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -89,7 +89,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<StudentJoin> request)
+        public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<StudentJoin> request)
         {
             try
             {
