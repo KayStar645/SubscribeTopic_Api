@@ -37,20 +37,7 @@ namespace UI.WebApi.Controllers
         {
             var response = await _mediator.Send(request);
 
-            var settings = new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                NullValueHandling = NullValueHandling.Include,
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                }
-            };
-
-            var json = JsonConvert.SerializeObject(response, settings);
-
-            return StatusCode(response.Code, json);
+            return StatusCode(response.Code, response);
         }
 
         /// <summary>
@@ -65,20 +52,7 @@ namespace UI.WebApi.Controllers
         {
             var response = await _mediator.Send(request);
 
-            var settings = new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                NullValueHandling = NullValueHandling.Include,
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                }
-            };
-
-            var json = JsonConvert.SerializeObject(response, settings);
-
-            return StatusCode(response.Code, json);
+            return StatusCode(response.Code, response);
         }
 
         /// <summary>
@@ -121,6 +95,7 @@ namespace UI.WebApi.Controllers
         /// - Name: string, required, max(190)
         /// - PhoneNumber: string, length(10)
         /// - Email: string, email_format
+        /// - HeadDepartment_TeacherId: Giảng viên của Bộ môn
         /// </remarks>
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateDepartmentDto request)
@@ -128,20 +103,7 @@ namespace UI.WebApi.Controllers
             var command = new UpdateDepartmentRequest { updateDepartmentDto = request };
             var response = await _mediator.Send(command);
 
-            var settings = new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                NullValueHandling = NullValueHandling.Include,
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                }
-            };
-
-            var json = JsonConvert.SerializeObject(response, settings);
-
-            return StatusCode(response.Code, json);
+            return StatusCode(response.Code, response);
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Industry;
 using Core.Application.DTOs.Major;
 using Core.Application.Features.Majors.Requests.Queries;
 using Core.Application.Responses;
@@ -27,8 +28,8 @@ namespace Core.Application.Features.Majors.Handlers.Queries
 
         public async Task<PaginatedResult<List<MajorDto>>> Handle(ListMajorRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListBaseRequestValidator<MajorDto>();
-            var result = validator.Validate(request);
+            var validator = new MajorDtoValidator(_unitOfWork, request.industryId);
+            var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {
@@ -40,6 +41,15 @@ namespace Core.Application.Features.Majors.Handlers.Queries
             var sieve = _mapper.Map<SieveModel>(request);
 
             var query = _unitOfWork.Repository<Major>().GetAllInclude();
+
+            if(request.industryId != null)
+            {
+                query = query.Where(x => x.IndustryId == request.industryId);
+            }
+            else if (request.facultyId != null)
+            {
+                query = query.Where(x => x.Industry.FacultyId == request.facultyId);
+            }
 
             if (request.isAllDetail)
             {

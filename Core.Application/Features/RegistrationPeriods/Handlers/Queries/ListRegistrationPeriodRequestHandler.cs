@@ -15,7 +15,7 @@ using System.Net;
 
 namespace Core.Application.Features.RegistrationPeriods.Handlers.Queries
 {
-    public class ListRegistrationPeriodRequestHandler : IRequestHandler<ListRegistrationPeriodRequest<RegistrationPeriodDto>, PaginatedResult<List<RegistrationPeriodDto>>>
+    public class ListRegistrationPeriodRequestHandler : IRequestHandler<ListRegistrationPeriodRequest, PaginatedResult<List<RegistrationPeriodDto>>>
     {
         private readonly IRegistrationPeriodRepository _registrationPeriodRepo;
         private readonly IMapper _mapper;
@@ -27,7 +27,7 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Queries
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
         }
-        public async Task<PaginatedResult<List<RegistrationPeriodDto>>> Handle(ListRegistrationPeriodRequest<RegistrationPeriodDto> request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<RegistrationPeriodDto>>> Handle(ListRegistrationPeriodRequest request, CancellationToken cancellationToken)
         {
             var validator = new ListBaseRequestValidator<RegistrationPeriodDto>();
             var result = validator.Validate(request);

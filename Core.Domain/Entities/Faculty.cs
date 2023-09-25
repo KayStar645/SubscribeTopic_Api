@@ -48,7 +48,7 @@ namespace Core.Domain.Entities
 
         // Ngành của khoa
         [NotMapped]
-        public ICollection<Industry>? Industríes { get; } = new HashSet<Industry>();
+        public ICollection<Industry>? Industries { get; } = new HashSet<Industry>();
 
         // Thông báo của khoa
         [NotMapped]

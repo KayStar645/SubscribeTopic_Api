@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Student;
 using Core.Application.DTOs.Teacher;
 using Core.Application.Features.Teachers.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
@@ -13,7 +15,7 @@ using System.Net;
 
 namespace Core.Application.Features.Teachers.Handlers.Queries
 {
-    public class ListTeacherRequestHandler : IRequestHandler<ListDepartmentRequest<TeacherDto>, PaginatedResult<List<TeacherDto>>>
+    public class ListTeacherRequestHandler : IRequestHandler<ListTeacherRequest, PaginatedResult<List<TeacherDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -25,7 +27,7 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
         }
-        public async Task<PaginatedResult<List<TeacherDto>>> Handle(ListDepartmentRequest<TeacherDto> request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<TeacherDto>>> Handle(ListTeacherRequest request, CancellationToken cancellationToken)
         {
             var validator = new ListBaseRequestValidator<TeacherDto>();
             var result = validator.Validate(request);
@@ -40,6 +42,15 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
             var sieve = _mapper.Map<SieveModel>(request);
 
             var query = _unitOfWork.Repository<Teacher>().GetAllInclude();
+
+            if(request.departmentId != null)
+            {
+                query = query.Where(x => x.DepartmentId == request.departmentId);
+            }    
+            else
+            {
+                query = query.Where(x => x.Department.FacultyId == request.departmentId);
+            }
 
             if(string.IsNullOrEmpty(request.type) == false)
             {

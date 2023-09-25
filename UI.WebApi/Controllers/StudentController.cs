@@ -3,10 +3,9 @@ using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Features.Students.Requests.Commands;
 using Core.Application.Features.Students.Requests.Queries;
-using Core.Application.Transform;
+using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -25,13 +24,14 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Lấy danh sách sinh viên
+        /// Lấy danh sách sinh viên theo khoa/ngành/chuyên ngành (Nên bổ sung khóa, lớp)
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
+        /// - facultyId/industryId/majorId: required
         /// </remarks>
         [HttpGet]
-        public async Task<ActionResult<List<StudentDto>>> Get([FromQuery] ListStudentRequest<StudentDto> request)
+        public async Task<ActionResult<List<StudentDto>>> Get([FromQuery] ListStudentRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -111,13 +111,19 @@ namespace UI.WebApi.Controllers
                 var response = await _mediator.Send(request);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.BadRequest, new { Error = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new { Error = ResponseTranform.ServerError });
+                var responses = Result<StudentDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
+                switch (ex)
+                {
+                    case NotFoundException:
+                        responses = Result<StudentDto>.Failure(ex.Message, (int)HttpStatusCode.NotFound);
+                        break;
+                    case BadRequestException:
+                        responses = Result<StudentDto>.Failure(ex.Message, (int)HttpStatusCode.BadRequest);
+                        break;
+                }
+                return StatusCode(responses.Code, responses);
             }
         }
     }

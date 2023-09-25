@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.RegistrationPeriod;
 using Core.Application.Features.RegistrationPeriods.Requests.Queries;
 using Core.Application.Interfaces.Repositories;
@@ -23,6 +25,15 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Queries
 
         public async Task<Result<RegistrationPeriodDto>> Handle(DetailRegistrationPeriodRequest request, CancellationToken cancellationToken)
         {
+            var validator = new DetailBaseRequestValidator();
+            var result = await validator.ValidateAsync(request);
+
+            if (result.IsValid == false)
+            {
+                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                return Result<RegistrationPeriodDto>.Failure(string.Join(", ", errorMessages), (int)HttpStatusCode.BadRequest);
+            }
+
             try
             {
                 var query = _registrationPeriodRepo.GetByIdInclude(request.id);

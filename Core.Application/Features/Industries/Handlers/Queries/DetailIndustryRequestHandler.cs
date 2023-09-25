@@ -8,6 +8,8 @@ using Core.Domain.Entities;
 using MediatR;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
+using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Faculty;
 
 namespace Core.Application.Features.Industries.Handlers.Queries
 {
@@ -26,6 +28,15 @@ namespace Core.Application.Features.Industries.Handlers.Queries
         {
             try
             {
+                var validator = new DetailBaseRequestValidator();
+                var result = await validator.ValidateAsync(request);
+
+                if (result.IsValid == false)
+                {
+                    var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                    return Result<IndustryDto>.Failure(string.Join(", ", errorMessages), (int)HttpStatusCode.BadRequest);
+                }
+
                 var query = _unitOfWork.Repository<Industry>().GetByIdInclude(request.id);
 
                 if (request.isAllDetail)

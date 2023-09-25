@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.Industry;
 using Core.Application.Features.Industries.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services.Interface;
 using System.Net;
-using Microsoft.EntityFrameworkCore;
 
 namespace Core.Application.Features.Industries.Handlers.Queries
 {
@@ -27,8 +26,8 @@ namespace Core.Application.Features.Industries.Handlers.Queries
 
         public async Task<PaginatedResult<List<IndustryDto>>> Handle(ListIndustryRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListBaseRequestValidator<IndustryDto>();
-            var result = validator.Validate(request);
+            var validator = new IndustryDtoValidator(_unitOfWork);
+            var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {
@@ -39,7 +38,8 @@ namespace Core.Application.Features.Industries.Handlers.Queries
 
             var sieve = _mapper.Map<SieveModel>(request);
 
-            var query = _unitOfWork.Repository<Industry>().GetAllInclude();
+            var query = _unitOfWork.Repository<Industry>().GetAllInclude()
+                                   .Where(x => x.FacultyId == request.facultyId);
 
             if (request.isAllDetail)
             {

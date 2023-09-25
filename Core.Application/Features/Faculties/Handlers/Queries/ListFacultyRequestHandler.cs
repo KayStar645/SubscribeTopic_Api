@@ -13,7 +13,7 @@ using System.Net;
 
 namespace Core.Application.Features.Faculties.Handlers.Queries
 {
-    public class ListFacultyRequestHandler : IRequestHandler<ListFacultyRequest<FacultyDto>, PaginatedResult<List<FacultyDto>>>
+    public class ListFacultyRequestHandler : IRequestHandler<ListFacultyRequest, PaginatedResult<List<FacultyDto>>>
     {
         readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
         }
-        public async Task<PaginatedResult<List<FacultyDto>>> Handle(ListFacultyRequest<FacultyDto> request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<FacultyDto>>> Handle(ListFacultyRequest request, CancellationToken cancellationToken)
         {
 
             var validator = new ListBaseRequestValidator<FacultyDto>();

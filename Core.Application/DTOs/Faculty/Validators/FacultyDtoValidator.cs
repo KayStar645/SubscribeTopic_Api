@@ -2,7 +2,6 @@
 using Core.Application.Custom;
 using Core.Application.Transform;
 using FluentValidation;
-using TeacherEntity = Core.Domain.Entities.Teacher;
 
 namespace Core.Application.DTOs.Faculty.Validators
 {
@@ -13,14 +12,6 @@ namespace Core.Application.DTOs.Faculty.Validators
         public FacultyDtoValidator(IUnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
-
-            RuleFor(x => x.Dean_TeacherId)
-                .MustAsync(async (id, token) =>
-                {
-                    var HeadDepartmentExists = await _unitOfWork.Repository<TeacherEntity>().GetByIdAsync(id);
-                    return HeadDepartmentExists != null || id == null;
-                })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("dean_TeacherId", "teachers"));
 
             RuleFor(x => x.PhoneNumber)
                 .Must(phoneNumber => string.IsNullOrEmpty(phoneNumber) || phoneNumber.Length == 10)

@@ -3,10 +3,9 @@ using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Features.RegistrationPeriods.Requests.Commands;
 using Core.Application.Features.RegistrationPeriods.Requests.Queries;
-using Core.Application.Transform;
+using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -25,13 +24,13 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Lấy danh sách đợt đăng ký
+        /// Lấy danh sách đợt đăng ký theo khoa
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
         /// </remarks>
         [HttpGet]
-        public async Task<ActionResult<List<RegistrationPeriodDto>>> Get([FromQuery] ListRegistrationPeriodRequest<RegistrationPeriodDto> request)
+        public async Task<ActionResult<List<RegistrationPeriodDto>>> Get([FromQuery] ListRegistrationPeriodRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -104,13 +103,19 @@ namespace UI.WebApi.Controllers
                 var response = await _mediator.Send(request);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.BadRequest, new { Error = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new { Error = ResponseTranform.ServerError });
+                var responses = Result<RegistrationPeriodDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
+                switch (ex)
+                {
+                    case NotFoundException:
+                        responses = Result<RegistrationPeriodDto>.Failure(ex.Message, (int)HttpStatusCode.NotFound);
+                        break;
+                    case BadRequestException:
+                        responses = Result<RegistrationPeriodDto>.Failure(ex.Message, (int)HttpStatusCode.BadRequest);
+                        break;
+                }
+                return StatusCode(responses.Code, responses);
             }
         }
     }

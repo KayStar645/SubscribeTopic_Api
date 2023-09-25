@@ -3,10 +3,9 @@ using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Features.Faculties.Requests.Commands;
 using Core.Application.Features.Faculties.Requests.Queries;
-using Core.Application.Transform;
+using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -31,7 +30,7 @@ namespace UI.WebApi.Controllers
         /// Ràng buộc: 
         /// </remarks>
         [HttpGet]
-        public async Task<ActionResult<List<FacultyDto>>> Get([FromQuery] ListFacultyRequest<FacultyDto> request)
+        public async Task<ActionResult<List<FacultyDto>>> Get([FromQuery] ListFacultyRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -80,6 +79,7 @@ namespace UI.WebApi.Controllers
         /// - Name: string, required, max(190)
         /// - PhoneNumber: string, length(10)
         /// - Email: string, email_format
+        /// - Dean_TeacherId: Giảng viên của khoa
         /// </remarks>
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateFacultyDto FacultyRequest)
@@ -105,13 +105,19 @@ namespace UI.WebApi.Controllers
                 var response = await _mediator.Send(request);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.BadRequest, new { Error = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new { Error = ResponseTranform.ServerError });
+                var responses = Result<FacultyDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
+                switch (ex)
+                {
+                    case NotFoundException:
+                        responses = Result<FacultyDto>.Failure(ex.Message, (int)HttpStatusCode.NotFound);
+                        break;
+                    case BadRequestException:
+                        responses = Result<FacultyDto>.Failure(ex.Message, (int)HttpStatusCode.BadRequest);
+                        break;
+                }
+                return StatusCode(responses.Code, responses);
             }
         }
     }

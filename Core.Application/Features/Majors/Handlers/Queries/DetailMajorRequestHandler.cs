@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.Major;
 using Core.Application.Features.Majors.Requests.Queries;
 using Core.Application.Responses;
@@ -24,6 +26,15 @@ namespace Core.Application.Features.Majors.Handlers.Queries
 
         public async Task<Result<MajorDto>> Handle(DetailMajorRequest request, CancellationToken cancellationToken)
         {
+            var validator = new DetailBaseRequestValidator();
+            var result = await validator.ValidateAsync(request);
+
+            if (result.IsValid == false)
+            {
+                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                return Result<MajorDto>.Failure(string.Join(", ", errorMessages), (int)HttpStatusCode.BadRequest);
+            }
+
             try
             {
                 var query = _unitOfWork.Repository<Major>().GetByIdInclude(request.id);

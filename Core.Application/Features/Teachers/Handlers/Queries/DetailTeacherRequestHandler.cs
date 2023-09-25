@@ -8,6 +8,8 @@ using Core.Domain.Entities;
 using System.Net;
 using Core.Application.Responses;
 using Microsoft.EntityFrameworkCore;
+using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Faculty;
 
 namespace Core.Application.Features.Teachers.Handlers.Queries
 {
@@ -24,6 +26,15 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
 
         public async Task<Result<TeacherDto>> Handle(DetailTeacherRequest request, CancellationToken cancellationToken)
         {
+            var validator = new DetailBaseRequestValidator();
+            var result = await validator.ValidateAsync(request);
+
+            if (result.IsValid == false)
+            {
+                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                return Result<TeacherDto>.Failure(string.Join(", ", errorMessages), (int)HttpStatusCode.BadRequest);
+            }
+
             try
             {
                 var query = _unitOfWork.Repository<Teacher>().GetByIdInclude(request.id)

@@ -13,7 +13,7 @@ using System.Net;
 
 namespace Core.Application.Features.Students.Handlers.Queries
 {
-    public class ListStudentRequestHandler : IRequestHandler<ListStudentRequest<StudentDto>, PaginatedResult<List<StudentDto>>>
+    public class ListStudentRequestHandler : IRequestHandler<ListStudentRequest, PaginatedResult<List<StudentDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ namespace Core.Application.Features.Students.Handlers.Queries
             _sieveProcessor = sieveProcessor;
         }
 
-        public async Task<PaginatedResult<List<StudentDto>>> Handle(ListStudentRequest<StudentDto> request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<StudentDto>>> Handle(ListStudentRequest request, CancellationToken cancellationToken)
         {
             var validator = new ListBaseRequestValidator<StudentDto>();
             var result = validator.Validate(request);
@@ -36,9 +36,23 @@ namespace Core.Application.Features.Students.Handlers.Queries
                 return PaginatedResult<List<StudentDto>>
                     .Failure((int)HttpStatusCode.BadRequest, errorMessages);
             }
+
             var sieve = _mapper.Map<SieveModel>(request);
 
             var query = _unitOfWork.Repository<Student>().GetAllInclude();
+
+            if(request.majorId != null)
+            {
+                query = query.Where(x => x.MajorId == request.majorId);
+            }   
+            else if (request.industryId != null)
+            {
+                query = query.Where(x => x.Major.IndustryId == request.industryId);
+            }   
+            else
+            {
+                query = query.Where(x => x.Major.Industry.FacultyId == request.facultyId);
+            }
 
             if (request.isAllDetail)
             {

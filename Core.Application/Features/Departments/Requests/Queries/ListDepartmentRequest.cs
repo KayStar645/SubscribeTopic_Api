@@ -28,14 +28,13 @@ namespace Core.Application.Features.Departments.Requests.Queries
             Include(new ListBaseRequestValidator<DepartmentDto>());
 
             RuleFor(x => x.facultyId)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("facultyId"))
                 .MustAsync(async (facultyId, token) =>
                 {
                     var exists = await _unitOfWork.Repository<FacultyEntity>()
                         .FirstOrDefaultAsync(x => x.Id == facultyId);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "faculties"));
+                .WithMessage(id => ValidatorTranform.MustIn("facultyId"));
         }
     }
 }

@@ -3,7 +3,7 @@ using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Features.Majors.Requests.Commands;
 using Core.Application.Features.Majors.Requests.Queries;
-using Core.Application.Transform;
+using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +24,12 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Lấy danh sách chuyên ngành theo khoa, nên có thêm cái ngành
+        /// Lấy danh sách chuyên ngành theo ngành/khoa
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
+        /// facultyId/industryId: required
+        /// 
         /// </remarks>
         [HttpGet]
         public async Task<ActionResult<List<MajorDto>>> Get([FromQuery] ListMajorRequest request)
@@ -100,13 +102,19 @@ namespace UI.WebApi.Controllers
                 var response = await _mediator.Send(request);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.BadRequest, new { Error = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new { Error = ResponseTranform.ServerError });
+                var responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
+                switch (ex)
+                {
+                    case NotFoundException:
+                        responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.NotFound);
+                        break;
+                    case BadRequestException:
+                        responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.BadRequest);
+                        break;
+                }
+                return StatusCode(responses.Code, responses);
             }
         }
     }
