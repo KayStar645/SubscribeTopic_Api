@@ -53,12 +53,6 @@ namespace Core.Application.DTOs.Teacher.Validators
                     ? string.IsNullOrEmpty(degree)
                     : degree == CommonTranform.associateProfessor || degree == CommonTranform.professor || string.IsNullOrWhiteSpace(degree))
                 .WithMessage(ValidatorTranform.MustWhen("degree", CommonTranform.GetListDegree(), "academicTitle", CommonTranform.doctorate));
-
-            RuleFor(x => x.Type)
-                .Must(type => string.IsNullOrEmpty(type) ||
-                      type == TeacherEntity.TYPE_TEACHER_LECTURERS ||
-                      type == TeacherEntity.TYPE_TEACHER_MINISTRY)
-                .WithMessage(ValidatorTranform.Must("type", TeacherEntity.GetType()));
         }    
     }
 }

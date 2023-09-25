@@ -11,6 +11,5 @@
         public string? Email { get; set; }
         public string? AcademicTitle { get; set; }
         public string? Degree { get; set; }
-        public string? Type { get; set; }
     }
 }

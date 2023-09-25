@@ -14,6 +14,5 @@ namespace Core.Application.DTOs.Teacher
         public string? Email { get; set; }
         public string? AcademicTitle { get; set; }
         public string? Degree { get; set; }
-        public string? Type { get; set; } = TeacherEntity.TYPE_TEACHER_LECTURERS;
     }
 }
