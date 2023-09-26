@@ -30,7 +30,7 @@ namespace Core.Application.Features.Teachers.Requests.Queries
 
             Include(new ListBaseRequestValidator<TeacherDto>());
 
-            if (departmentId != null)
+            if (departmentId != 0)
             {
                 RuleFor(x => x.departmentId)
                 .MustAsync(async (departmentId, token) =>

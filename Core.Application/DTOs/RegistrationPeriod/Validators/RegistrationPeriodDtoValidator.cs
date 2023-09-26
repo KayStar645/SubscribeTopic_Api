@@ -29,7 +29,7 @@ namespace Core.Application.DTOs.RegistrationPeriod.Validators
                 .MustAsync(async (id, token) =>
                 {
                     var existsFaculty = await _unitOfWork.Repository<FacultyEntity>().GetByIdAsync(id);
-                    return existsFaculty == null;
+                    return existsFaculty != null;
                 })
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "faculty"));
         }

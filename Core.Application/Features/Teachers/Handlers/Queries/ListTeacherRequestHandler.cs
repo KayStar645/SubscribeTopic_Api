@@ -43,13 +43,14 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
 
             var query = _unitOfWork.Repository<Teacher>().GetAllInclude();
 
-            if(request.departmentId != null)
+            //departmentId trên Request không để trống
+            if (request.departmentId != 0) 
             {
                 query = query.Where(x => x.DepartmentId == request.departmentId);
             }    
             else
             {
-                query = query.Where(x => x.Department.FacultyId == request.departmentId);
+                query = query.Where(x => x.Department.FacultyId == request.facultyId);
             }
 
             if(string.IsNullOrEmpty(request.type) == false)
