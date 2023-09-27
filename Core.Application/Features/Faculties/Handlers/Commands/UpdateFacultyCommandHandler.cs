@@ -34,7 +34,6 @@ namespace Core.Application.Features.Faculties.Handlers.Commands
                 return Result<FacultyDto>.Failure(errorMessage, (int)HttpStatusCode.BadRequest);
             }
 
-
             try
             {
                 var findFaculty = await _unitOfWork.Repository<Faculty>().GetByIdAsync(request.updateFacultyDto.Id);

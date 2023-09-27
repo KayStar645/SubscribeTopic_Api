@@ -41,7 +41,7 @@ namespace Core.Application.DTOs.Faculty.Validators
                 .MustAsync(async (id, token) =>
                 {
                     var exists = await _unitOfWork.Repository<TeacherEntity>().GetByIdInclude(id)
-                                            .Where(x => x.Department.FacultyId == id)
+                                            .Where(x => x.Department.FacultyId == currentId)
                                             .FirstOrDefaultAsync();
 
                     return exists != null || id == null;
