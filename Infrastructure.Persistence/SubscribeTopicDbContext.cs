@@ -24,5 +24,6 @@ namespace Infrastructure.Persistence
         public DbSet<Notification> Notifications { get; set; }  
         public DbSet<RegistrationPeriod> RegistrationPeriods { get; set;}
         public DbSet<StudentJoin> StudentJoins { get; set; }
+        public DbSet<DepartmentDuty> DepartmentDuties { get; set; }
     }
 }
