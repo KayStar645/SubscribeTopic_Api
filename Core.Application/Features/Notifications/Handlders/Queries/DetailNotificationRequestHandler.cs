@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.Notification;
 using Core.Application.Features.Notifications.Requests.Queries;
 using Core.Application.Responses;
@@ -24,6 +26,15 @@ namespace Core.Application.Features.Notifications.Handlers.Queries
 
         public async Task<Result<NotificationDto>> Handle(DetailNotificationRequest request, CancellationToken cancellationToken)
         {
+            var validator = new DetailBaseRequestValidator();
+            var result = await validator.ValidateAsync(request);
+
+            if (result.IsValid == false)
+            {
+                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                return Result<NotificationDto>.Failure(string.Join(", ", errorMessages), (int)HttpStatusCode.BadRequest);
+            }
+
             try
             {
                 var query = _unitOfWork.Repository<Notification>().GetByIdInclude(request.id);

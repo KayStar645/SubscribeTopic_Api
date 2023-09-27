@@ -88,6 +88,12 @@ namespace UI.WebApi
         {
             services.AddSwaggerGen(c =>
             {
+                // Đường dẫn đến tệp XML chứa chú thích XML của API
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                // Sử dụng chú thích XML trong tệp XML
+                c.IncludeXmlComments(xmlPath);
+
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT Authorization header using the Bearer scheme. 

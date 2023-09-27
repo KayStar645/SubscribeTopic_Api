@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.Notification;
 using Core.Application.Features.Notifications.Requests.Queries;
 using Core.Application.Responses;
@@ -13,7 +12,7 @@ using System.Net;
 
 namespace Core.Application.Features.Notifications.Handlders.Queries
 {
-    public class ListNotificationRequestHandler : IRequestHandler<ListNotificationRequest<NotificationDto>, PaginatedResult<List<NotificationDto>>>
+    public class ListNotificationRequestHandler : IRequestHandler<ListNotificationRequest, PaginatedResult<List<NotificationDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -26,10 +25,10 @@ namespace Core.Application.Features.Notifications.Handlders.Queries
             _sieveProcessor = sieveProcessor;
         }
 
-        public async Task<PaginatedResult<List<NotificationDto>>> Handle(ListNotificationRequest<NotificationDto> request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<NotificationDto>>> Handle(ListNotificationRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListBaseRequestValidator<NotificationDto>();
-            var result = validator.Validate(request);
+            var validator = new NotificationDtoValidator(_unitOfWork);
+            var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {
@@ -41,6 +40,15 @@ namespace Core.Application.Features.Notifications.Handlders.Queries
             var sieve = _mapper.Map<SieveModel>(request);
 
             var query = _unitOfWork.Repository<Notification>().GetAllInclude();
+
+            if(request.facultyId != null)
+            {
+                query = query.Where(x => x.FacultyId == request.facultyId);
+            }   
+            else
+            {
+                query = query.Where(x => x.FacultyId == null);
+            }
 
             if (request.isAllDetail)
             {

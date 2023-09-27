@@ -6,19 +6,43 @@ namespace Core.Domain.Entities
 {
     public class StudentJoin : BaseAuditableEntity
     {
+        #region CONST
+
+        #endregion
+
+
+        #region PROPERTIES
+
+        [Sieve(CanFilter = true, CanSort = true)]
+        public double? Score { get; set; }
+
+        #endregion
+
+
+        #region FOREIGN KEY
+
+        // Sinh viên nào
         [Sieve(CanFilter = true, CanSort = true)]
         public int? StudentId { get; set; }
         [ForeignKey("StudentId")]
-        public Student? Student { get; set;}
+        public Student? Student { get; set; }
 
-
+        // Đợt nào
         [Sieve(CanFilter = true, CanSort = true)]
         public int? RegistrationPeriodId { get; set; }
         [ForeignKey("RegistrationPeriodId")]
         public RegistrationPeriod? RegistrationPeriod { get; set; }
 
+        #endregion
 
-        [Sieve(CanFilter = true, CanSort = true)]
-        public double? Score { get; set; }
+
+        #region ICOLECTION
+
+        #endregion
+
+
+        #region FUNCTION
+
+        #endregion
     }
 }

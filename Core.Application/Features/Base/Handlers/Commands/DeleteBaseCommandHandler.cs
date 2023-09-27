@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Faculty;
 using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
+using Core.Application.Responses;
 using Core.Domain.Common;
 using MediatR;
+using System.Net;
 
 namespace Core.Application.Features.Base.Handlers.Commands
 {
@@ -21,6 +25,15 @@ namespace Core.Application.Features.Base.Handlers.Commands
 
         public async Task<Unit> Handle(DeleteBaseRequest<T> request, CancellationToken cancellationToken)
         {
+            var validator = new DeleteBaseRequestValidator<T>();
+            var result = await validator.ValidateAsync(request);
+
+            if (result.IsValid == false)
+            {
+                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                throw new BadRequestException(string.Join(",", errorMessages));
+            }
+
             var entity = await _unitOfWork.Repository<T>().GetByIdAsync(request.id);
 
             if (entity == null)

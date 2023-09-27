@@ -9,7 +9,7 @@ namespace Core.Application.DTOs.Department.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateDepartmentDtoValidator(IUnitOfWork unitOfWork) 
+        public CreateDepartmentDtoValidator(IUnitOfWork unitOfWork, int currentFacultyId) 
         {
             _unitOfWork = unitOfWork;
 
@@ -20,10 +20,20 @@ namespace Core.Application.DTOs.Department.Validators
                 .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
                 .MustAsync(async (internalCode, token) =>
                 {
-                    var department = await _unitOfWork.Repository<DepartmentEntity>()
+                    var exists = await _unitOfWork.Repository<DepartmentEntity>()
                         .FirstOrDefaultAsync(x => x.InternalCode == internalCode);
-                    return department == null;
+                    return exists == null;
                 }).WithMessage(ValidatorTranform.Exists("internalCode"));
+
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
+                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190))
+                .MustAsync(async (name, token) =>
+                {
+                    var exists = await _unitOfWork.Repository<DepartmentEntity>()
+                        .FirstOrDefaultAsync(x => x.Name == name && x.FacultyId == currentFacultyId);
+                    return exists == null;
+                }).WithMessage(ValidatorTranform.Exists("name"));
         }
     }
 }

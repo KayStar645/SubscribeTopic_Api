@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Industry;
 using Core.Application.DTOs.Major;
 using Core.Application.Features.Majors.Requests.Queries;
 using Core.Application.Responses;
@@ -13,22 +14,22 @@ using System.Net;
 
 namespace Core.Application.Features.Majors.Handlers.Queries
 {
-    public class ListStudentJoinRequestHandler : IRequestHandler<ListMajorRequest<MajorDto>, PaginatedResult<List<MajorDto>>>
+    public class ListMajorRequestHandler : IRequestHandler<ListMajorRequest, PaginatedResult<List<MajorDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
-        public ListStudentJoinRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor) 
+        public ListMajorRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor) 
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
         }
 
-        public async Task<PaginatedResult<List<MajorDto>>> Handle(ListMajorRequest<MajorDto> request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<MajorDto>>> Handle(ListMajorRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListBaseRequestValidator<MajorDto>();
-            var result = validator.Validate(request);
+            var validator = new MajorDtoValidator(_unitOfWork, request.industryId);
+            var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {
@@ -41,15 +42,24 @@ namespace Core.Application.Features.Majors.Handlers.Queries
 
             var query = _unitOfWork.Repository<Major>().GetAllInclude();
 
+            if(request.industryId != null)
+            {
+                query = query.Where(x => x.IndustryId == request.industryId);
+            }
+            else if (request.facultyId != null)
+            {
+                query = query.Where(x => x.Industry.FacultyId == request.facultyId);
+            }
+
             if (request.isAllDetail)
             {
-                query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Faculty);
+                query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Industry);
             }
             else
             {
-                if (request.isGetFaculty == true)
+                if (request.isGetIndustry == true)
                 {
-                    query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Faculty);
+                    query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Industry);
                 }
             }
 

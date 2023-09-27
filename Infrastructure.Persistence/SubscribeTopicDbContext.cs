@@ -19,6 +19,7 @@ namespace Infrastructure.Persistence
         public DbSet<Department> Departments { get; set; }
         public DbSet<Faculty> Facultys { get; set; }
         public DbSet<Major> Majors { get; set; }
+        public DbSet<Industry> Industries { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Notification> Notifications { get; set; }  
         public DbSet<RegistrationPeriod> RegistrationPeriods { get; set;}

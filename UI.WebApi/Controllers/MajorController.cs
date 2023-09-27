@@ -3,10 +3,9 @@ using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Features.Majors.Requests.Commands;
 using Core.Application.Features.Majors.Requests.Queries;
-using Core.Application.Transform;
+using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -14,7 +13,7 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/major")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class MajorController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -24,14 +23,29 @@ namespace UI.WebApi.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Lấy danh sách chuyên ngành theo ngành/khoa
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// facultyId/industryId: required
+        /// 
+        /// </remarks>
         [HttpGet]
-        public async Task<ActionResult<List<MajorDto>>> Get([FromQuery] ListMajorRequest<MajorDto> request)
+        public async Task<ActionResult<List<MajorDto>>> Get([FromQuery] ListMajorRequest request)
         {
             var response = await _mediator.Send(request);
 
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Lấy thông tin chuyên ngành theo mã
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpGet("detail")]
         public async Task<ActionResult<MajorDto>> Get([FromQuery] DetailMajorRequest request)
         {
@@ -40,6 +54,13 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Thêm chuyên ngành
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Name: string, required, max(190)
+        /// </remarks>
         [HttpPost]
         public async Task<ActionResult<MajorDto>> Post([FromBody] CreateMajorDto majorRequest)
         {
@@ -48,7 +69,15 @@ namespace UI.WebApi.Controllers
 
             return StatusCode(response.Code, response);
         }
-        
+
+        /// <summary>
+        /// Sửa chuyên ngành
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// - Name: string, required, max(190)
+        /// </remarks>
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateMajorDto majorRequest)
         {
@@ -58,21 +87,34 @@ namespace UI.WebApi.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// Xóa chuyên ngành
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
         [HttpDelete]
-        public async Task<ActionResult> Delete([FromForm] DeleteBaseRequest<Major> request)
+        public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Major> request)
         {
             try
             {
                 var response = await _mediator.Send(request);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.BadRequest, new { Error = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new { Error = ResponseTranform.ServerError });
+                var responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
+                switch (ex)
+                {
+                    case NotFoundException:
+                        responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.NotFound);
+                        break;
+                    case BadRequestException:
+                        responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.BadRequest);
+                        break;
+                }
+                return StatusCode(responses.Code, responses);
             }
         }
     }

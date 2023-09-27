@@ -7,6 +7,6 @@ namespace Core.Application.Features.Majors.Requests.Queries
 {
     public class DetailMajorRequest : DetailBaseRequest, IRequest<Result<MajorDto>>
     {
-        public bool isGetFaculties {  get; set; }
+        public bool isGetIndustry {  get; set; }
     }
 }

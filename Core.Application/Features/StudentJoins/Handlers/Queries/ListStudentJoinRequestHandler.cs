@@ -13,7 +13,7 @@ using System.Net;
 
 namespace Core.Application.Features.StudentJoins.Handlers.Queries
 {
-    public class ListStudentJoinRequestHandler : IRequestHandler<ListStudentJoinRequest<StudentJoinDto>, PaginatedResult<List<StudentJoinDto>>>
+    public class ListStudentJoinRequestHandler : IRequestHandler<ListStudentJoinRequest, PaginatedResult<List<StudentJoinDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ namespace Core.Application.Features.StudentJoins.Handlers.Queries
             _sieveProcessor = sieveProcessor;
         }
 
-        public async Task<PaginatedResult<List<StudentJoinDto>>> Handle(ListStudentJoinRequest<StudentJoinDto> request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<StudentJoinDto>>> Handle(ListStudentJoinRequest request, CancellationToken cancellationToken)
         {
             var validator = new ListBaseRequestValidator<StudentJoinDto>();
             var result = validator.Validate(request);
@@ -40,6 +40,24 @@ namespace Core.Application.Features.StudentJoins.Handlers.Queries
             var sieve = _mapper.Map<SieveModel>(request);
 
             var query = _unitOfWork.Repository<StudentJoin>().GetAllInclude();
+
+            if (request.periodId != null)
+            {
+                query = query.Where(x => x.RegistrationPeriodId == request.periodId);
+            }
+
+            if(request.majorId != null)
+            {
+                query = query.Where(x => x.Student.MajorId == request.majorId);
+            }    
+            else if(request.industryId != null)
+            {
+                query = query.Where(x => x.Student.Major.IndustryId == request.industryId);
+            }   
+            else
+            {
+                query = query.Where(x => x.Student.Major.Industry.FacultyId == request.facultyId);
+            }
 
             if (request.isAllDetail)
             {

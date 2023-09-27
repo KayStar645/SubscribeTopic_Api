@@ -1,4 +1,4 @@
-﻿using Core.Application.DTOs.Faculty;
+﻿using Core.Application.DTOs.Industry;
 using KLTN.Core.Application.DTOs.Common;
 
 namespace Core.Application.DTOs.Major
@@ -7,7 +7,7 @@ namespace Core.Application.DTOs.Major
     {
         public string? InternalCode { get; set; }
         public string? Name { get; set; }
-        public int? FacultyId { get; set; }
-        public FacultyDto? Faculty { get; set; }
+        public int? IndustryId { get; set; }
+        public IndustryDto? Industry { get; set; }
     }
 }

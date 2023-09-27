@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.Major;
 using Core.Application.Features.Majors.Requests.Queries;
 using Core.Application.Responses;
@@ -11,12 +13,12 @@ using System.Net;
 
 namespace Core.Application.Features.Majors.Handlers.Queries
 {
-    public class DetailStudentJoinRequestHandler : IRequestHandler<DetailMajorRequest, Result<MajorDto>>
+    public class DetailMarjorRequestHandler : IRequestHandler<DetailMajorRequest, Result<MajorDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DetailStudentJoinRequestHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public DetailMarjorRequestHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -24,19 +26,28 @@ namespace Core.Application.Features.Majors.Handlers.Queries
 
         public async Task<Result<MajorDto>> Handle(DetailMajorRequest request, CancellationToken cancellationToken)
         {
+            var validator = new DetailBaseRequestValidator();
+            var result = await validator.ValidateAsync(request);
+
+            if (result.IsValid == false)
+            {
+                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                return Result<MajorDto>.Failure(string.Join(", ", errorMessages), (int)HttpStatusCode.BadRequest);
+            }
+
             try
             {
                 var query = _unitOfWork.Repository<Major>().GetByIdInclude(request.id);
 
                 if (request.isAllDetail)
                 {
-                    query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Faculty);
+                    query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Industry);
                 }
                 else
                 {
-                    if (request.isGetFaculties == true)
+                    if (request.isGetIndustry == true)
                     {
-                        query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Faculty);
+                        query = _unitOfWork.Repository<Major>().AddInclude(query, x => x.Industry);
                     }
                 }
 
