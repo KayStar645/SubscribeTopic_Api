@@ -3,6 +3,7 @@ using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.FacultyDuty;
 using Core.Application.Features.Base.Requests.Queries;
 using Core.Application.Transform;
+using Core.Domain.Entities;
 using FluentValidation;
 using FacultyEntity = Core.Domain.Entities.Faculty;
 
@@ -11,8 +12,9 @@ namespace Core.Application.Features.FacultyDuties.Requests.Queries
     public class ListFacultyDutyRequest : ListBaseRequest<FacultyDutyDto>
     {
         public bool isGetFaculty { get; set; }
-
+        public bool isGetDepartment { get; set; }
         public int facultyId { get; set; }
+        public int departmentId { get; set; }
     }
 
     public class FacultyDutyDtoValidator : AbstractValidator<ListFacultyDutyRequest>
@@ -33,6 +35,15 @@ namespace Core.Application.Features.FacultyDuties.Requests.Queries
                     return exists != null;
                 })
                 .WithMessage(id => ValidatorTranform.MustIn("facultyId"));
+
+            RuleFor(x => x.departmentId)
+                .MustAsync(async (departmentId, token) =>
+                {
+                    var exists = await _unitOfWork.Repository<FacultyEntity>()
+                        .FirstOrDefaultAsync(x => x.Id == departmentId);
+                    return exists != null;
+                })
+                .WithMessage(id => ValidatorTranform.MustIn("departmentId"));
         }
     }
 }

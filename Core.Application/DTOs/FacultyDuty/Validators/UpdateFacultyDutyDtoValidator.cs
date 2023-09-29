@@ -1,9 +1,8 @@
 ﻿using Core.Application.Contracts.Persistence;
 using Core.Application.Transform;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using FacultyDutyEntity = Core.Domain.Entities.FacultyDuty;
-using TeacherEntity = Core.Domain.Entities.Teacher;
+using FacultyEntity = Core.Domain.Entities.Faculty;
 
 namespace Core.Application.DTOs.FacultyDuty.Validators
 {
@@ -29,6 +28,8 @@ namespace Core.Application.DTOs.FacultyDuty.Validators
                         .FirstOrDefaultAsync(x => x.Id != currentId && x.InternalCode == internalCode);
                     return exists == null;
                 }).WithMessage(ValidatorTranform.Exists("internalCode"));
+
+
 
 
         }

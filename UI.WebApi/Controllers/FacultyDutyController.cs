@@ -26,11 +26,12 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Lấy danh sách nhiệm vụ theo khoa
+        /// Lấy danh sách nhiệm vụ của khoa giao cho bộ môn
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
         /// - facultyId: required
+        /// - departmentId: required
         /// </remarks>
         [HttpGet]
         public async Task<ActionResult> Get([FromQuery] ListFacultyDutyRequest request)

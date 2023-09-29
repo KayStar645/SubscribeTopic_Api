@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Notification;
 using Core.Application.DTOs.FacultyDuty;
 using Core.Application.Features.FacultyDuties.Requests.Queries;
-using Core.Application.Interfaces.Repositories;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
@@ -12,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services.Interface;
 using System.Net;
-using Core.Application.DTOs.Department;
 using System.ComponentModel.DataAnnotations;
 
 namespace Core.Application.Features.FacultyDuties.Handlers.Queries
@@ -67,6 +64,10 @@ namespace Core.Application.Features.FacultyDuties.Handlers.Queries
                 if (request.isGetFaculty == true)
                 {
                     query = _unitOfWork.Repository<FacultyDuty>().AddInclude(query, x => x.Faculty);
+                }
+                if (request.isGetDepartment == true)
+                {
+                    query = _unitOfWork.Repository<FacultyDuty>().AddInclude(query, x => x.Department);
                 }
             }
 

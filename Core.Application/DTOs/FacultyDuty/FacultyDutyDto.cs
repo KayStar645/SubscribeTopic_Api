@@ -1,5 +1,5 @@
-﻿using Core.Application.DTOs.Faculty;
-using Core.Application.DTOs.Teacher;
+﻿using Core.Application.DTOs.Department;
+using Core.Application.DTOs.Faculty;
 using KLTN.Core.Application.DTOs.Common;
 
 namespace Core.Application.DTOs.FacultyDuty
@@ -7,6 +7,7 @@ namespace Core.Application.DTOs.FacultyDuty
     public class FacultyDutyDto : BaseDto
     {
         public int? FacultyId { get; set; }
+        public int? DepartmentId { get; set; }
         public string? InternalCode { get; set; }
         public string? Name { get; set; }
         public string? NumberOfThesis { get; set; }
@@ -16,5 +17,6 @@ namespace Core.Application.DTOs.FacultyDuty
         public string? File { get; set; }
 
         public FacultyDto? Faculty { get; set; }
+        public DepartmentDto? Department { get; set; }
     }
 }

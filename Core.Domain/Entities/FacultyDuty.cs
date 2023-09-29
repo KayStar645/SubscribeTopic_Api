@@ -42,10 +42,17 @@ namespace Core.Domain.Entities
         [ForeignKey("FacultyId")]
         public Faculty? Faculty { get; set; }
 
+        // Bộ môn nào được giao nhiệm vụ
+        [Sieve(CanFilter = true, CanSort = true)]
+        public int? DepartmentId { get; set; }
+        [ForeignKey("DepartmentId")]
+        public Department? Department { get; set; }
+
         #endregion
 
 
         #region ICOLECTION
+
 
         #endregion
 

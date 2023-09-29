@@ -44,12 +44,17 @@ namespace Core.Application.Features.FacultyDuties.Handlers.Queries
                 if (request.isAllDetail)
                 {
                     query = _unitOfWork.Repository<FacultyDuty>().AddInclude(query, x => x.Faculty);
+                    query = _unitOfWork.Repository<FacultyDuty>().AddInclude(query, x => x.Department);
                 }
                 else
                 {
                     if (request.isGetFaculty == true)
                     {
                         query = _unitOfWork.Repository<FacultyDuty>().AddInclude(query, x => x.Faculty);
+                    }
+                    if (request.isGetDepartment == true)
+                    {
+                        query = _unitOfWork.Repository<FacultyDuty>().AddInclude(query, x => x.Department);
                     }
                 }
 
