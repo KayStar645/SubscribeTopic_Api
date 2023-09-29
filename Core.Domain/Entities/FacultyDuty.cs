@@ -20,7 +20,7 @@ namespace Core.Domain.Entities
         public string? Name { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
-        public string? NumberOfThesis { get; set; }
+        public int? NumberOfThesis { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
         public DateTime? TimeStart { get; set; }

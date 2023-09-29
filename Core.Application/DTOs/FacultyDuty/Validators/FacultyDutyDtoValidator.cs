@@ -37,7 +37,7 @@ namespace Core.Application.DTOs.FacultyDuty.Validators
 
             RuleFor(x => x.NumberOfThesis)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("numberOfThesis"))
-                .GreaterThanOrEqualTo("1").WithMessage(ValidatorTranform.GreaterThanOrEqualTo("numberOfThesis", 1));
+                .GreaterThanOrEqualTo(1).WithMessage(ValidatorTranform.GreaterThanOrEqualTo("numberOfThesis", 1));
 
             RuleFor(x => x.TimeStart)
                 .Must(timeStart => CustomValidator.IsEqualOrAfterDay(timeStart, DateTime.Now))
