@@ -57,7 +57,7 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Thêm nhiệm vụ của khoa
+        /// Thêm nhiệm vụ của khoa giao cho bộ môn
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
@@ -89,7 +89,7 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Sửa nhiệm vụ của khoa
+        /// Sửa nhiệm vụ của khoa giao bộ môn
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
