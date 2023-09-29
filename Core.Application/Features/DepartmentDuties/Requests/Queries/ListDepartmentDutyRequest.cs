@@ -5,14 +5,18 @@ using Core.Application.Features.Base.Requests.Queries;
 using Core.Application.Transform;
 using FluentValidation;
 using DepartmentEntity = Core.Domain.Entities.Department;
+using TeacherEntity = Core.Domain.Entities.Teacher;
 
 namespace Core.Application.Features.DepartmentDuties.Requests.Queries
 {
     public class ListDepartmentDutyRequest : ListBaseRequest<DepartmentDutyDto>
     {
         public bool isGetDepartment { get; set; }
+        public bool isGetTeacher { get; set; }
 
         public int departmentId { get; set; }
+        public int teacherId { get; set; }
+
     }
 
     public class DepartmentDutyDtoValidator : AbstractValidator<ListDepartmentDutyRequest>
@@ -33,6 +37,15 @@ namespace Core.Application.Features.DepartmentDuties.Requests.Queries
                     return exists != null;
                 })
                 .WithMessage(id => ValidatorTranform.MustIn("departmentId"));
+
+            RuleFor(x => x.teacherId)
+                .MustAsync(async (teacherId, token) =>
+                {
+                    var exists = await _unitOfWork.Repository<TeacherEntity>()
+                        .FirstOrDefaultAsync(x => x.Id == teacherId);
+                    return exists != null;
+                })
+                .WithMessage(id => ValidatorTranform.MustIn("teacherId"));
         }
     }
 }

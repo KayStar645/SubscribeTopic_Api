@@ -43,12 +43,17 @@ namespace Core.Application.Features.DepartmentDuties.Handlers.Queries
                 if (request.isAllDetail)
                 {
                     query = _unitOfWork.Repository<DepartmentDuty>().AddInclude(query, x => x.Department);
+                    query = _unitOfWork.Repository<DepartmentDuty>().AddInclude(query, x => x.Teacher);
                 }
                 else
                 {
                     if (request.isGetDepartment == true)
                     {
                         query = _unitOfWork.Repository<DepartmentDuty>().AddInclude(query, x => x.Department);
+                    }
+                    if (request.isGetTeacher == true)
+                    {
+                        query = _unitOfWork.Repository<DepartmentDuty>().AddInclude(query, x => x.Teacher);
                     }
                 }
 

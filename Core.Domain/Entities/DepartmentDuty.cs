@@ -20,7 +20,7 @@ namespace Core.Domain.Entities
         public string? Name { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
-        public string? NumberOfThesis { get; set; }
+        public int? NumberOfThesis { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
         public DateTime? TimeStart { get; set; }
@@ -41,6 +41,12 @@ namespace Core.Domain.Entities
         public int? DepartmentId { get; set; }
         [ForeignKey("DepartmentId")]
         public Department? Department { get; set; }
+
+        // Giao cho giảng viên nào
+        [Sieve(CanFilter = true, CanSort = true)]
+        public int? TeacherId { get; set; }
+        [ForeignKey("DepartmentId")]
+        public Teacher? Teacher { get; set; }
 
         #endregion
 

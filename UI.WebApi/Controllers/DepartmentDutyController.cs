@@ -26,11 +26,12 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Lấy danh sách nhiệm vụ theo bộ môn
+        /// Lấy danh sách nhiệm vụ bộ môn giao cho giảng viên
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
         /// - departmentId: required
+        /// - teacherId: required
         /// </remarks>
         [HttpGet]
         public async Task<ActionResult> Get([FromQuery] ListDepartmentDutyRequest request)
@@ -41,7 +42,7 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Lấy thông tin nhiệm vụ của bộ môn theo mã
+        /// Lấy thông tin nhiệm vụ của bộ môn giao cho giảng viên theo mã
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
@@ -56,7 +57,7 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Thêm nhiệm vụ của bộ môn
+        /// Thêm nhiệm vụ của bộ môn cho giảng viên
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 

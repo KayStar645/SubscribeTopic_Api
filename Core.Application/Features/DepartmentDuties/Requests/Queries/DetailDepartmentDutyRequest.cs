@@ -8,5 +8,6 @@ namespace Core.Application.Features.DepartmentDuties.Requests.Queries
     public class DetailDepartmentDutyRequest : DetailBaseRequest, IRequest<Result<DepartmentDutyDto>>
     {
         public bool isGetDepartment { get; set; }
+        public bool isGetTeacher { get; set; }
     }
 }
