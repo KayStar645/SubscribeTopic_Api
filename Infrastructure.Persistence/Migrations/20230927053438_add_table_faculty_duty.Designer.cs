@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubscribeTopicDbContext))]
-    partial class SubscribeTopicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230927053438_add_table_faculty_duty")]
+    partial class add_table_faculty_duty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,9 +143,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime");
 
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("FacultyId")
                         .HasColumnType("int");
 
@@ -168,8 +167,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("NumberOfThesis")
-                        .HasColumnType("int");
+                    b.Property<string>("NumberOfThesis")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("TimeEnd")
                         .HasColumnType("datetime2");
@@ -178,8 +177,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("FacultyId");
 
@@ -551,15 +548,9 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Core.Domain.Entities.FacultyDuty", b =>
                 {
-                    b.HasOne("Core.Domain.Entities.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId");
-
                     b.HasOne("Core.Domain.Entities.Faculty", "Faculty")
                         .WithMany()
                         .HasForeignKey("FacultyId");
-
-                    b.Navigation("Department");
 
                     b.Navigation("Faculty");
                 });
