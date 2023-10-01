@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubscribeTopicDbContext))]
-    partial class SubscribeTopicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230929015722_update_table_faculty_duty")]
+    partial class update_table_faculty_duty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,63 +77,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasFilter("[HeadDepartment_TeacherId] IS NOT NULL");
 
                     b.ToTable("Departments");
-                });
-
-            modelBuilder.Entity("Core.Domain.Entities.DepartmentDuty", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime");
-
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("File")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InternalCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NumberOfThesis")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TeacherId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("TimeEnd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("TimeStart")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.ToTable("DepartmentDuties");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Faculty", b =>
@@ -225,8 +170,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("NumberOfThesis")
-                        .HasColumnType("int");
+                    b.Property<string>("NumberOfThesis")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("TimeEnd")
                         .HasColumnType("datetime2");
@@ -595,21 +540,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Faculty");
 
                     b.Navigation("HeadDepartment_Teacher");
-                });
-
-            modelBuilder.Entity("Core.Domain.Entities.DepartmentDuty", b =>
-                {
-                    b.HasOne("Core.Domain.Entities.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId");
-
-                    b.HasOne("Core.Domain.Entities.Teacher", "Teacher")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId");
-
-                    b.Navigation("Department");
-
-                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Faculty", b =>

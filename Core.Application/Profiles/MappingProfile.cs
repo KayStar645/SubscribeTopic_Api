@@ -2,6 +2,7 @@
 using Core.Application.DTOs.Department;
 using Core.Application.DTOs.DepartmentDuty;
 using Core.Application.DTOs.Faculty;
+using Core.Application.DTOs.FacultyDuty;
 using Core.Application.DTOs.Industry;
 using Core.Application.DTOs.Major;
 using Core.Application.DTOs.Notification;
@@ -68,10 +69,16 @@ namespace Core.Application.Profiles
             CreateMap<StudentJoin, CreateStudentJoinDto>().ReverseMap();
             CreateMap<StudentJoin, UpdateStudentJoinDto>().ReverseMap();
 
+
             CreateMap<SieveModel, ListBaseRequest<DepartmentDutyDto>>().ReverseMap();
             CreateMap<DepartmentDuty, DepartmentDutyDto>().ReverseMap();
             CreateMap<DepartmentDuty, CreateDepartmentDutyDto>().ReverseMap();
             CreateMap<DepartmentDuty, UpdateDepartmentDutyDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<FacultyDutyDto>>().ReverseMap();
+            CreateMap<StudentJoin, FacultyDutyDto>().ReverseMap();
+            CreateMap<StudentJoin, CreateFacultyDutyDto>().ReverseMap();
+            CreateMap<StudentJoin, UpdateFacultyDutyDto>().ReverseMap();
         }
 
         public class StringToListTypeConverter : ITypeConverter<string, List<string>>
