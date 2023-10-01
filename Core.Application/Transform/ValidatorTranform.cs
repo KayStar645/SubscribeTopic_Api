@@ -58,6 +58,11 @@ namespace Core.Application.Transform
             return $"Trường {name} không hợp lệ!";
         }
 
+        public static string ValidValue(string name, string value)
+        {
+            return $"Trường {name} = {value} không hợp lệ!";
+        }
+
         public static string Exists(string name)
         {
             return $"Giá trị của {name} đã tồn tại!";
