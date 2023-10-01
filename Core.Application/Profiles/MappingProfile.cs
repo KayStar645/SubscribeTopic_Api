@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Application.DTOs.Department;
+using Core.Application.DTOs.DepartmentDuty;
 using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.FacultyDuty;
 using Core.Application.DTOs.Industry;
@@ -67,6 +68,12 @@ namespace Core.Application.Profiles
             CreateMap<StudentJoin, StudentJoinDto>().ReverseMap();
             CreateMap<StudentJoin, CreateStudentJoinDto>().ReverseMap();
             CreateMap<StudentJoin, UpdateStudentJoinDto>().ReverseMap();
+
+
+            CreateMap<SieveModel, ListBaseRequest<DepartmentDutyDto>>().ReverseMap();
+            CreateMap<DepartmentDuty, DepartmentDutyDto>().ReverseMap();
+            CreateMap<DepartmentDuty, CreateDepartmentDutyDto>().ReverseMap();
+            CreateMap<DepartmentDuty, UpdateDepartmentDutyDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<FacultyDutyDto>>().ReverseMap();
             CreateMap<StudentJoin, FacultyDutyDto>().ReverseMap();

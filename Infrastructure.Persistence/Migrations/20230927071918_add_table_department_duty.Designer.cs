@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubscribeTopicDbContext))]
-    partial class SubscribeTopicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230927071918_add_table_department_duty")]
+    partial class add_table_department_duty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,11 +117,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("NumberOfThesis")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TeacherId")
-                        .HasColumnType("int");
+                    b.Property<string>("NumberOfThesis")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("TimeEnd")
                         .HasColumnType("datetime2");
@@ -182,65 +181,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasFilter("[Dean_TeacherId] IS NOT NULL");
 
                     b.ToTable("Facultys");
-                });
-
-            modelBuilder.Entity("Core.Domain.Entities.FacultyDuty", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime");
-
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FacultyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("File")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InternalCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NumberOfThesis")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("TimeEnd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("TimeStart")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("FacultyId");
-
-                    b.ToTable("FacultyDuties");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Industry", b =>
@@ -603,13 +543,7 @@ namespace Infrastructure.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("DepartmentId");
 
-                    b.HasOne("Core.Domain.Entities.Teacher", "Teacher")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId");
-
                     b.Navigation("Department");
-
-                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Faculty", b =>
@@ -619,21 +553,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasForeignKey("Core.Domain.Entities.Faculty", "Dean_TeacherId");
 
                     b.Navigation("Dean_Teacher");
-                });
-
-            modelBuilder.Entity("Core.Domain.Entities.FacultyDuty", b =>
-                {
-                    b.HasOne("Core.Domain.Entities.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId");
-
-                    b.HasOne("Core.Domain.Entities.Faculty", "Faculty")
-                        .WithMany()
-                        .HasForeignKey("FacultyId");
-
-                    b.Navigation("Department");
-
-                    b.Navigation("Faculty");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Industry", b =>
