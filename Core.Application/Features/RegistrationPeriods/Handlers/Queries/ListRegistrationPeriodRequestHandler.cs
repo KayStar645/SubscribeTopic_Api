@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Notification;
 using Core.Application.DTOs.RegistrationPeriod;
 using Core.Application.Features.RegistrationPeriods.Requests.Queries;
 using Core.Application.Interfaces.Repositories;
 using Core.Application.Responses;
-using Core.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
@@ -20,17 +17,19 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Queries
         private readonly IRegistrationPeriodRepository _registrationPeriodRepo;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ListRegistrationPeriodRequestHandler(IRegistrationPeriodRepository registrationPeriodRepository, IMapper mapper, ISieveProcessor sieveProcessor)
+        public ListRegistrationPeriodRequestHandler(IRegistrationPeriodRepository registrationPeriodRepository, IMapper mapper, ISieveProcessor sieveProcessor, IUnitOfWork unitOfWork)
         {
             _registrationPeriodRepo = registrationPeriodRepository;
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
+            _unitOfWork = unitOfWork;
         }
         public async Task<PaginatedResult<List<RegistrationPeriodDto>>> Handle(ListRegistrationPeriodRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListBaseRequestValidator<RegistrationPeriodDto>();
-            var result = validator.Validate(request);
+            var validator = new RegistrationPeriodDtoValidator(_unitOfWork);
+            var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {
