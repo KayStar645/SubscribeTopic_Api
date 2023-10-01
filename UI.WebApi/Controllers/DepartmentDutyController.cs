@@ -13,7 +13,7 @@ using System.Net;
 
 namespace UI.WebApi.Controllers
 {
-    [Route("api/facultyduty")]
+    [Route("api/departmentDuty")]
     [ApiController]
     //[Authorize]
     public class DepartmentDutyController : ControllerBase
