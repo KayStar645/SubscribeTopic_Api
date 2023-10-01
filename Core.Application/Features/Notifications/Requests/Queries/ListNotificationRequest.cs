@@ -10,9 +10,9 @@ namespace Core.Application.Features.Notifications.Requests.Queries
 {
     public class ListNotificationRequest : ListBaseRequest<NotificationDto>
     {
-        public bool isGetFaculty { get; set; }
+        public bool? isGetFaculty { get; set; }
 
-        public int facultyId { get; set; }
+        public int? facultyId { get; set; }
     }
 
     public class NotificationDtoValidator : AbstractValidator<ListNotificationRequest>

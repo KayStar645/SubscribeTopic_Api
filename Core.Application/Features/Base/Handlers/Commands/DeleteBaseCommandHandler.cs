@@ -5,6 +5,7 @@ using Core.Application.DTOs.Faculty;
 using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Responses;
+using Core.Application.Transform;
 using Core.Domain.Common;
 using MediatR;
 using System.Net;
@@ -37,7 +38,7 @@ namespace Core.Application.Features.Base.Handlers.Commands
             var entity = await _unitOfWork.Repository<T>().GetByIdAsync(request.id);
 
             if (entity == null)
-                throw new NotFoundException(nameof(T), request.id);
+                throw new NotFoundException("id", request.id.ToString());
 
             await _unitOfWork.Repository<T>().DeleteAsync(entity);
             await _unitOfWork.Save(cancellationToken);
