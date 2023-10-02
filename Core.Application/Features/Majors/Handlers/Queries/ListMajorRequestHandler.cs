@@ -28,7 +28,7 @@ namespace Core.Application.Features.Majors.Handlers.Queries
 
         public async Task<PaginatedResult<List<MajorDto>>> Handle(ListMajorRequest request, CancellationToken cancellationToken)
         {
-            var validator = new MajorDtoValidator(_unitOfWork, request.industryId);
+            var validator = new ListMajorDtoValidator(_unitOfWork, request.industryId);
             var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)

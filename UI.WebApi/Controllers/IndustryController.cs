@@ -54,7 +54,7 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Thêm chuyên ngành
+        /// Thêm ngành
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
@@ -70,7 +70,7 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Sửa chuyên ngành
+        /// Sửa ngành
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
@@ -87,7 +87,7 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Xóa chuyên ngành
+        /// Xóa ngành
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
