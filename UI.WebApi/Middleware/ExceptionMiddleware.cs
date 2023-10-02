@@ -3,7 +3,6 @@ using Core.Application.Transform;
 using Newtonsoft.Json;
 using System.Net;
 using System.Security.Claims;
-using UI.WebApi.Middleware;
 
 namespace API.WebApi.Middleware
 {
