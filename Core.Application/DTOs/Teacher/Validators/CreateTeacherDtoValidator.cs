@@ -1,10 +1,9 @@
 ﻿using Core.Application.Contracts.Persistence;
 using Core.Application.Transform;
 using FluentValidation;
-using TeacherEntity = Core.Domain.Entities.Teacher;
-using FacultyEntity = Core.Domain.Entities.Faculty;
-using DepartmentEntity = Core.Domain.Entities.Department;
 using Microsoft.EntityFrameworkCore;
+using DepartmentEntity = Core.Domain.Entities.Department;
+using TeacherEntity = Core.Domain.Entities.Teacher;
 
 namespace Core.Application.DTOs.Teacher.Validators
 {
@@ -31,6 +30,7 @@ namespace Core.Application.DTOs.Teacher.Validators
 
             RuleFor(x => x.Type)
                 .Must(type => string.IsNullOrEmpty(type) || TeacherEntity.GetType().Any(x => x.Equals(type)))
+                .WithMessage(ValidatorTranform.Must("type", TeacherEntity.GetType()))
                 .MustAsync(async (type, token) =>
                 {
                     if(type == TeacherEntity.TYPE_TEACHER_MINISTRY)
@@ -40,13 +40,13 @@ namespace Core.Application.DTOs.Teacher.Validators
                                         .Select(x => x.Faculty).FirstOrDefaultAsync();
 
                         var exists = await _unitOfWork.Repository<TeacherEntity>()
-                                .GetAllInclude(x => x.Type == TeacherEntity.TYPE_TEACHER_MINISTRY)
-                                .AnyAsync(x => x.Department.FacultyId == faculty.Id);
+                                        .FirstOrDefaultAsync(x => x.Department.FacultyId == faculty.Id &&
+                                                            x.Type == TeacherEntity.TYPE_TEACHER_MINISTRY);
                         return exists == null;
                     }
                     return true;
                 })
-                .WithMessage(ValidatorTranform.Must("type", TeacherEntity.GetType()));
+                .WithMessage(ValidatorTranform.ExistsIn(TeacherEntity.TYPE_TEACHER_MINISTRY, "Faculty"));
         }
     }
 }

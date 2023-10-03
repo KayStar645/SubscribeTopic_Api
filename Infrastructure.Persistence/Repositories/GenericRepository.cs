@@ -24,16 +24,20 @@ namespace Infrastructure.Persistence.Repositories
         }
         public virtual async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
         {
+#pragma warning disable CS8603 // Possible null reference return.
             return await _dbContext.Set<T>()
                 .Where(x => x.IsDeleted == false)
                 .FirstOrDefaultAsync(predicate);
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public virtual async Task<T> GetByIdAsync(int? id)
         {
+#pragma warning disable CS8603 // Possible null reference return.
             return await _dbContext.Set<T>()
                 .Where(x => x.IsDeleted == false && x.Id == id)
                 .FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public virtual async Task<T> AddAsync(T entity)
@@ -44,10 +48,14 @@ namespace Infrastructure.Persistence.Repositories
 
         public virtual async Task<T> UpdateAsync(T entity)
         {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             T exist = await _dbContext.Set<T>()
                 .Where(x => x.IsDeleted == false && x.Id == entity.Id)
                 .FirstOrDefaultAsync();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8634 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'class' constraint.
             _dbContext.Entry(exist).CurrentValues.SetValues(entity);
+#pragma warning restore CS8634 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'class' constraint.
             return entity;
         }
 
