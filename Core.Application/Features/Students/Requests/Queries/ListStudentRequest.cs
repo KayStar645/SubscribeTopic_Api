@@ -12,20 +12,20 @@ namespace Core.Application.Features.Students.Requests.Queries
 {
     public class ListStudentRequest : ListBaseRequest<StudentDto>
     {
-        public bool isGetMajor { get; set; }
+        public bool? isGetMajor { get; set; }
 
-        public int facultyId { get; set; }
+        public int? facultyId { get; set; }
 
-        public int industryId { get; set; }
+        public int? industryId { get; set; }
 
-        public int majorId { get; set; }
+        public int? majorId { get; set; }
     }
 
-    public class StudentDtoValidator : AbstractValidator<ListStudentRequest>
+    public class ListStudentDtoValidator : AbstractValidator<ListStudentRequest>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public StudentDtoValidator(IUnitOfWork unitOfWork, int majorId, int industryId)
+        public ListStudentDtoValidator(IUnitOfWork unitOfWork, int? majorId, int? industryId)
         {
             _unitOfWork = unitOfWork;
 
