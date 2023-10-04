@@ -73,6 +73,11 @@ namespace Core.Application.Transform
             return $"{name} = {value} đã tồn tại!";
         }
 
+        public static string ExistsIn(string name, string key)
+        {
+            return $"{name} đã tồn tại trong {key}!";
+        }
+
         public static string NotExistsValue(string name, string value)
         {
             return $"{name} = {value} không tồn tại!";
