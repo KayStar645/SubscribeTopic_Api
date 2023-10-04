@@ -29,8 +29,8 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
         }
         public async Task<PaginatedResult<List<TeacherDto>>> Handle(ListTeacherRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListBaseRequestValidator<TeacherDto>();
-            var result = validator.Validate(request);
+            var validator = new ListTeacherDtoValidator(_unitOfWork, request.departmentId);
+            var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {
@@ -43,8 +43,7 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
 
             var query = _unitOfWork.Repository<Teacher>().GetAllInclude();
 
-            //departmentId trên Request không để trống
-            if (request.departmentId != 0) 
+            if (request.departmentId != null) 
             {
                 query = query.Where(x => x.DepartmentId == request.departmentId);
             }    

@@ -11,26 +11,26 @@ namespace Core.Application.Features.Teachers.Requests.Queries
 {
     public class ListTeacherRequest : ListBaseRequest<TeacherDto>
     {
-        public bool isGetDepartment { get; set; }
+        public bool? isGetDepartment { get; set; }
         
         public string? type { get; set; }
 
-        public int facultyId { get; set; }
+        public int? facultyId { get; set; }
 
-        public int departmentId { get; set; }
+        public int? departmentId { get; set; }
     }
 
-    public class TeacherDtoValidator : AbstractValidator<ListTeacherRequest>
+    public class ListTeacherDtoValidator : AbstractValidator<ListTeacherRequest>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public TeacherDtoValidator(IUnitOfWork unitOfWork, int departmentId)
+        public ListTeacherDtoValidator(IUnitOfWork unitOfWork, int? departmentId)
         {
             _unitOfWork = unitOfWork;
 
             Include(new ListBaseRequestValidator<TeacherDto>());
 
-            if (departmentId != 0)
+            if (departmentId != null)
             {
                 RuleFor(x => x.departmentId)
                 .MustAsync(async (departmentId, token) =>
