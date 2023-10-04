@@ -4,7 +4,6 @@ using Core.Application.DTOs.Major;
 using Core.Application.Features.Base.Requests.Queries;
 using Core.Application.Transform;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using FacultyEntity = Core.Domain.Entities.Faculty;
 using IndustryEntity = Core.Domain.Entities.Industry;
 
@@ -12,18 +11,18 @@ namespace Core.Application.Features.Majors.Requests.Queries
 {
     public class ListMajorRequest : ListBaseRequest<MajorDto>
     {
-        public bool isGetIndustry { get; set; }
+        public bool? isGetIndustry { get; set; }
 
-        public int facultyId { get; set; }
+        public int? facultyId { get; set; }
 
-        public int industryId { get; set; }
+        public int? industryId { get; set; }
     }
 
-    public class MajorDtoValidator : AbstractValidator<ListMajorRequest>
+    public class ListMajorDtoValidator : AbstractValidator<ListMajorRequest>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public MajorDtoValidator(IUnitOfWork unitOfWork, int industryId)
+        public ListMajorDtoValidator(IUnitOfWork unitOfWork, int? industryId)
         {
             _unitOfWork = unitOfWork;
 
@@ -46,8 +45,7 @@ namespace Core.Application.Features.Majors.Requests.Queries
                 .MustAsync(async (facultyId, token) =>
                 {
                     var exists = await _unitOfWork.Repository<FacultyEntity>()
-                        .GetAllInclude(x => x.Id == facultyId)
-                        .FirstOrDefaultAsync();
+                        .FirstOrDefaultAsync(x => x.Id == facultyId);
                     return exists != null;
                 })
                 .WithMessage(id => ValidatorTranform.MustIn("facultyId"));
