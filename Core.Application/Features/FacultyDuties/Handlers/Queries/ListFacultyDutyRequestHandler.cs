@@ -28,8 +28,8 @@ namespace Core.Application.Features.FacultyDuties.Handlers.Queries
         }
         public async Task<PaginatedResult<List<FacultyDutyDto>>> Handle(ListFacultyDutyRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListBaseRequestValidator<FacultyDutyDto>();
-            var result = validator.Validate(request);
+            var validator = new ListFacultyDutyDtoValidator(_unitOfWork, request.departmentId);
+            var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {
@@ -38,26 +38,23 @@ namespace Core.Application.Features.FacultyDuties.Handlers.Queries
                     .Failure((int)HttpStatusCode.BadRequest, errorMessages);
             }
 
-            var validationContext = new ValidationContext(request, null, null);
-            var validationResults = new List<ValidationResult>();
-
-            bool isValid = Validator.TryValidateObject(request, validationContext, validationResults, true);
-
-            if (isValid == false)
-            {
-                var errorMessages = validationResults.Select(x => x.ErrorMessage).ToList();
-                return PaginatedResult<List<FacultyDutyDto>>
-                    .Failure((int)HttpStatusCode.BadRequest, errorMessages);
-            }
-
             var sieve = _mapper.Map<SieveModel>(request);
 
-            var query = _unitOfWork.Repository<FacultyDuty>().GetAllInclude()
-                                   .Where(x => x.FacultyId == request.facultyId);
+            var query = _unitOfWork.Repository<FacultyDuty>().GetAllInclude();
+
+            if (request.departmentId != null)
+            {
+                query = query.Where(x => x.DepartmentId == request.departmentId);
+            }
+            else if (request.facultyId != null)
+            {
+                query = query.Where(x => x.FacultyId == request.facultyId);
+            }
 
             if (request.isAllDetail)
             {
                 query = _unitOfWork.Repository<FacultyDuty>().AddInclude(query, x => x.Faculty);
+                query = _unitOfWork.Repository<FacultyDuty>().AddInclude(query, x => x.Department);
             }
             else
             {

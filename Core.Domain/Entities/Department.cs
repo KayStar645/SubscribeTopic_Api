@@ -52,6 +52,10 @@ namespace Core.Domain.Entities
         [NotMapped]
         public ICollection<Teacher>? Teachers { get; } = new HashSet<Teacher>();
 
+        // Bộ môn được giao nhiệm vụ
+        [NotMapped]
+        public ICollection<FacultyDuty>? FacultyDuties { get; } = new HashSet<FacultyDuty>();
+
         #endregion
 
 

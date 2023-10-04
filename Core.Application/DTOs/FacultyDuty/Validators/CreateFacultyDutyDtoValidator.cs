@@ -1,7 +1,7 @@
 ﻿using Core.Application.Contracts.Persistence;
 using Core.Application.Transform;
 using FluentValidation;
-using FacultyDutyEntity = Core.Domain.Entities.FacultyDuty;
+using FacultyEntity = Core.Domain.Entities.Faculty;
 
 namespace Core.Application.DTOs.FacultyDuty.Validators
 {
@@ -20,7 +20,7 @@ namespace Core.Application.DTOs.FacultyDuty.Validators
                 .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
                 .MustAsync(async (internalCode, token) =>
                 {
-                    var exists = await _unitOfWork.Repository<FacultyDutyEntity>()
+                    var exists = await _unitOfWork.Repository<FacultyEntity>()
                         .FirstOrDefaultAsync(x => x.InternalCode == internalCode);
                     return exists == null;
                 }).WithMessage(ValidatorTranform.Exists("internalCode"));
