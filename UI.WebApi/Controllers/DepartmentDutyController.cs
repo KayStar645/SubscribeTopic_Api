@@ -30,8 +30,7 @@ namespace UI.WebApi.Controllers
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
-        /// - departmentId: required
-        /// - teacherId: required
+        /// - departmentId/teacherId: required
         /// </remarks>
         [HttpGet]
         public async Task<ActionResult> Get([FromQuery] ListDepartmentDutyRequest request)

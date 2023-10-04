@@ -25,11 +25,6 @@ namespace Core.Application.DTOs.DepartmentDuty.Validators
                     return exists == null;
                 }).WithMessage(ValidatorTranform.Exists("internalCode"));
 
-            RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
-                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));
-
-
         }
     }
 }

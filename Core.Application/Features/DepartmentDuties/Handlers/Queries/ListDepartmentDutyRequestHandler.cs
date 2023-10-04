@@ -28,8 +28,8 @@ namespace Core.Application.Features.DepartmentDuties.Handlers.Queries
         }
         public async Task<PaginatedResult<List<DepartmentDutyDto>>> Handle(ListDepartmentDutyRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListBaseRequestValidator<DepartmentDutyDto>();
-            var result = validator.Validate(request);
+            var validator = new ListDepartmentDutyDtoValidator(_unitOfWork, request.teacherId);
+            var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {
@@ -38,22 +38,18 @@ namespace Core.Application.Features.DepartmentDuties.Handlers.Queries
                     .Failure((int)HttpStatusCode.BadRequest, errorMessages);
             }
 
-            var validationContext = new ValidationContext(request, null, null);
-            var validationResults = new List<ValidationResult>();
-
-            bool isValid = Validator.TryValidateObject(request, validationContext, validationResults, true);
-
-            if (isValid == false)
-            {
-                var errorMessages = validationResults.Select(x => x.ErrorMessage).ToList();
-                return PaginatedResult<List<DepartmentDutyDto>>
-                    .Failure((int)HttpStatusCode.BadRequest, errorMessages);
-            }
-
             var sieve = _mapper.Map<SieveModel>(request);
 
-            var query = _unitOfWork.Repository<DepartmentDuty>().GetAllInclude()
-                                   .Where(x => x.DepartmentId == request.departmentId);
+            var query = _unitOfWork.Repository<DepartmentDuty>().GetAllInclude();
+
+            if (request.teacherId != null)
+            {
+                query = query.Where(x => x.TeacherId == request.teacherId);
+            }
+            else if (request.departmentId != null)
+            {
+                query = query.Where(x => x.DepartmentId == request.departmentId);
+            }
 
             if (request.isAllDetail)
             {
