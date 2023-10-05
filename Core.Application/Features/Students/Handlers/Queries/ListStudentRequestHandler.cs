@@ -27,8 +27,8 @@ namespace Core.Application.Features.Students.Handlers.Queries
 
         public async Task<PaginatedResult<List<StudentDto>>> Handle(ListStudentRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListBaseRequestValidator<StudentDto>();
-            var result = validator.Validate(request);
+            var validator = new ListStudentDtoValidator(_unitOfWork, request.majorId, request.industryId);
+            var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {
