@@ -9,7 +9,7 @@ namespace Core.Application.DTOs.Major.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateMajorDtoValidator(IUnitOfWork unitOfWork, int currentMajorId)
+        public UpdateMajorDtoValidator(IUnitOfWork unitOfWork, int? currentId)
         {
             _unitOfWork = unitOfWork;
 
@@ -21,7 +21,7 @@ namespace Core.Application.DTOs.Major.Validators
                 .MustAsync(async (internalCode, token) =>
                 {
                     var major = await _unitOfWork.Repository<MajorEntity>()
-                                      .FirstOrDefaultAsync(x => x.Id != currentMajorId && x.InternalCode == internalCode);
+                                      .FirstOrDefaultAsync(x => x.Id != currentId && x.InternalCode == internalCode);
                     return major == null;
                 }).WithMessage(ValidatorTranform.Exists("internalCode"));
         }

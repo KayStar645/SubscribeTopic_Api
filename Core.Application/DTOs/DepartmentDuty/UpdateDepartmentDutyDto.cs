@@ -4,7 +4,6 @@ namespace Core.Application.DTOs.DepartmentDuty
 {
     public class UpdateDepartmentDutyDto : BaseDto, IDepartmentDutyDto
     {
-        public int? DepartmentId { get; set; }
         public int? TeacherId { get; set; }
         public string? InternalCode { get; set; }
         public string? Name { get; set; }

@@ -9,11 +9,11 @@ namespace Core.Application.DTOs.DepartmentDuty.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateDepartmentDutyDtoValidator(IUnitOfWork unitOfWork, int currentId, DateTime start)
+        public UpdateDepartmentDutyDtoValidator(IUnitOfWork unitOfWork, int? currentId, int? departmentId, DateTime start)
         {
             _unitOfWork = unitOfWork;
 
-            Include(new DepartmentDutyDtoValidator(_unitOfWork, start));
+            Include(new DepartmentDutyDtoValidator(_unitOfWork, departmentId, start));
 
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("id"));

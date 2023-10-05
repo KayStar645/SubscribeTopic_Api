@@ -2,7 +2,7 @@
 using Core.Application.Custom;
 using Core.Application.Transform;
 using FluentValidation;
-using DepartmentEntity = Core.Domain.Entities.Department;
+using Microsoft.EntityFrameworkCore;
 using TeacherEntity = Core.Domain.Entities.Teacher;
 
 namespace Core.Application.DTOs.DepartmentDuty.Validators
@@ -11,25 +11,17 @@ namespace Core.Application.DTOs.DepartmentDuty.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public DepartmentDutyDtoValidator(IUnitOfWork unitOfWork, DateTime start)
+        public DepartmentDutyDtoValidator(IUnitOfWork unitOfWork, int? departmentId, DateTime start)
         {
             _unitOfWork = unitOfWork;
-
-            RuleFor(x => x.DepartmentId)
-                .MustAsync(async (id, token) =>
-                {
-                    var exists = await _unitOfWork.Repository<DepartmentEntity>().GetByIdAsync(id);
-                    return exists != null;
-                })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("departmentId", "departments"));
 
             RuleFor(x => x.TeacherId)
                 .MustAsync(async (id, token) =>
                 {
-                    var exists = await _unitOfWork.Repository<TeacherEntity>().GetByIdAsync(id);
+                    var exists = await _unitOfWork.Repository<TeacherEntity>().FirstOrDefaultAsync(x=>x.Id == id && x.DepartmentId == departmentId);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("teacherId", "teachers"));
+                .WithMessage(id => ValidatorTranform.MustIn("teacherId"));
 
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
@@ -50,6 +42,8 @@ namespace Core.Application.DTOs.DepartmentDuty.Validators
             RuleFor(x => x.Image)
                 .Must(image => string.IsNullOrEmpty(image) || Uri.TryCreate(image, UriKind.Absolute, out _))
                 .WithMessage(ValidatorTranform.MustUrl("image"));
+
+            
 
         }
     }

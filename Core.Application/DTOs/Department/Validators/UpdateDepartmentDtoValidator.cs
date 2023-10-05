@@ -11,7 +11,7 @@ namespace Core.Application.DTOs.Department.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateDepartmentDtoValidator(IUnitOfWork unitOfWork, int currentId, int currentFacultyId)
+        public UpdateDepartmentDtoValidator(IUnitOfWork unitOfWork, int? currentId, int currentFacultyId)
         {
             _unitOfWork = unitOfWork;
 

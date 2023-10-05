@@ -9,7 +9,7 @@ namespace Core.Application.DTOs.Industry.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateIndustryDtoValidator(IUnitOfWork unitOfWork, int currentMajorId)
+        public UpdateIndustryDtoValidator(IUnitOfWork unitOfWork, int? currentMajorId)
         {
             _unitOfWork = unitOfWork;
 

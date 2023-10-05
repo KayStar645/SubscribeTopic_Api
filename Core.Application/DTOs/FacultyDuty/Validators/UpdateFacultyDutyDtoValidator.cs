@@ -10,7 +10,7 @@ namespace Core.Application.DTOs.FacultyDuty.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateFacultyDutyDtoValidator(IUnitOfWork unitOfWork, int currentId, DateTime start)
+        public UpdateFacultyDutyDtoValidator(IUnitOfWork unitOfWork, int? currentId, DateTime start)
         {
             _unitOfWork = unitOfWork;
 
