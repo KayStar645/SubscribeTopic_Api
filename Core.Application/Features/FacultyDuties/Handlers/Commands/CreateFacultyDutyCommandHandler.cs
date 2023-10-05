@@ -24,6 +24,7 @@ namespace Core.Application.Features.FacultyDuties.Handlers.Commands
         public async Task<Result<FacultyDutyDto>> Handle(CreateFacultyDutyRequest request, CancellationToken cancellationToken)
         {
             var validator = new CreateFacultyDutyDtoValidator(_unitOfWork,
+                request.CreateFacultyDutyDto.FacultyId,
                 request.CreateFacultyDutyDto.TimeStart ?? DateTime.Now);
             var validatorResult = await validator.ValidateAsync(request.CreateFacultyDutyDto);
 

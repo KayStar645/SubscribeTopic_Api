@@ -2,10 +2,7 @@
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.FacultyDuty;
-using Core.Application.DTOs.Faculty;
-using Core.Application.DTOs.FacultyDuty;
 using Core.Application.Features.FacultyDuties.Requests.Queries;
-using Core.Application.Interfaces.Repositories;
 using Core.Application.Responses;
 using Core.Application.Transform;
 using Core.Domain.Entities;

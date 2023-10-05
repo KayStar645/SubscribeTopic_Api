@@ -63,7 +63,7 @@ namespace UI.WebApi.Controllers
         /// - Name: string, required, max(190)
         /// - NumberOfThesis: int, required, range(1, max)
         /// - TimeStart: DateTime, In or after Today (TimeStart >= Now)
-        /// - TimeEnd: DateTime, After TimeStart (TimeEnd > TimeStart)
+        /// - TimeEnd: DateTime, required, After TimeStart (TimeEnd > TimeStart)
         /// </remarks>
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] CreateFacultyDutyDto request)
@@ -96,7 +96,7 @@ namespace UI.WebApi.Controllers
         /// - Name: string, required, max(190)
         /// - NumberOfThesis: int, required, range(1, max)
         /// - TimeStart: DateTime, In or after Today (TimeStart >= Now)
-        /// - TimeEnd: DateTime, After TimeStart (TimeEnd > TimeStart)
+        /// - TimeEnd: DateTime, required, After TimeStart (TimeEnd > TimeStart)
         /// </remarks>
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateFacultyDutyDto request)

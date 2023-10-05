@@ -2,7 +2,6 @@
 using Core.Application.Custom;
 using Core.Application.Transform;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using TeacherEntity = Core.Domain.Entities.Teacher;
 
 namespace Core.Application.DTOs.DepartmentDuty.Validators
@@ -36,6 +35,7 @@ namespace Core.Application.DTOs.DepartmentDuty.Validators
                 .WithMessage(ValidatorTranform.GreaterEqualOrThanDay("timestart", DateTime.Now));
 
             RuleFor(x => x.TimeEnd)
+                .NotEmpty().WithMessage(ValidatorTranform.Required("timeEnd"))
                 .Must(timeEnd => CustomValidator.IsAfterDay(timeEnd, start))
                 .WithMessage(ValidatorTranform.GreaterThanDay("timeEnd", start));
 

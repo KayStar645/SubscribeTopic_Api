@@ -29,8 +29,7 @@ namespace Core.Application.Features.DepartmentDuties.Handlers.Commands
             {
                 return Result<DepartmentDutyDto>.Failure(
                     ValidatorTranform.Required("id"),
-                    (int)HttpStatusCode.BadRequest
-);
+                    (int)HttpStatusCode.BadRequest);
             }
 
             try
@@ -44,7 +43,6 @@ namespace Core.Application.Features.DepartmentDuties.Handlers.Commands
                         (int)HttpStatusCode.NotFound
                     );
                 }
-
 
                 var validator = new UpdateDepartmentDutyDtoValidator(_unitOfWork,
                 request.UpdateDepartmentDutyDto.Id,

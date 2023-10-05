@@ -2,7 +2,6 @@
 using Core.Application.Custom;
 using Core.Application.Transform;
 using FluentValidation;
-using FacultyEntity = Core.Domain.Entities.Faculty;
 using DepartmentEntity = Core.Domain.Entities.Department;
 
 namespace Core.Application.DTOs.FacultyDuty.Validators
@@ -11,25 +10,17 @@ namespace Core.Application.DTOs.FacultyDuty.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public FacultyDutyDtoValidator(IUnitOfWork unitOfWork, DateTime start)
+        public FacultyDutyDtoValidator(IUnitOfWork unitOfWork, int? facultyId, DateTime start)
         {
             _unitOfWork = unitOfWork;
-
-            RuleFor(x => x.FacultyId)
-                .MustAsync(async (id, token) =>
-                {
-                    var exists = await _unitOfWork.Repository<FacultyEntity>().GetByIdAsync(id);
-                    return exists != null;
-                })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "facultys"));
 
             RuleFor(x => x.DepartmentId)
                 .MustAsync(async (id, token) =>
                 {
-                    var departmentExists = await _unitOfWork.Repository<DepartmentEntity>().GetByIdAsync(id);
+                    var departmentExists = await _unitOfWork.Repository<DepartmentEntity>().FirstOrDefaultAsync(x => x.Id == id && x.FacultyId == facultyId);
                     return departmentExists != null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("departmentId", "departments"));
+                .WithMessage(id => ValidatorTranform.MustIn("departmentId"));
 
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
@@ -44,6 +35,7 @@ namespace Core.Application.DTOs.FacultyDuty.Validators
                 .WithMessage(ValidatorTranform.GreaterEqualOrThanDay("timestart", DateTime.Now));
 
             RuleFor(x => x.TimeEnd)
+                .NotEmpty().WithMessage(ValidatorTranform.Required("timeEnd"))
                 .Must(timeEnd => CustomValidator.IsAfterDay(timeEnd, start))
                 .WithMessage(ValidatorTranform.GreaterThanDay("timeEnd", start));
 
