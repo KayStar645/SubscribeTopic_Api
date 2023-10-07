@@ -68,6 +68,15 @@ namespace Infrastructure.Persistence.Repositories
         // Query
         public virtual IQueryable<T> Entities => _dbContext.Set<T>();
 
+        public virtual IQueryable<T> Query()
+        {
+            var query = _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false)
+                .AsNoTracking();
+
+            return query;
+        }
+
         public virtual IQueryable<T> GetAllInclude(Expression<Func<T, object>> includeProperties = null)
         {
             var query = _dbContext.Set<T>()

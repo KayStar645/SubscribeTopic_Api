@@ -58,11 +58,11 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
 
             query = _sieveProcessor.Apply(sieve, query);
 
-            var facultys = await query.ToListAsync();
+            var faculties = await query.ToListAsync();
 
-            var mapFacultys = _mapper.Map<List<FacultyDto>>(facultys);
+            var mapFaculties = _mapper.Map<List<FacultyDto>>(faculties);
             return PaginatedResult<List<FacultyDto>>.Success(
-                mapFacultys, totalCount, request.page,
+                mapFaculties, totalCount, request.page,
                 request.pageSize);
         }
     }

@@ -1,9 +1,9 @@
 ﻿using Core.Application.Contracts.Persistence;
-using Core.Application.Custom;
 using Core.Application.Transform;
 using FluentValidation;
 using FacultyEntity = Core.Domain.Entities.Faculty;
 using DepartmentEntity = Core.Domain.Entities.Department;
+using Core.Application.Services;
 
 namespace Core.Application.DTOs.FacultyDuty.Validators
 {
@@ -21,7 +21,7 @@ namespace Core.Application.DTOs.FacultyDuty.Validators
                     var exists = await _unitOfWork.Repository<FacultyEntity>().GetByIdAsync(id);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "facultys"));
+                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "faculties"));
 
             RuleFor(x => x.DepartmentId)
                 .MustAsync(async (id, token) =>
