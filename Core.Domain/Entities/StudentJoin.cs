@@ -33,6 +33,11 @@ namespace Core.Domain.Entities
         [ForeignKey("RegistrationPeriodId")]
         public RegistrationPeriod? RegistrationPeriod { get; set; }
 
+        // Nhóm nào
+        [Sieve(CanFilter = true, CanSort = true)]
+        public int? GroupId { get; set; }
+        public Group? Group { get; set; }
+
         #endregion
 
 

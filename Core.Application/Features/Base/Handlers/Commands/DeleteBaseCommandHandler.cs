@@ -1,30 +1,27 @@
-﻿using AutoMapper;
-using Core.Application.Contracts.Persistence;
+﻿using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Faculty;
 using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
-using Core.Application.Responses;
-using Core.Application.Transform;
 using Core.Domain.Common;
 using MediatR;
-using System.Net;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Core.Application.Features.Base.Handlers.Commands
 {
     public class DeleteBaseCommandHandler<T> : IRequestHandler<DeleteBaseRequest<T>, Unit>
         where T : BaseAuditableEntity
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+        protected readonly IUnitOfWork _unitOfWork;
+        private readonly IServiceProvider _serviceProvider;
 
-        public DeleteBaseCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public DeleteBaseCommandHandler(IUnitOfWork unitOfWork, IServiceProvider serviceProvider)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
+            _serviceProvider = serviceProvider;
         }
 
-        public async Task<Unit> Handle(DeleteBaseRequest<T> request, CancellationToken cancellationToken)
+        public virtual async Task<Unit> Handle(DeleteBaseRequest<T> request, CancellationToken cancellationToken)
         {
             var validator = new DeleteBaseRequestValidator<T>();
             var result = await validator.ValidateAsync(request);
@@ -42,6 +39,36 @@ namespace Core.Application.Features.Base.Handlers.Commands
 
             await _unitOfWork.Repository<T>().DeleteAsync(entity);
             await _unitOfWork.Save(cancellationToken);
+
+            Task.Run(async () =>
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                    var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+                    string eventName = $"AfterDeleted{entity.GetType().Name}Event";
+
+                    List<Type> customEventHandlers = Assembly.GetExecutingAssembly().GetTypes()
+                        .Where(type => type.Name.EndsWith(eventName))
+                        .ToList();
+
+                    foreach (var customEventHandlerType in customEventHandlers)
+                    {
+                        if (typeof(INotification).IsAssignableFrom(customEventHandlerType))
+                        {
+                            // Lấy tên của lớp xử lý sự kiện
+                            string eventHandlerName = customEventHandlerType.Name;
+
+                            // Tạo một đối tượng từ tên lớp và truyền tham số vào constructor
+                            var eventHandlerInstance = (INotification)Activator.CreateInstance(customEventHandlerType, entity, unitOfWork);
+
+                            // Gửi sự kiện
+                            await mediator.Publish(eventHandlerInstance);
+                        }
+                    }
+                }
+            });
 
             return Unit.Value;
         }

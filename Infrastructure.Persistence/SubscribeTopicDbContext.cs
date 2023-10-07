@@ -26,5 +26,6 @@ namespace Infrastructure.Persistence
         public DbSet<StudentJoin> StudentJoins { get; set; }
         public DbSet<DepartmentDuty> DepartmentDuties { get; set; }
         public DbSet<FacultyDuty> FacultyDuties { get; set; }
+        public DbSet<Group> Groups { get; set; }
     }
 }
