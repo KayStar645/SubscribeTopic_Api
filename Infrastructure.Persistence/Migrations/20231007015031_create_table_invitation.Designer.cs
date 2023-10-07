@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubscribeTopicDbContext))]
-    partial class SubscribeTopicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231007015031_create_table_invitation")]
+    partial class create_table_invitation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -352,8 +354,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool?>("Status")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("StudentJoinId")
                         .HasColumnType("int");
@@ -729,11 +731,11 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Core.Domain.Entities.Group", b =>
                 {
-                    b.HasOne("Core.Domain.Entities.StudentJoin", "Leader")
+                    b.HasOne("Core.Domain.Entities.StudentJoin", "StudentJoin")
                         .WithOne("Group")
                         .HasForeignKey("Core.Domain.Entities.Group", "LeaderId");
 
-                    b.Navigation("Leader");
+                    b.Navigation("StudentJoin");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Industry", b =>

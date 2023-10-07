@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.Student;
 using Core.Application.Features.Students.Requests.Queries;
 using Core.Application.Responses;

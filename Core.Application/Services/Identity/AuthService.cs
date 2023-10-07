@@ -149,14 +149,14 @@ namespace Core.Application.Services.Identity
 
             for (int i = 0; i < permissions.Count; i++)
             {
-                permissionClaims.Add(new Claim(CustomClaimTypes.Permission, roles[i]));
+                permissionClaims.Add(new Claim(ConstantClaimTypes.Permission, roles[i]));
             }
 
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(CustomClaimTypes.Uid, user.Id) 
+                new Claim(ConstantClaimTypes.Uid, user.Id) 
             }
             .Union(permissionClaims)
             .Union(roleClaims);

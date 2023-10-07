@@ -30,4 +30,9 @@
     <ProjectReference Include="..\Sieve\Sieve.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Invitations\Handlers\" />
+    <Folder Include="Features\Invitations\Request\" />
+  </ItemGroup>
+
 </Project>

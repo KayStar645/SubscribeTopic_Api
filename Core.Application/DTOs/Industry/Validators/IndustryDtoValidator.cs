@@ -19,7 +19,7 @@ namespace Core.Application.DTOs.Industry.Validators
                     var facultyEntityExists = await _unitOfWork.Repository<FacultyEntity>().GetByIdAsync(id);
                     return facultyEntityExists != null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "facultys"));
+                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "faculties"));
 
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("name"))

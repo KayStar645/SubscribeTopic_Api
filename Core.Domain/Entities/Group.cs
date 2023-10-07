@@ -28,7 +28,7 @@ namespace Core.Domain.Entities
         [Sieve(CanFilter = true, CanSort = true)]
         public int? LeaderId { get; set; }
         [ForeignKey("LeaderId")]
-        public StudentJoin? StudentJoin { get; set; }
+        public StudentJoin? Leader { get; set; }
 
         #endregion
 
@@ -36,7 +36,10 @@ namespace Core.Domain.Entities
         #region ICOLECTION
 
         [NotMapped]
-        public ICollection<StudentJoin> StudentJoins = new HashSet<StudentJoin>();
+        public ICollection<StudentJoin> Members = new HashSet<StudentJoin>();
+
+        [NotMapped]
+        public ICollection<Invitation> Invitations = new HashSet<Invitation>();
 
         #endregion
 

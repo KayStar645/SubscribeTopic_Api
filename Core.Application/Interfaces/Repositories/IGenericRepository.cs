@@ -15,6 +15,7 @@ namespace Core.Application.Contracts.Persistence
 
         // Query
         IQueryable<T> Entities { get; }
+        IQueryable<T> Query();
         IQueryable<T> GetAllInclude(Expression<Func<T, object>> includeProperties = null);
         IQueryable<T> FindByCondition(Expression<Func<T, bool>> predicate);
         IQueryable<T> GetByIdInclude(int? id, params Expression<Func<T, object>>[] includeProperties);

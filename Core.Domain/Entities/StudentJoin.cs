@@ -43,6 +43,9 @@ namespace Core.Domain.Entities
 
         #region ICOLECTION
 
+        [NotMapped]
+        public ICollection<Invitation> Invitations = new HashSet<Invitation>();
+
         #endregion
 
 

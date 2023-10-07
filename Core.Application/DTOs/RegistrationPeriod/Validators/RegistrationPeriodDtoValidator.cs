@@ -1,5 +1,5 @@
 ﻿using Core.Application.Contracts.Persistence;
-using Core.Application.Custom;
+using Core.Application.Services;
 using Core.Application.Transform;
 using FluentValidation;
 using FacultyEntity = Core.Domain.Entities.Faculty;
