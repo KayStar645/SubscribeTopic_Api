@@ -17,7 +17,7 @@ namespace Core.Application.DTOs.DepartmentDuty.Validators
             RuleFor(x => x.TeacherId)
                 .MustAsync(async (id, token) =>
                 {
-                    var exists = await _unitOfWork.Repository<TeacherEntity>().FirstOrDefaultAsync(x=>x.Id == id && x.DepartmentId == departmentId);
+                    var exists = await _unitOfWork.Repository<TeacherEntity>().FirstOrDefaultAsync(x => x.Id == id && x.DepartmentId == departmentId);
                     return exists != null;
                 })
                 .WithMessage(id => ValidatorTranform.MustIn("teacherId"));
@@ -43,7 +43,9 @@ namespace Core.Application.DTOs.DepartmentDuty.Validators
                 .Must(image => string.IsNullOrEmpty(image) || Uri.TryCreate(image, UriKind.Absolute, out _))
                 .WithMessage(ValidatorTranform.MustUrl("image"));
 
-            
+            RuleFor(x => x.File)
+                .Must(file => string.IsNullOrEmpty(file) || CustomValidator.IsValidFile(file))
+                .WithMessage(ValidatorTranform.MustFile("file"));
 
         }
     }

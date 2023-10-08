@@ -2,6 +2,7 @@
 using Core.Application.Custom;
 using Core.Application.Transform;
 using FluentValidation;
+using static System.Net.Mime.MediaTypeNames;
 using DepartmentEntity = Core.Domain.Entities.Department;
 
 namespace Core.Application.DTOs.FacultyDuty.Validators
@@ -29,9 +30,8 @@ namespace Core.Application.DTOs.FacultyDuty.Validators
             RuleFor(x => x.NumberOfThesis)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("numberOfThesis"))
                 .GreaterThanOrEqualTo(1).WithMessage(ValidatorTranform.GreaterThanOrEqualTo("numberOfThesis", 1));
-
             RuleFor(x => x.TimeStart)
-                .Must(timeStart => CustomValidator.IsEqualOrAfterDay(timeStart, DateTime.Now))
+                .Must(timeStart => timeStart == null || CustomValidator.IsEqualOrAfterDay(timeStart, DateTime.Now))
                 .WithMessage(ValidatorTranform.GreaterEqualOrThanDay("timestart", DateTime.Now));
 
             RuleFor(x => x.TimeEnd)
@@ -43,7 +43,9 @@ namespace Core.Application.DTOs.FacultyDuty.Validators
                 .Must(image => string.IsNullOrEmpty(image) || Uri.TryCreate(image, UriKind.Absolute, out _))
                 .WithMessage(ValidatorTranform.MustUrl("image"));
 
-
+            RuleFor(x => x.File)
+                .Must(file => string.IsNullOrEmpty(file) || CustomValidator.IsValidFile(file))
+                .WithMessage(ValidatorTranform.MustFile("file"));
         }
     }
 }

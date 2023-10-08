@@ -29,5 +29,13 @@ namespace Core.Application.Custom
         {
             return time > day;
         }
+
+
+        public static bool IsValidFile(string file)
+        {
+            string pattern = @"^[^.]+\.[a-zA-Z]+$";
+
+            return Regex.IsMatch(file, pattern) && file.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
+        }
     }
 }

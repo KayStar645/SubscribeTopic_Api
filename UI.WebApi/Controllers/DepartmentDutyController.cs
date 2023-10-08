@@ -64,6 +64,8 @@ namespace UI.WebApi.Controllers
         /// - NumberOfThesis: int, required, range(1, max)
         /// - TimeStart: DateTime, In or after Today (TimeStart >= Now)
         /// - TimeEnd: DateTime, required, After TimeStart (TimeEnd > TimeStart)
+        /// - Image: string, must be url
+        /// - File: string, must be a valid file name (Ex: filename.extension)
         /// </remarks>
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] CreateDepartmentDutyDto request)
@@ -96,7 +98,9 @@ namespace UI.WebApi.Controllers
         /// - Name: string, required, max(190)
         /// - NumberOfThesis: int, required, range(1, max)
         /// - TimeStart: DateTime, In or after Today (TimeStart >= Now)
-        /// - TimeEnd: DateTime, required, After TimeStart (TimeEnd > TimeStart)
+        /// - TimeEnd: DateTime, required, After TimeStart (TimeEnd > TimeStart)       
+        /// - Image: string, must be url
+        /// - File: string, must be a valid file name (Ex: filename.extension)
         /// </remarks>
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateDepartmentDutyDto request)
