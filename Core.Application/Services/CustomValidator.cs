@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Core.Application.Custom
+namespace Core.Application.Services
 {
     public static class CustomValidator
     {

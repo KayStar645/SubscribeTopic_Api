@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubscribeTopicDbContext))]
-    partial class SubscribeTopicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231005093548_create_table_group")]
+    partial class create_table_group
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,7 +183,7 @@ namespace Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasFilter("[Dean_TeacherId] IS NOT NULL");
 
-                    b.ToTable("Faculties");
+                    b.ToTable("Facultys");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.FacultyDuty", b =>
@@ -321,53 +323,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("FacultyId");
 
                     b.ToTable("Industries");
-                });
-
-            modelBuilder.Entity("Core.Domain.Entities.Invitation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime");
-
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("StudentJoinId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("TimeSent")
-                        .HasColumnType("datetime");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("StudentJoinId");
-
-                    b.ToTable("Invitations");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Major", b =>
@@ -729,11 +684,11 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Core.Domain.Entities.Group", b =>
                 {
-                    b.HasOne("Core.Domain.Entities.StudentJoin", "Leader")
+                    b.HasOne("Core.Domain.Entities.StudentJoin", "StudentJoin")
                         .WithOne("Group")
                         .HasForeignKey("Core.Domain.Entities.Group", "LeaderId");
 
-                    b.Navigation("Leader");
+                    b.Navigation("StudentJoin");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Industry", b =>
@@ -743,21 +698,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasForeignKey("FacultyId");
 
                     b.Navigation("Faculty");
-                });
-
-            modelBuilder.Entity("Core.Domain.Entities.Invitation", b =>
-                {
-                    b.HasOne("Core.Domain.Entities.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId");
-
-                    b.HasOne("Core.Domain.Entities.StudentJoin", "StudentJoin")
-                        .WithMany()
-                        .HasForeignKey("StudentJoinId");
-
-                    b.Navigation("Group");
-
-                    b.Navigation("StudentJoin");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Major", b =>

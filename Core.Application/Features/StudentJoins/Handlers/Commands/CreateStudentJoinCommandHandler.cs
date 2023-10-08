@@ -2,10 +2,12 @@
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.StudentJoin;
 using Core.Application.DTOs.StudentJoin.Validators;
+using Core.Application.Features.StudentJoins.Events;
 using Core.Application.Features.StudentJoins.Requests.Commands;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 
 namespace Core.Application.Features.StudentJoins.Handlers.Commands
@@ -14,11 +16,13 @@ namespace Core.Application.Features.StudentJoins.Handlers.Commands
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IServiceProvider _serviceProvider;
 
-        public CreateStudentJoinCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateStudentJoinCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IServiceProvider serviceProvider)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<Result<StudentJoinDto>> Handle(CreateStudentJoinRequest request, CancellationToken cancellationToken)
@@ -39,9 +43,20 @@ namespace Core.Application.Features.StudentJoins.Handlers.Commands
                 var newStudentJoin = await _unitOfWork.Repository<StudentJoin>().AddAsync(studentJoin);
                 await _unitOfWork.Save(cancellationToken);
 
-                var StudentJoinDto = _mapper.Map<StudentJoinDto>(newStudentJoin);
+                var studentJoinDto = _mapper.Map<StudentJoinDto>(newStudentJoin);
 
-                return Result<StudentJoinDto>.Success(StudentJoinDto, (int)HttpStatusCode.Created);
+                Task.Run(async () =>
+                {
+                    using (var scope = _serviceProvider.CreateScope())
+                    {
+                        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+                        await mediator.Publish(new CreateGroupAfterCreatedStudentJoinEvent(newStudentJoin, unitOfWork));
+                    }
+                });
+
+                return Result<StudentJoinDto>.Success(studentJoinDto, (int)HttpStatusCode.Created);
             }
             catch (Exception ex)
             {

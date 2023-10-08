@@ -1,9 +1,9 @@
 ﻿using Core.Application.Contracts.Persistence;
-using Core.Application.Custom;
 using Core.Application.Transform;
 using FluentValidation;
 using static System.Net.Mime.MediaTypeNames;
 using DepartmentEntity = Core.Domain.Entities.Department;
+using Core.Application.Services;
 
 namespace Core.Application.DTOs.FacultyDuty.Validators
 {
