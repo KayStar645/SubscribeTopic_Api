@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.DepartmentDuty;
 using Core.Application.DTOs.FacultyDuty;
 using Core.Application.DTOs.FacultyDuty.Validators;
 using Core.Application.Features.FacultyDuties.Requests.Commands;
@@ -25,15 +26,11 @@ namespace Core.Application.Features.FacultyDuties.Handlers.Commands
 
         public async Task<Result<FacultyDutyDto>> Handle(UpdateFacultyDutyRequest request, CancellationToken cancellationToken)
         {
-            var validator = new UpdateFacultyDutyDtoValidator(_unitOfWork, 
-                request.UpdateFacultyDutyDto.Id,
-                request.UpdateFacultyDutyDto.TimeStart ?? DateTime.Now);
-            var validationResult = await validator.ValidateAsync(request.UpdateFacultyDutyDto);
-
-            if (validationResult.IsValid == false)
+            if (request.UpdateFacultyDutyDto.Id == null)
             {
-                var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
-                return Result<FacultyDutyDto>.Failure(errorMessages, (int)HttpStatusCode.BadRequest);
+                return Result<FacultyDutyDto>.Failure(
+                    ValidatorTranform.Required("id"),
+                    (int)HttpStatusCode.BadRequest);
             }
 
             try
@@ -46,6 +43,18 @@ namespace Core.Application.Features.FacultyDuties.Handlers.Commands
                         ValidatorTranform.NotExistsValue("Id", request.UpdateFacultyDutyDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
+                }
+
+                var validator = new UpdateFacultyDutyDtoValidator(_unitOfWork,
+                request.UpdateFacultyDutyDto.Id,
+                findFacultyDuty.FacultyId,
+                request.UpdateFacultyDutyDto.TimeStart ?? DateTime.Now);
+                var validationResult = await validator.ValidateAsync(request.UpdateFacultyDutyDto);
+
+                if (validationResult.IsValid == false)
+                {
+                    var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
+                    return Result<FacultyDutyDto>.Failure(errorMessages, (int)HttpStatusCode.BadRequest);
                 }
 
                 findFacultyDuty.CopyPropertiesFrom(request.UpdateFacultyDutyDto);

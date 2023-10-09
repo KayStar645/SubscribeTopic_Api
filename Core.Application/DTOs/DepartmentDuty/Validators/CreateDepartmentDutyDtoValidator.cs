@@ -1,6 +1,7 @@
 ﻿using Core.Application.Contracts.Persistence;
 using Core.Application.Transform;
 using FluentValidation;
+using DepartmentEntity = Core.Domain.Entities.Department;
 using DepartmentDutyEntity = Core.Domain.Entities.DepartmentDuty;
 
 namespace Core.Application.DTOs.DepartmentDuty.Validators
@@ -9,11 +10,11 @@ namespace Core.Application.DTOs.DepartmentDuty.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateDepartmentDutyDtoValidator(IUnitOfWork unitOfWork, DateTime start)
+        public CreateDepartmentDutyDtoValidator(IUnitOfWork unitOfWork, int? departmentId, DateTime start)
         {
             _unitOfWork = unitOfWork;
 
-            Include(new DepartmentDutyDtoValidator(_unitOfWork, start));
+            Include(new DepartmentDutyDtoValidator(_unitOfWork, departmentId, start));
 
             RuleFor(x => x.InternalCode)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"))
@@ -25,10 +26,13 @@ namespace Core.Application.DTOs.DepartmentDuty.Validators
                     return exists == null;
                 }).WithMessage(ValidatorTranform.Exists("internalCode"));
 
-            RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
-                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));
-
+            RuleFor(x => x.DepartmentId)
+                .MustAsync(async (id, token) =>
+                {
+                    var exists = await _unitOfWork.Repository<DepartmentEntity>().GetByIdAsync(id);
+                    return exists != null;
+                })
+                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("departmentId", "departments"));
 
         }
     }

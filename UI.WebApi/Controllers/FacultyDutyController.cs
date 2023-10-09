@@ -30,8 +30,7 @@ namespace UI.WebApi.Controllers
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
-        /// - facultyId: required
-        /// - departmentId: required
+        /// - facultyId/departmentId: required
         /// </remarks>
         [HttpGet]
         public async Task<ActionResult> Get([FromQuery] ListFacultyDutyRequest request)
@@ -64,7 +63,9 @@ namespace UI.WebApi.Controllers
         /// - Name: string, required, max(190)
         /// - NumberOfThesis: int, required, range(1, max)
         /// - TimeStart: DateTime, In or after Today (TimeStart >= Now)
-        /// - TimeEnd: DateTime, After TimeStart (TimeEnd > TimeStart)
+        /// - TimeEnd: DateTime, required, After TimeStart (TimeEnd > TimeStart)
+        /// - Image: string, must be url
+        /// - File: string, must be a valid file name (Ex: filename.extension)
         /// </remarks>
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] CreateFacultyDutyDto request)
@@ -97,7 +98,9 @@ namespace UI.WebApi.Controllers
         /// - Name: string, required, max(190)
         /// - NumberOfThesis: int, required, range(1, max)
         /// - TimeStart: DateTime, In or after Today (TimeStart >= Now)
-        /// - TimeEnd: DateTime, After TimeStart (TimeEnd > TimeStart)
+        /// - TimeEnd: DateTime, required, After TimeStart (TimeEnd > TimeStart)
+        /// - Image: string, must be url
+        /// - File: string, must be a valid file name (Ex: filename.extension)
         /// </remarks>
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateFacultyDutyDto request)

@@ -78,9 +78,10 @@ namespace Core.Application.Profiles
             CreateMap<DepartmentDuty, UpdateDepartmentDutyDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<FacultyDutyDto>>().ReverseMap();
-            CreateMap<StudentJoin, FacultyDutyDto>().ReverseMap();
-            CreateMap<StudentJoin, CreateFacultyDutyDto>().ReverseMap();
-            CreateMap<StudentJoin, UpdateFacultyDutyDto>().ReverseMap();
+            CreateMap<FacultyDuty, FacultyDutyDto>().ReverseMap();
+            CreateMap<FacultyDuty, CreateFacultyDutyDto>().ReverseMap();
+            CreateMap<FacultyDuty, UpdateFacultyDutyDto>().ReverseMap();
+
 
             CreateMap<SieveModel, ListBaseRequest<GroupDto>>().ReverseMap();
             CreateMap<GroupDto, Group>().ReverseMap();

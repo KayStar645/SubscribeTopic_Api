@@ -25,15 +25,11 @@ namespace Core.Application.Features.DepartmentDuties.Handlers.Commands
 
         public async Task<Result<DepartmentDutyDto>> Handle(UpdateDepartmentDutyRequest request, CancellationToken cancellationToken)
         {
-            var validator = new UpdateDepartmentDutyDtoValidator(_unitOfWork, 
-                request.UpdateDepartmentDutyDto.Id,
-                request.UpdateDepartmentDutyDto.TimeStart ?? DateTime.Now);
-            var validationResult = await validator.ValidateAsync(request.UpdateDepartmentDutyDto);
-
-            if (validationResult.IsValid == false)
+            if(request.UpdateDepartmentDutyDto.Id == null)
             {
-                var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
-                return Result<DepartmentDutyDto>.Failure(errorMessages, (int)HttpStatusCode.BadRequest);
+                return Result<DepartmentDutyDto>.Failure(
+                    ValidatorTranform.Required("id"),
+                    (int)HttpStatusCode.BadRequest);
             }
 
             try
@@ -46,6 +42,18 @@ namespace Core.Application.Features.DepartmentDuties.Handlers.Commands
                         ValidatorTranform.NotExistsValue("Id", request.UpdateDepartmentDutyDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
+                }
+
+                var validator = new UpdateDepartmentDutyDtoValidator(_unitOfWork,
+                request.UpdateDepartmentDutyDto.Id,
+                findDepartmentDuty.DepartmentId,
+                request.UpdateDepartmentDutyDto.TimeStart ?? DateTime.Now);
+                var validationResult = await validator.ValidateAsync(request.UpdateDepartmentDutyDto);
+
+                if (validationResult.IsValid == false)
+                {
+                    var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
+                    return Result<DepartmentDutyDto>.Failure(errorMessages, (int)HttpStatusCode.BadRequest);
                 }
 
                 findDepartmentDuty.CopyPropertiesFrom(request.UpdateDepartmentDutyDto);

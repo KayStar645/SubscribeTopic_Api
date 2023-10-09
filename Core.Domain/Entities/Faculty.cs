@@ -58,6 +58,10 @@ namespace Core.Domain.Entities
         [NotMapped]
         public ICollection<RegistrationPeriod>? RegistrationPeriods { get; } = new HashSet<RegistrationPeriod>();
 
+        // Khoa giao nhiệm vụ
+        [NotMapped]
+        public ICollection<FacultyDuty>? FacultyDuties { get; } = new HashSet<FacultyDuty>();
+
         #endregion
 
 

@@ -11,41 +11,46 @@ namespace Core.Application.Features.DepartmentDuties.Requests.Queries
 {
     public class ListDepartmentDutyRequest : ListBaseRequest<DepartmentDutyDto>
     {
-        public bool isGetDepartment { get; set; }
-        public bool isGetTeacher { get; set; }
+        public bool? isGetDepartment { get; set; }
+        public bool? isGetTeacher { get; set; }
 
-        public int departmentId { get; set; }
-        public int teacherId { get; set; }
+        public int? departmentId { get; set; }
+        public int? teacherId { get; set; }
 
     }
 
-    public class DepartmentDutyDtoValidator : AbstractValidator<ListDepartmentDutyRequest>
+    public class ListDepartmentDutyDtoValidator : AbstractValidator<ListDepartmentDutyRequest>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public DepartmentDutyDtoValidator(IUnitOfWork unitOfWork)
+        public ListDepartmentDutyDtoValidator(IUnitOfWork unitOfWork, int? teacherId)
         {
             _unitOfWork = unitOfWork;
 
             Include(new ListBaseRequestValidator<DepartmentDutyDto>());
 
-            RuleFor(x => x.departmentId)
-                .MustAsync(async (departmentId, token) =>
-                {
-                    var exists = await _unitOfWork.Repository<DepartmentEntity>()
-                        .FirstOrDefaultAsync(x => x.Id == departmentId);
-                    return exists != null;
-                })
-                .WithMessage(id => ValidatorTranform.MustIn("departmentId"));
-
-            RuleFor(x => x.teacherId)
-                .MustAsync(async (teacherId, token) =>
-                {
-                    var exists = await _unitOfWork.Repository<TeacherEntity>()
-                        .FirstOrDefaultAsync(x => x.Id == teacherId);
-                    return exists != null;
-                })
-                .WithMessage(id => ValidatorTranform.MustIn("teacherId"));
+            if (teacherId != null)
+            {
+                RuleFor(x => x.teacherId)
+                    .MustAsync(async (teacherId, token) =>
+                    {
+                        var exists = await _unitOfWork.Repository<TeacherEntity>()
+                            .FirstOrDefaultAsync(x => x.Id == teacherId);
+                        return exists != null;
+                    })
+                    .WithMessage(id => ValidatorTranform.MustIn("teacherId"));
+            }
+            else
+            {
+                RuleFor(x => x.departmentId)
+                    .MustAsync(async (departmentId, token) =>
+                    {
+                        var exists = await _unitOfWork.Repository<DepartmentEntity>()
+                            .FirstOrDefaultAsync(x => x.Id == departmentId);
+                        return exists != null;
+                    })
+                    .WithMessage(id => ValidatorTranform.MustIn("departmentId"));
+            }
         }
     }
 }

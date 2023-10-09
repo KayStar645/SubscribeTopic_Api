@@ -52,7 +52,10 @@ namespace Core.Application.Transform
         {
             return $"Trường {name} có thể thuộc {string.Join(", ", options)} nếu {nameOther} là {value} ; ngược lại trường {name} phải null!";
         }
-
+        public static string MustFile(string name)
+        {
+            return $"Trường {name} phải là một file hợp lệ!";
+        }
         public static string ValidValue(string name)
         {
             return $"Trường {name} không hợp lệ!";

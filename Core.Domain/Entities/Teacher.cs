@@ -69,6 +69,10 @@ namespace Core.Domain.Entities
 
         #region ICOLECTION
 
+        // Danh sách nhiệm vụ giảng viên nhận từ bộ môn
+        [NotMapped]
+        public ICollection<DepartmentDuty> Departments { get; } = new HashSet<DepartmentDuty>();
+
         #endregion
 
 

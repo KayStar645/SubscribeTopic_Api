@@ -2,7 +2,6 @@
 using Core.Application.Services;
 using Core.Application.Transform;
 using FluentValidation;
-using DepartmentEntity = Core.Domain.Entities.Department;
 using TeacherEntity = Core.Domain.Entities.Teacher;
 
 namespace Core.Application.DTOs.DepartmentDuty.Validators
@@ -11,25 +10,17 @@ namespace Core.Application.DTOs.DepartmentDuty.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public DepartmentDutyDtoValidator(IUnitOfWork unitOfWork, DateTime start)
+        public DepartmentDutyDtoValidator(IUnitOfWork unitOfWork, int? departmentId, DateTime start)
         {
             _unitOfWork = unitOfWork;
-
-            RuleFor(x => x.DepartmentId)
-                .MustAsync(async (id, token) =>
-                {
-                    var exists = await _unitOfWork.Repository<DepartmentEntity>().GetByIdAsync(id);
-                    return exists != null;
-                })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("departmentId", "departments"));
 
             RuleFor(x => x.TeacherId)
                 .MustAsync(async (id, token) =>
                 {
-                    var exists = await _unitOfWork.Repository<TeacherEntity>().GetByIdAsync(id);
+                    var exists = await _unitOfWork.Repository<TeacherEntity>().FirstOrDefaultAsync(x => x.Id == id && x.DepartmentId == departmentId);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("teacherId", "teachers"));
+                .WithMessage(id => ValidatorTranform.MustIn("teacherId"));
 
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
@@ -44,12 +35,17 @@ namespace Core.Application.DTOs.DepartmentDuty.Validators
                 .WithMessage(ValidatorTranform.GreaterEqualOrThanDay("timestart", DateTime.Now));
 
             RuleFor(x => x.TimeEnd)
+                .NotEmpty().WithMessage(ValidatorTranform.Required("timeEnd"))
                 .Must(timeEnd => CustomValidator.IsAfterDay(timeEnd, start))
                 .WithMessage(ValidatorTranform.GreaterThanDay("timeEnd", start));
 
             RuleFor(x => x.Image)
                 .Must(image => string.IsNullOrEmpty(image) || Uri.TryCreate(image, UriKind.Absolute, out _))
                 .WithMessage(ValidatorTranform.MustUrl("image"));
+
+            RuleFor(x => x.File)
+                .Must(file => string.IsNullOrEmpty(file) || CustomValidator.IsValidFile(file))
+                .WithMessage(ValidatorTranform.MustFile("file"));
 
         }
     }

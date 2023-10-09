@@ -23,7 +23,7 @@ namespace Core.Application.Features.DepartmentDuties.Handlers.Commands
 
         public async Task<Result<DepartmentDutyDto>> Handle(CreateDepartmentDutyRequest request, CancellationToken cancellationToken)
         {
-            var validator = new CreateDepartmentDutyDtoValidator(_unitOfWork,
+            var validator = new CreateDepartmentDutyDtoValidator(_unitOfWork, request.CreateDepartmentDutyDto.DepartmentId,
                 request.CreateDepartmentDutyDto.TimeStart ?? DateTime.Now);
             var validatorResult = await validator.ValidateAsync(request.CreateDepartmentDutyDto);
 

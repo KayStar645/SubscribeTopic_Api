@@ -2,7 +2,6 @@
 {
     public interface IFacultyDutyDto
     {
-        public int? FacultyId { get; set; }
         public int? DepartmentId { get; set; }
         public string? InternalCode { get; set; }
         public string? Name { get; set; }

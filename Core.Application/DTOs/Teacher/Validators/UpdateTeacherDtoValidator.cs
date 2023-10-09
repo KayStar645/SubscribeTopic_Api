@@ -9,7 +9,7 @@ namespace Core.Application.DTOs.Teacher.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateTeacherDtoValidator(IUnitOfWork unitOfWork, int currentTeacherId)
+        public UpdateTeacherDtoValidator(IUnitOfWork unitOfWork, int? currentId)
         {
             _unitOfWork = unitOfWork;
 
@@ -24,7 +24,7 @@ namespace Core.Application.DTOs.Teacher.Validators
                .MustAsync(async (internalCode, token) =>
                {
                    var teacher = await _unitOfWork.Repository<TeacherEntity>()
-                       .FirstOrDefaultAsync(x => x.Id != currentTeacherId && x.InternalCode == internalCode);
+                       .FirstOrDefaultAsync(x => x.Id != currentId && x.InternalCode == internalCode);
                    return teacher == null;
                })
                .WithMessage(internalCode => ValidatorTranform.Exists("internalCode"));
