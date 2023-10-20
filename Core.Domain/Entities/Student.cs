@@ -1,4 +1,5 @@
 ﻿using Core.Domain.Common;
+using Core.Domain.Entities.Identity;
 using Sieve.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -45,6 +46,10 @@ namespace Core.Domain.Entities
 
         [ForeignKey("MajorId")]
         public Major? Major { get; set; }
+
+        // User nào
+        public int? UserId { get; set; }
+        public User? User { get; set; }
 
         #endregion
 

@@ -7,9 +7,9 @@ namespace Core.Application.Services.Identity
     public class PermissionService : IPermissionService
     {
         // Xem lại cái này: UserManager, RoleManager
-        private readonly UserManager<Permissions> _permissionManager;
+        private readonly UserManager<Permission> _permissionManager;
 
-        public PermissionService(UserManager<Permissions> permissionManager)
+        public PermissionService(UserManager<Permission> permissionManager)
         {
             _permissionManager = permissionManager;
         }

@@ -1,51 +1,42 @@
-﻿using Core.Application.Constants;
-using Core.Application.Contracts.Identity;
+﻿using Core.Application.Contracts.Identity;
+using Core.Application.Interfaces.Repositories;
 using Core.Application.Models.Identity;
 using Core.Application.Models.Identity.Validators;
 using Core.Application.Responses;
 using Core.Application.Transform;
 using Core.Domain.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Security.Claims;
-using System.Text;
 
 namespace Core.Application.Services.Identity
 {
     public class AuthService : IAuthService
     {
-        private readonly UserManager<Users> _userManager;
-        private readonly SignInManager<Users> _signInManager;
         private readonly JwtSettings _jwtSettings;
+        private readonly IUserRepository _userRepo;
 
-        public AuthService(UserManager<Users> userManager,
-            IOptions<JwtSettings> jwtSettings,
-            SignInManager<Users> signInManager)
+        public AuthService(JwtSettings jwtSettings, IUserRepository userRepository)
         {
-            _userManager = userManager;
-            _jwtSettings = jwtSettings.Value;
-            _signInManager = signInManager;
-        }
+            _jwtSettings = jwtSettings;
+            _userRepo = userRepository;
+        }    
 
         public async Task<Result<AuthResponse>> Login(AuthRequest request)
         {
             try
             {
-                var user = await _userManager.FindByNameAsync(request.UserName);
+                User user = await _userRepo.FindByNameAsync(request.UserName);
 
                 if (user == null)
                 {
                     return Result<AuthResponse>
                         .Failure(IdentityTranform.UserNotExists(request.UserName),
-                        (int)HttpStatusCode.BadRequest);
+                    (int)HttpStatusCode.BadRequest);
                 }
 
-                var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
+                bool result = await _userRepo.PasswordSignInAsync(user.UserName, request.Password);
 
-                if (result.Succeeded == false)
+                if (result == false)
                 {
                     return Result<AuthResponse>
                         .Failure(IdentityTranform.InvalidCredentials(request.UserName),
@@ -56,7 +47,7 @@ namespace Core.Application.Services.Identity
 
                 AuthResponse auth = new AuthResponse
                 {
-                    Id = user.Id,
+                    Id = user.Id.ToString(),
                     Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                     UserName = user.UserName
                 };
@@ -83,47 +74,32 @@ namespace Core.Application.Services.Identity
                         (int)HttpStatusCode.BadRequest);
                 }
 
-                var existingUser = await _userManager.FindByNameAsync(request.UserName);
+                User user = await _userRepo.FindByNameAsync(request.UserName);
 
-                if (existingUser != null)
+                if (user != null)
                 {
                     return Result<RegistrationResponse>
                         .Failure(IdentityTranform.UserAlreadyExists(request.UserName),
                         (int)HttpStatusCode.BadRequest);
                 }
 
-                var user = new Users
+                var newUser = new User
                 {
                     UserName = request.UserName,
                 };
 
-                var existingUserName = await _userManager.FindByEmailAsync(request.UserName);
+                var result = await _userRepo.CreateAsync(new User(request.UserName, request.UserName));
 
-                if (existingUserName == null)
+                if (result)
                 {
-                    var result = await _userManager.CreateAsync(user, request.Password);
-
-                    if (result.Succeeded)
-                    {
-                        // Add quyền nè
-                        //await _userManager.AddToRoleAsync(user, RoleConfig.Ministry());
-
-                        return Result<RegistrationResponse>
-                            .Success(new RegistrationResponse() { UserId = user.Id },
-                            (int)HttpStatusCode.Created);
-                    }
-                    else
-                    {
-                        return Result<RegistrationResponse>
-                        .Failure(result.Errors.First().ToString(),
-                        (int)HttpStatusCode.BadRequest);
-                    }
+                    return Result<RegistrationResponse>
+                        .Success(new RegistrationResponse() { UserId = user.Id.ToString() },
+                        (int)HttpStatusCode.Created);
                 }
                 else
                 {
-                    return Result<RegistrationResponse>
-                        .Failure(IdentityTranform.UserAlreadyExists(request.UserName),
-                        (int)HttpStatusCode.BadRequest);
+                    // Chưa làm biến dịch
+                    return Result<RegistrationResponse>.Failure("Tạo không thành công!", (int)HttpStatusCode.BadRequest);
                 }
             }
             catch (Exception ex)
@@ -133,44 +109,45 @@ namespace Core.Application.Services.Identity
             }
         }
 
-        private async Task<JwtSecurityToken> GenerateToken(Users user)
+        private async Task<JwtSecurityToken> GenerateToken(User user)
         {
-            var roles = await _userManager.GetRolesAsync(user);
-            var permissions = await _userManager.GetClaimsAsync(user);
+            return new JwtSecurityToken();
+            //var roles = await _userRepo.GetRolesAsync(user);
 
-            var roleClaims = new List<Claim>();
 
-            for (int i = 0; i < roles.Count; i++)
-            {
-                roleClaims.Add(new Claim(ClaimTypes.Role, roles[i]));
-            }
+            //var roleClaims = new List<Claim>();
 
-            var permissionClaims = new List<Claim>();
+            //for (int i = 0; i < roles.Count; i++)
+            //{
+            //    roleClaims.Add(new Claim(ClaimTypes.Role, roles[i]));
+            //}
 
-            for (int i = 0; i < permissions.Count; i++)
-            {
-                permissionClaims.Add(new Claim(ConstantClaimTypes.Permission, roles[i]));
-            }
+            //var permissionClaims = new List<Claim>();
 
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ConstantClaimTypes.Uid, user.Id) 
-            }
-            .Union(permissionClaims)
-            .Union(roleClaims);
+            //for (int i = 0; i < permissions.Count; i++)
+            //{
+            //    permissionClaims.Add(new Claim(CustomClaimTypes.Permission, roles[i]));
+            //}
 
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
-            var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+            //var claims = new[]
+            //{
+            //    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+            //    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            //    new Claim(CustomClaimTypes.Uid, user.Id)
+            //}
+            //.Union(permissionClaims)
+            //.Union(roleClaims);
 
-            var jwtSecurityToken = new JwtSecurityToken(
-                issuer: _jwtSettings.Issuer,
-                audience: _jwtSettings.Audience,
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
-                signingCredentials: signingCredentials);
-            return jwtSecurityToken;
+            //var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
+            //var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+
+            //var jwtSecurityToken = new JwtSecurityToken(
+            //    issuer: _jwtSettings.Issuer,
+            //    audience: _jwtSettings.Audience,
+            //    claims: claims,
+            //    expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+            //    signingCredentials: signingCredentials);
+            //return jwtSecurityToken;
         }
     }
 }
