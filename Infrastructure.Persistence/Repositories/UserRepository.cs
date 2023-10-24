@@ -42,19 +42,24 @@ namespace Infrastructure.Persistence.Repositories
         {
             List<Permission> permissions = new List<Permission>();
 
-            var userPermissions = await _dbContext.Set<UserPermission>()
+            var permissionsWithUser = await _dbContext.Set<UserPermission>()
                                         .Where(x => x.UserId == user.Id)
                                         .Select(x => x.Permission)
                                         .Distinct()
                                         .ToListAsync();
 
-            var rolePermissions = await _dbContext.Set<UserRole>()
-                                    .SelectMany(ur => ur.Role.RolePermissions)
-                                    .Select(rp => rp.Permission)
-                                    .Distinct()
-                                    .ToListAsync();
+            var userRoles = await _dbContext.Set<UserRole>()
+                                        .Where(ur => ur.Role != null)
+                                        .ToListAsync();
 
-            return userPermissions.Concat(rolePermissions).ToList();
+            var permissionsWithRoles = userRoles.SelectMany(ur => ur.Role.RolePermissions)
+                                        .Select(rp => rp.Permission)
+                                        .Distinct()
+                                        .ToList();
+
+
+
+            return permissionsWithUser.Concat(permissionsWithRoles).ToList();
         }
 
         public async Task<List<Role>> GetRolesAsync(User user)

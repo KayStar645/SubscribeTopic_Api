@@ -6,23 +6,24 @@ using Core.Application.Models.Identity.Validators;
 using Core.Application.Responses;
 using Core.Application.Transform;
 using Core.Domain.Entities.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Text;
 
 namespace Core.Application.Services.Identity
 {
     public class AuthService : IAuthService
     {
-        private readonly JwtSettings _jwtSettings;
         private readonly IUserRepository _userRepo;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(JwtSettings jwtSettings, IUserRepository userRepository)
+        public AuthService(JwtSettings jwtSettings, IUserRepository userRepository, IConfiguration configuration)
         {
-            _jwtSettings = jwtSettings;
             _userRepo = userRepository;
+            _configuration = configuration;
         }    
 
         public async Task<Result<AuthResponse>> Login(AuthRequest request)
@@ -87,17 +88,12 @@ namespace Core.Application.Services.Identity
                         (int)HttpStatusCode.BadRequest);
                 }
 
-                var newUser = new User
-                {
-                    UserName = request.UserName,
-                };
-
-                var result = await _userRepo.CreateAsync(new User(request.UserName, request.UserName));
+                var result = await _userRepo.CreateAsync(new User(request.UserName, request.Password));
 
                 if (result)
                 {
                     return Result<RegistrationResponse>
-                        .Success(new RegistrationResponse() { UserName = newUser.UserName },
+                        .Success(new RegistrationResponse() { UserName = request.UserName },
                         (int)HttpStatusCode.Created);
                 }
                 else
@@ -123,21 +119,20 @@ namespace Core.Application.Services.Identity
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(CONSTANT_CLAIM_TYPES.UserName, user.UserName),
                 new Claim(CONSTANT_CLAIM_TYPES.Uid, user.Id.ToString())
             }
             .Union(permissionClaims)
             .Union(roleClaims);
 
-            var symmetricSecurityKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_jwtSettings.Key));
+            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
             var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
             var jwtSecurityToken = new JwtSecurityToken(
-                issuer: _jwtSettings.Issuer,
-                audience: _jwtSettings.Audience,
+                issuer: _configuration["JwtSettings:SubscribeTopic"],
+                audience: _configuration["JwtSettings:SubscribeTopicUser"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+                expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["JwtSettings:DurationInMinutes"])),
                 signingCredentials: signingCredentials);
             return jwtSecurityToken;
         }
