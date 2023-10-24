@@ -1,12 +1,16 @@
-﻿using Core.Application.Contracts.Identity;
+﻿using Core.Application.Constants;
+using Core.Application.Contracts.Identity;
 using Core.Application.Interfaces.Repositories;
 using Core.Application.Models.Identity;
 using Core.Application.Models.Identity.Validators;
 using Core.Application.Responses;
 using Core.Application.Transform;
 using Core.Domain.Entities.Identity;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
+using System.Security.Claims;
 
 namespace Core.Application.Services.Identity
 {
@@ -93,7 +97,7 @@ namespace Core.Application.Services.Identity
                 if (result)
                 {
                     return Result<RegistrationResponse>
-                        .Success(new RegistrationResponse() { UserId = user.Id.ToString() },
+                        .Success(new RegistrationResponse() { UserName = newUser.UserName },
                         (int)HttpStatusCode.Created);
                 }
                 else
@@ -111,43 +115,32 @@ namespace Core.Application.Services.Identity
 
         private async Task<JwtSecurityToken> GenerateToken(User user)
         {
-            return new JwtSecurityToken();
-            //var roles = await _userRepo.GetRolesAsync(user);
+            var roles = await _userRepo.GetRolesAsync(user);
+            var permissions = await _userRepo.GetPermissionsAsync(user);
 
+            var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role.Name));
+            var permissionClaims = permissions.Select(permission => new Claim(CONSTANT_CLAIM_TYPES.Permission, permission.Name));
 
-            //var roleClaims = new List<Claim>();
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(CONSTANT_CLAIM_TYPES.Uid, user.Id.ToString())
+            }
+            .Union(permissionClaims)
+            .Union(roleClaims);
 
-            //for (int i = 0; i < roles.Count; i++)
-            //{
-            //    roleClaims.Add(new Claim(ClaimTypes.Role, roles[i]));
-            //}
+            var symmetricSecurityKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_jwtSettings.Key));
+            var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
-            //var permissionClaims = new List<Claim>();
-
-            //for (int i = 0; i < permissions.Count; i++)
-            //{
-            //    permissionClaims.Add(new Claim(CustomClaimTypes.Permission, roles[i]));
-            //}
-
-            //var claims = new[]
-            //{
-            //    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-            //    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            //    new Claim(CustomClaimTypes.Uid, user.Id)
-            //}
-            //.Union(permissionClaims)
-            //.Union(roleClaims);
-
-            //var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
-            //var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
-
-            //var jwtSecurityToken = new JwtSecurityToken(
-            //    issuer: _jwtSettings.Issuer,
-            //    audience: _jwtSettings.Audience,
-            //    claims: claims,
-            //    expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
-            //    signingCredentials: signingCredentials);
-            //return jwtSecurityToken;
+            var jwtSecurityToken = new JwtSecurityToken(
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+                signingCredentials: signingCredentials);
+            return jwtSecurityToken;
         }
+
     }
 }

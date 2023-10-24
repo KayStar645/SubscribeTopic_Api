@@ -1,5 +1,9 @@
-﻿using Core.Application.Features.Base.Handlers.Commands;
+﻿using Core.Application.Contracts.Identity;
+using Core.Application.Features.Base.Handlers.Commands;
+using Core.Application.Models.Identity;
+using Core.Application.Services.Identity;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -15,6 +19,10 @@ namespace Core.Application
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
             services.AddTransient(typeof(IRequestHandler<,>), typeof(DeleteBaseCommandHandler<>));
+
+            services.AddScoped<JwtSettings>();
+            services.AddScoped<IPasswordHasher<Core.Domain.Entities.Identity.User>, PasswordHasher<Core.Domain.Entities.Identity.User>>();
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }

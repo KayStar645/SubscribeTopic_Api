@@ -38,12 +38,33 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<User> FindByNameAsync(string userName) => await _dbContext.Set<User>().Where(x => x.UserName == userName).FirstOrDefaultAsync();
 
+        public async Task<List<Permission>> GetPermissionsAsync(User user)
+        {
+            List<Permission> permissions = new List<Permission>();
+
+            var userPermissions = await _dbContext.Set<UserPermission>()
+                                        .Where(x => x.UserId == user.Id)
+                                        .Select(x => x.Permission)
+                                        .Distinct()
+                                        .ToListAsync();
+
+            var rolePermissions = await _dbContext.Set<UserRole>()
+                                    .SelectMany(ur => ur.Role.RolePermissions)
+                                    .Select(rp => rp.Permission)
+                                    .Distinct()
+                                    .ToListAsync();
+
+            return userPermissions.Concat(rolePermissions).ToList();
+        }
+
         public async Task<List<Role>> GetRolesAsync(User user)
         {
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
             return await _dbContext.Set<UserRole>()
-                                        .Where(x => x.UserId == user.Id)
-                                        .Select(x => x.Role)
-                                        .ToListAsync();
+                                    .Where(x => x.UserId == user.Id)
+                                    .Select(x => x.Role)
+                                    .ToListAsync();
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
         }
 
         public async Task<bool> PasswordSignInAsync(string userName, string password)
