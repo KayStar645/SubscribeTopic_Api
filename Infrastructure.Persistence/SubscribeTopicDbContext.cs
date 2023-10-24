@@ -1,4 +1,5 @@
 ﻿using Core.Domain.Entities;
+using Core.Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence
@@ -14,6 +15,14 @@ namespace Infrastructure.Persistence
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SubscribeTopicDbContext).Assembly);
         }
+
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<UserPermission> UserPermissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
+
 
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Department> Departments { get; set; }

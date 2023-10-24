@@ -21,6 +21,7 @@ namespace Infrastructure.Persistence
 
             services.AddScoped<ITeacherRepository, TeacherRepository>();
             services.AddScoped<IRegistrationPeriodRepository, RegistrationPeriodRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

@@ -1,4 +1,5 @@
 ﻿using Core.Domain.Common;
+using Core.Domain.Entities.Identity;
 using Sieve.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -63,6 +64,10 @@ namespace Core.Domain.Entities
 
         // Là trưởng bộ môn của bộ môn nào nào
         public Department? HeadDepartment_Department { get; set; }
+
+        // User nào
+        public int? UserId { get; set; }
+        public User? User { get; set; }
 
         #endregion
 

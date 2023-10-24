@@ -6,9 +6,9 @@ namespace Core.Application.Services.Identity
 {
     public class RoleService : IRoleService
     {
-        private readonly RoleManager<Roles> _roleManager;
+        private readonly RoleManager<Role> _roleManager;
 
-        public RoleService(RoleManager<Roles> roleManager)
+        public RoleService(RoleManager<Role> roleManager)
         {
             _roleManager = roleManager;
         }
