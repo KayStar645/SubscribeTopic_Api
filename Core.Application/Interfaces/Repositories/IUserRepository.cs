@@ -1,4 +1,5 @@
 ﻿using Core.Application.Contracts.Persistence;
+using Core.Domain.Entities;
 using Core.Domain.Entities.Identity;
 
 namespace Core.Application.Interfaces.Repositories
@@ -7,8 +8,9 @@ namespace Core.Application.Interfaces.Repositories
     {
         Task<bool> CreateAsync(User user);
         Task<User> FindByNameAsync(string userName);
-        Task<List<Role>> GetRolesAsync(User user);
+        Task<(Faculty faculty, int type)> GetFacultyAsync(User user);
         Task<List<Permission>> GetPermissionsAsync(User user);
+        Task<List<Role>> GetRolesAsync(User user);
         Task<bool> PasswordSignInAsync(string userName, string password);
     }
 }

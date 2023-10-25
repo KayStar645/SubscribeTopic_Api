@@ -1,5 +1,7 @@
-﻿using Core.Application.Constants;
+﻿using AutoMapper;
+using Core.Application.Constants;
 using Core.Application.Contracts.Identity;
+using Core.Application.DTOs.Faculty;
 using Core.Application.Interfaces.Repositories;
 using Core.Application.Models.Identity;
 using Core.Application.Models.Identity.Validators;
@@ -12,6 +14,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace Core.Application.Services.Identity
 {
@@ -19,11 +22,13 @@ namespace Core.Application.Services.Identity
     {
         private readonly IUserRepository _userRepo;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public AuthService(JwtSettings jwtSettings, IUserRepository userRepository, IConfiguration configuration)
+        public AuthService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper)
         {
             _userRepo = userRepository;
             _configuration = configuration;
+            _mapper = mapper;
         }    
 
         public async Task<Result<AuthResponse>> Login(AuthRequest request)
@@ -113,14 +118,23 @@ namespace Core.Application.Services.Identity
         {
             var roles = await _userRepo.GetRolesAsync(user);
             var permissions = await _userRepo.GetPermissionsAsync(user);
+            var result = await _userRepo.GetFacultyAsync(user);
+            var facultyDto = _mapper.Map<FacultyDto>(result.faculty);
+            string type = "";
+            if (result.type == 0)
+                type = "student";
+            else if (result.type == 1)
+                type = "teacher";
 
             var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role.Name));
             var permissionClaims = permissions.Select(permission => new Claim(CONSTANT_CLAIM_TYPES.Permission, permission.Name));
 
             var claims = new[]
             {
+                new Claim(CONSTANT_CLAIM_TYPES.Uid, user.Id.ToString()),
                 new Claim(CONSTANT_CLAIM_TYPES.UserName, user.UserName),
-                new Claim(CONSTANT_CLAIM_TYPES.Uid, user.Id.ToString())
+                new Claim(CONSTANT_CLAIM_TYPES.Type, type),
+                new Claim(CONSTANT_CLAIM_TYPES.Faculty, JsonSerializer.Serialize(facultyDto))
             }
             .Union(permissionClaims)
             .Union(roleClaims);

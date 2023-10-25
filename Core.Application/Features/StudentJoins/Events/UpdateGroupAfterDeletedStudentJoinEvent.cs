@@ -6,13 +6,13 @@ namespace Core.Application.Features.StudentJoins.Events
 {
     public class UpdateGroupAfterDeletedStudentJoinEvent : INotification
     {
-        public StudentJoin studentJoin { get; set; }
-        public IUnitOfWork unitOfWork { get; set; }
+        public StudentJoin _studentJoin { get; set; }
+        public IUnitOfWork _unitOfWork { get; set; }
 
         public UpdateGroupAfterDeletedStudentJoinEvent(StudentJoin studentJoin, IUnitOfWork unitOfWork)
         {
-            this.studentJoin = studentJoin;
-            this.unitOfWork = unitOfWork;
+            _studentJoin = studentJoin;
+            _unitOfWork = unitOfWork;
         }
     }
 
@@ -24,28 +24,28 @@ namespace Core.Application.Features.StudentJoins.Events
 
             try
             {
-                var group = await pEvent.unitOfWork.Repository<Group>().GetByIdAsync(pEvent.studentJoin.GroupId);
+                var group = await pEvent._unitOfWork.Repository<Group>().GetByIdAsync(pEvent._studentJoin.GroupId);
 
                 if (group.CountMember == 1)
                 {
-                    await pEvent.unitOfWork.Repository<Group>().DeleteAsync(group);
-                    await pEvent.unitOfWork.Save(cancellationToken);
+                    await pEvent._unitOfWork.Repository<Group>().DeleteAsync(group);
+                    await pEvent._unitOfWork.Save(cancellationToken);
                 }
                 else
                 {
                     group.CountMember -= 1;
 
-                    if (group.LeaderId == pEvent.studentJoin.Id)
+                    if (group.LeaderId == pEvent._studentJoin.Id)
                     {
                         // Lấy thành viên khác làm trưởng nhóm
-                        var student = await pEvent.unitOfWork.Repository<StudentJoin>()
+                        var student = await pEvent._unitOfWork.Repository<StudentJoin>()
                                                         .FirstOrDefaultAsync(x => x.GroupId == group.Id &&
-                                                                                  x.Id != pEvent.studentJoin.StudentId);
+                                                                                  x.Id != pEvent._studentJoin.StudentId);
 
                         group.LeaderId = student?.Id;
                     }
-                    await pEvent.unitOfWork.Repository<Group>().UpdateAsync(group);
-                    await pEvent.unitOfWork.Save(cancellationToken);
+                    await pEvent._unitOfWork.Repository<Group>().UpdateAsync(group);
+                    await pEvent._unitOfWork.Save(cancellationToken);
                 }
             }
             catch (Exception ex)

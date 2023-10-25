@@ -6,13 +6,13 @@ namespace Core.Application.Features.StudentJoins.Events
 {
     public class CreateGroupAfterCreatedStudentJoinEvent : INotification
     {
-        public StudentJoin studentJoin { get; set; }
-        public IUnitOfWork unitOfWork { get; set; }
+        public StudentJoin _studentJoin { get; set; }
+        public IUnitOfWork _unitOfWork { get; set; }
 
         public CreateGroupAfterCreatedStudentJoinEvent(StudentJoin studentJoin, IUnitOfWork unitOfWork)
         {
-            this.studentJoin = studentJoin;
-            this.unitOfWork = unitOfWork;
+            _studentJoin = studentJoin;
+            _unitOfWork = unitOfWork;
         }
     }
 
@@ -26,20 +26,20 @@ namespace Core.Application.Features.StudentJoins.Events
             {
                 var group = new Group()
                 {
-                    Name = $"Group-{pEvent.studentJoin.Student.Name}",
+                    Name = $"Group-{pEvent._studentJoin.Student.Name}",
                     CountMember = 1,
-                    LeaderId = pEvent.studentJoin.Id
+                    LeaderId = pEvent._studentJoin.Id
                 };
 
-                var newGroup = await pEvent.unitOfWork.Repository<Group>().AddAsync(group);
-                await pEvent.unitOfWork.Save(cancellationToken);
+                var newGroup = await pEvent._unitOfWork.Repository<Group>().AddAsync(group);
+                await pEvent._unitOfWork.Save(cancellationToken);
 
                 // Cập nhật lại mã nhóm cho sinh viên này
-                var updateStudentJoin = pEvent.studentJoin;
+                var updateStudentJoin = pEvent._studentJoin;
                 updateStudentJoin.GroupId = newGroup.Id;
 
-                await pEvent.unitOfWork.Repository<StudentJoin>().UpdateAsync(updateStudentJoin);
-                await pEvent.unitOfWork.Save(cancellationToken);
+                await pEvent._unitOfWork.Repository<StudentJoin>().UpdateAsync(updateStudentJoin);
+                await pEvent._unitOfWork.Save(cancellationToken);
             }
             catch (Exception ex)
             {
