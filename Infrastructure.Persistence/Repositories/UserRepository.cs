@@ -1,4 +1,5 @@
 ﻿using Core.Application.Interfaces.Repositories;
+using Core.Domain.Entities;
 using Core.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,32 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<User> FindByNameAsync(string userName) => await _dbContext.Set<User>().Where(x => x.UserName == userName).FirstOrDefaultAsync();
 
+        public async Task<(Faculty faculty, int type)> GetFacultyAsync(User user)
+        {
+            var studentFaculty = await _dbContext.Set<Student>()
+                                    .Where(x => x.User.UserName == user.UserName)
+                                    .Select(x => x.Major.Industry.Faculty)
+                                    .FirstOrDefaultAsync();
+
+            var teacherFaculty = await _dbContext.Set<Teacher>()
+                                    .Where(x => x.User.UserName == user.UserName)
+                                    .Select(x => x.Department.Faculty)
+                                    .FirstOrDefaultAsync();
+
+            int type = -1;
+
+            if (studentFaculty != null)
+            {
+                type = 0;
+            }
+            else if (teacherFaculty != null)
+            {
+                type = 1;
+            }
+
+            return (studentFaculty ?? teacherFaculty, type);
+        }
+
         public async Task<List<Permission>> GetPermissionsAsync(User user)
         {
             List<Permission> permissions = new List<Permission>();
@@ -56,8 +83,6 @@ namespace Infrastructure.Persistence.Repositories
                                         .Select(rp => rp.Permission)
                                         .Distinct()
                                         .ToList();
-
-
 
             return permissionsWithUser.Concat(permissionsWithRoles).ToList();
         }
