@@ -17,13 +17,13 @@ namespace Core.Application.Features.StudentJoins.Requests.Queries
 
         public bool isGetRegistrationPeriod { get; set; }
 
-        public int facultyId { get; set; }
+        public int? facultyId { get; set; }
 
-        public int industryId { get; set; }
+        public int? industryId { get; set; }
 
-        public int majorId { get; set; }
+        public int? majorId { get; set; }
 
-        public int periodId { get; set; }
+        public int? periodId { get; set; }
     }
 
     public class StudentJoinDtoValidator : AbstractValidator<ListStudentJoinRequest>
