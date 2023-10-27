@@ -3,7 +3,7 @@ using Core.Application.DTOs.Student;
 
 namespace Core.Application.DTOs.StudentJoin
 {
-    public class StudentJoinDto
+    public class StudentJoinDto : BaseDto
     {
         public int? studentId { get; set; }
         public int? registrationPeriodId { get; set; }
