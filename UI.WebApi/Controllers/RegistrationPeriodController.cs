@@ -80,7 +80,7 @@ namespace UI.WebApi.Controllers
         /// - TimeEnd: DateTime, After TimeStart (TimeEnd > TimeStart)
         /// </remarks>
         [HttpPut]
-        public async Task<ActionResult> Put([FromForm] UpdateRegistrationPeriodDto periodRequest)
+        public async Task<ActionResult> Put([FromBody] UpdateRegistrationPeriodDto periodRequest)
         {
             var command = new UpdateRegistrationPeriodRequest { UpdateRegistrationPeriodDto = periodRequest };
             var response = await _mediator.Send(command);
