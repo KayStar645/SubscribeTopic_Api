@@ -1,5 +1,6 @@
 ﻿using Core.Application.DTOs.RegistrationPeriod;
 using Core.Application.DTOs.Student;
+using KLTN.Core.Application.DTOs.Common;
 
 namespace Core.Application.DTOs.StudentJoin
 {
