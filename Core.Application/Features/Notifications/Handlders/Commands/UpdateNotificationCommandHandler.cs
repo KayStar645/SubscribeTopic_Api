@@ -46,9 +46,7 @@ namespace Core.Application.Features.Notifications.Handlers.Commands
                     );
                 }
 
-                var mapNoti = _mapper.Map<Notification>(request.updateNotificationDto);
-
-                findNotification.CopyPropertiesFrom(mapNoti);
+                findNotification.CopyPropertiesFrom(request.updateNotificationDto);
 
                 var newNotification = await _unitOfWork.Repository<Notification>().UpdateAsync(findNotification);
                 await _unitOfWork.Save(cancellationToken);
