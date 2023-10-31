@@ -8,7 +8,7 @@ namespace Core.Application.Interfaces.Repositories
     {
         Task<bool> CreateAsync(User user);
         Task<User> FindByNameAsync(string userName);
-        Task<(Faculty faculty, int type)> GetFacultyAsync(User user);
+        Task<(Faculties faculty, int type)> GetFacultyAsync(User user);
         Task<List<Permission>> GetPermissionsAsync(User user);
         Task<List<Role>> GetRolesAsync(User user);
         Task<bool> PasswordSignInAsync(string userName, string password);

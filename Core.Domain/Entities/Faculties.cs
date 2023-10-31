@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Domain.Entities
 {
-    public class Faculty : BaseAuditableEntity
+    public class Faculties : BaseAuditableEntity
     {
         #region CONST
 

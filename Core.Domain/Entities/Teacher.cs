@@ -60,7 +60,7 @@ namespace Core.Domain.Entities
         public Department? Department { get; set; }
 
         // Là trưởng khoa của khoa nào
-        public Faculty? Dean_Faculty { get; set; }
+        public Faculties? Dean_Faculty { get; set; }
 
         // Là trưởng bộ môn của bộ môn nào nào
         public Department? HeadDepartment_Department { get; set; }

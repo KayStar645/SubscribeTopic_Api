@@ -28,7 +28,7 @@ namespace Core.Domain.Entities
         // Thông báo của khoa nào. Không có => toàn trường
         public int? FacultyId { get; set; }
         [ForeignKey("FacultyId")]
-        public Faculty? Faculty { get; set; }
+        public Faculties? Faculty { get; set; }
 
         #endregion
 

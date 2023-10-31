@@ -98,7 +98,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Faculty> request)
+        public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Faculties> request)
         {
             try
             {

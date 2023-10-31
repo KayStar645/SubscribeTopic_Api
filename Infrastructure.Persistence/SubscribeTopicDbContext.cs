@@ -26,12 +26,12 @@ namespace Infrastructure.Persistence
 
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Department> Departments { get; set; }
-        public DbSet<Faculty> Faculties { get; set; }
+        public DbSet<Faculties> Faculties { get; set; }
         public DbSet<Major> Majors { get; set; }
         public DbSet<Industry> Industries { get; set; }
         public DbSet<Student> Students { get; set; }
-        public DbSet<Notification> Notifications { get; set; }  
-        public DbSet<RegistrationPeriod> RegistrationPeriods { get; set;}
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<RegistrationPeriod> RegistrationPeriods { get; set; }
         public DbSet<StudentJoin> StudentJoins { get; set; }
         public DbSet<DepartmentDuty> DepartmentDuties { get; set; }
         public DbSet<FacultyDuty> FacultyDuties { get; set; }

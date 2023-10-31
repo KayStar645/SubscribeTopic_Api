@@ -33,9 +33,9 @@ namespace Core.Application.Features.Faculties.Handlers.Commands
 
             try
             {
-                var faculty = _mapper.Map<Faculty>(request.createFacultyDto);
+                var faculty = _mapper.Map<Domain.Entities.Faculties>(request.createFacultyDto);
 
-                var newFaculty = await _unitOfWork.Repository<Faculty>().AddAsync(faculty);
+                var newFaculty = await _unitOfWork.Repository<Domain.Entities.Faculties>().AddAsync(faculty);
                 await _unitOfWork.Save(cancellationToken);
 
                 var facultyDto = _mapper.Map<FacultyDto>(newFaculty);

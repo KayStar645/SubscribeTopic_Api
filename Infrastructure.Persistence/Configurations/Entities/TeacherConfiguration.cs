@@ -10,7 +10,7 @@ namespace Infrastructure.Persistence.Configurations.Entities
         {
             builder.HasOne(x => x.Dean_Faculty)
                 .WithOne(x => x.Dean_Teacher)
-                .HasForeignKey<Faculty>(f => f.Dean_TeacherId);
+                .HasForeignKey<Faculties>(f => f.Dean_TeacherId);
 
             builder.HasOne(x => x.HeadDepartment_Department)
                 .WithOne(x => x.HeadDepartment_Teacher)

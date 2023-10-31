@@ -39,7 +39,7 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<User> FindByNameAsync(string userName) => await _dbContext.Set<User>().Where(x => x.UserName == userName).FirstOrDefaultAsync();
 
-        public async Task<(Faculty faculty, int type)> GetFacultyAsync(User user)
+        public async Task<(Faculties faculty, int type)> GetFacultyAsync(User user)
         {
             var studentFaculty = await _dbContext.Set<Student>()
                                     .Where(x => x.User.UserName == user.UserName)

@@ -6,7 +6,7 @@ using Core.Application.Transform;
 using FluentValidation;
 using MajorEntity = Core.Domain.Entities.Major;
 using IndustryEntity = Core.Domain.Entities.Industry;
-using FacultyEntity = Core.Domain.Entities.Faculty;
+using FacultyEntity = Core.Domain.Entities.Faculties;
 
 namespace Core.Application.Features.Students.Requests.Queries
 {

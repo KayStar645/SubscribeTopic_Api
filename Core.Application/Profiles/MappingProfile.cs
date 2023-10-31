@@ -37,9 +37,9 @@ namespace Core.Application.Profiles
             CreateMap<Department, UpdateDepartmentDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<FacultyDto>>().ReverseMap();
-            CreateMap<Faculty, FacultyDto>().ReverseMap();
-            CreateMap<Faculty, CreateFacultyDto>().ReverseMap();
-            CreateMap<Faculty, UpdateFacultyDto>().ReverseMap();
+            CreateMap<Faculties, FacultyDto>().ReverseMap();
+            CreateMap<Faculties, CreateFacultyDto>().ReverseMap();
+            CreateMap<Faculties, UpdateFacultyDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<MajorDto>>().ReverseMap();
             CreateMap<Major, MajorDto>().ReverseMap();
