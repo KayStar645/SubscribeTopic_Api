@@ -2,12 +2,11 @@
 using Autofac;
 using Core.Application;
 using Core.Application.Features.Teachers.Requests.Commands;
-using Infrastructure.Identity;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 using Sieve;
+using System.Reflection;
 
 namespace UI.WebApi
 {
@@ -31,7 +30,6 @@ namespace UI.WebApi
             services.ConfigureApplicationServices();
             services.ConfigureSieveServices(Configuration);
             services.ConfigurePersistenceServices(Configuration);
-            services.ConfigureIdentityServices(Configuration);
 
             services.AddControllers();
 
@@ -88,6 +86,12 @@ namespace UI.WebApi
         {
             services.AddSwaggerGen(c =>
             {
+                // Đường dẫn đến tệp XML chứa chú thích XML của API
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                // Sử dụng chú thích XML trong tệp XML
+                c.IncludeXmlComments(xmlPath);
+
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT Authorization header using the Bearer scheme. 

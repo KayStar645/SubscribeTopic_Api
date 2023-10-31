@@ -4,15 +4,13 @@ namespace Core.Application.Responses
 {
     public class Result<T> : IResult<T>
     {
-        public List<string> Messages { get; set; } = new List<string>();
-
-        public bool Succeeded { get; set; }
 
         public T Data { get; set; }
-
-        //public List<ValidationResult> ValidationErrors { get; set; }
+        public List<string> Messages { get; set; } = new List<string>();
 
         public Exception Exception { get; set; }
+
+        public bool Succeeded { get; set; }
 
         public int Code { get; set; }
 

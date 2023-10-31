@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Base\Handlers\Queries\**" />
+    <EmbeddedResource Remove="Features\Base\Handlers\Queries\**" />
+    <None Remove="Features\Base\Handlers\Queries\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FluentValidation" Version="11.7.1" />
     <PackageReference Include="MediatR" Version="12.1.1" />
@@ -25,9 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Base\Handlers\Commands\" />
-    <Folder Include="Features\Base\Handlers\Queries\" />
-    <Folder Include="Features\Base\Requests\Commands\" />
+    <Folder Include="Features\Invitations\Handlers\" />
+    <Folder Include="Features\Invitations\Request\" />
   </ItemGroup>
 
 </Project>

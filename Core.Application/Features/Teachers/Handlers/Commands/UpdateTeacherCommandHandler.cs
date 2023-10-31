@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Teacher;
 using Core.Application.DTOs.Teacher.Validators;
 using Core.Application.Features.Teachers.Requests.Commands;
-using MediatR;
-using Core.Domain.Entities;
-using Core.Application.DTOs.Teacher;
-using System.Net;
-using Core.Application.Transform;
 using Core.Application.Responses;
 using Core.Application.Services;
+using Core.Application.Transform;
+using Core.Domain.Entities;
+using MediatR;
+using System.Net;
 
 namespace Core.Application.Features.Teachers.Handlers.Commands
 {
@@ -25,8 +25,8 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
 
         public async Task<Result<TeacherDto>> Handle(UpdateTeacherRequest request, CancellationToken cancellationToken)
         {
-            var validator = new UpdateTeacherDtoValidator(_unitOfWork);
-            var validationResult = await validator.ValidateAsync(request.UpdateTeacherDto);
+            var validator = new UpdateTeacherDtoValidator(_unitOfWork, request.updateTeacherDto.Id);
+            var validationResult = await validator.ValidateAsync(request.updateTeacherDto);
 
             if (validationResult.IsValid == false)
             {
@@ -36,17 +36,17 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
 
             try
             {
-                var findTeacher = await _unitOfWork.Repository<Teacher>().GetByIdAsync(request.UpdateTeacherDto.Id);
+                var findTeacher = await _unitOfWork.Repository<Teacher>().GetByIdAsync(request.updateTeacherDto.Id);
 
                 if (findTeacher is null)
                 {
                     return Result<TeacherDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.UpdateTeacherDto.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("Id", request.updateTeacherDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }
 
-                findTeacher.CopyPropertiesFrom(request.UpdateTeacherDto);
+                findTeacher.CopyPropertiesFrom(request.updateTeacherDto);
 
                 var newTeacher = await _unitOfWork.Repository<Teacher>().UpdateAsync(findTeacher);
                 await _unitOfWork.Save(cancellationToken);

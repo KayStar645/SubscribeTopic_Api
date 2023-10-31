@@ -7,6 +7,7 @@ namespace Core.Application.Contracts.Persistence
     {
         // Async
         Task<List<T>> GetAllAsync();
+        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
         Task<T> GetByIdAsync(int? id);
         Task<T> AddAsync(T entity);
         Task<T> UpdateAsync(T entity);
@@ -14,12 +15,10 @@ namespace Core.Application.Contracts.Persistence
 
         // Query
         IQueryable<T> Entities { get; }
+        IQueryable<T> Query();
         IQueryable<T> GetAllInclude(Expression<Func<T, object>> includeProperties = null);
+        IQueryable<T> FindByCondition(Expression<Func<T, bool>> predicate);
         IQueryable<T> GetByIdInclude(int? id, params Expression<Func<T, object>>[] includeProperties);
         IQueryable<T> AddInclude(IQueryable<T> query, Expression<Func<T, object>> includeProperties = null);
-        IQueryable<T> GetAllSieve();
-        
-        
-        
     }
 }

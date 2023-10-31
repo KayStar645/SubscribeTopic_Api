@@ -24,7 +24,7 @@ namespace Core.Application.Features.Majors.Handlers.Commands
         public async Task<Result<MajorDto>> Handle(CreateMajorRequest request, CancellationToken cancellationToken)
         {
             var validator = new CreateMajorDtoValidator(_unitOfWork);
-            var validationResult = await validator.ValidateAsync(request.CreateMajorDto);
+            var validationResult = await validator.ValidateAsync(request.createMajorDto);
 
             if (validationResult.IsValid == false)
             {
@@ -34,7 +34,7 @@ namespace Core.Application.Features.Majors.Handlers.Commands
 
             try
             {
-                var major = _mapper.Map<Major>(request.CreateMajorDto);
+                var major = _mapper.Map<Major>(request.createMajorDto);
 
                 var newMajor = await _unitOfWork.Repository<Major>().AddAsync(major);
                 await _unitOfWork.Save(cancellationToken);

@@ -33,6 +33,16 @@ namespace Core.Application.Transform
             return $"Trường {name} tối thiểu phải đủ {year} tuổi!";
         }
 
+        public static string MustUrl(string name)
+        {
+            return $"Trường {name} phải là một URL hợp lệ!";
+        }
+
+        public static string MustUrls(string name)
+        {
+            return $"Trường {name} phải là một mảng URL hợp lệ!";
+        }
+
         public static string Must(string name, string[] options)
         {
             return $"Trường {name} phải thuộc {string.Join(", ", options)}!";
@@ -42,15 +52,33 @@ namespace Core.Application.Transform
         {
             return $"Trường {name} có thể thuộc {string.Join(", ", options)} nếu {nameOther} là {value} ; ngược lại trường {name} phải null!";
         }
-
+        public static string MustFile(string name)
+        {
+            return $"Trường {name} phải là một file hợp lệ!";
+        }
         public static string ValidValue(string name)
         {
             return $"Trường {name} không hợp lệ!";
         }
 
+        public static string ValidValue(string name, string value)
+        {
+            return $"Trường {name} = {value} không hợp lệ!";
+        }
+
+        public static string Exists(string name)
+        {
+            return $"Giá trị của {name} đã tồn tại!";
+        }
+
         public static string ExistsValue(string name, string value)
         {
             return $"{name} = {value} đã tồn tại!";
+        }
+
+        public static string ExistsIn(string name, string key)
+        {
+            return $"{name} đã tồn tại trong {key}!";
         }
 
         public static string NotExistsValue(string name, string value)
@@ -83,8 +111,22 @@ namespace Core.Application.Transform
 
         public static string GreaterThanOrEqualTo(string name, int number)
         {
-            return $"Trường {name} ít nhất lớn hơn hoặc bằng ${number}!";
+            return $"Trường {name} ít nhất lớn hơn hoặc bằng {number}!";
         }
 
+        public static string GreaterThanToday(string name)
+        {
+            return $"Trường {name} ít nhất phải lớn hơn hôm nay!";
+        }
+
+        public static string GreaterThanDay(string name, DateTime day)
+        {
+            return $"Trường {name} ít nhất phải lớn hơn ngày {day}!";
+        }
+
+        public static string GreaterEqualOrThanDay(string name, DateTime day)
+        {
+            return $"Trường {name} ít nhất phải lớn hơn hoặc bằng ngày {day}!";
+        }
     }
 }

@@ -6,6 +6,6 @@ namespace Core.Application.Features.Departments.Requests.Commands
 {
     public class CreateDepartmentRequest : IRequest<Result<DepartmentDto>>
     {
-        public CreateDepartmentDto? CreateDepartmentDto { get; set; }
+        public CreateDepartmentDto? createDepartmentDto { get; set; }
     }
 }

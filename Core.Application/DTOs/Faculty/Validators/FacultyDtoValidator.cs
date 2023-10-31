@@ -1,5 +1,5 @@
 ﻿using Core.Application.Contracts.Persistence;
-using Core.Application.Custom;
+using Core.Application.Services;
 using Core.Application.Transform;
 using FluentValidation;
 
@@ -9,15 +9,9 @@ namespace Core.Application.DTOs.Faculty.Validators
     {
         private readonly IUnitOfWork unitOfWork;
 
-        public FacultyDtoValidator(IUnitOfWork _unitOfWork) 
+        public FacultyDtoValidator(IUnitOfWork _unitOfWork)
         {
             unitOfWork = _unitOfWork;
-
-            RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"));
-
-            RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("name"));
 
             RuleFor(x => x.PhoneNumber)
                 .Must(phoneNumber => string.IsNullOrEmpty(phoneNumber) || phoneNumber.Length == 10)

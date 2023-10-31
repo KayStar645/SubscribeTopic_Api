@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.Department;
 using Core.Application.Features.Departments.Requests.Queries;
 using Core.Application.Responses;
 using Core.Application.Transform;
 using Core.Domain.Entities;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -24,28 +26,43 @@ namespace Core.Application.Features.Departments.Handlers.Queries
 
         public async Task<Result<DepartmentDto>> Handle(DetailDepartmentRequest request, CancellationToken cancellationToken)
         {
+            var validator = new DetailBaseRequestValidator();
+            var result = await validator.ValidateAsync(request);
+
+            if (result.IsValid == false)
+            {
+                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                return Result<DepartmentDto>.Failure(string.Join(", ", errorMessages), (int)HttpStatusCode.BadRequest);
+            }
+
             try
             {
-                var query = _unitOfWork.Repository<Department>().GetByIdInclude(request.Id);
+                var query = _unitOfWork.Repository<Department>().GetByIdInclude(request.id);
 
-                if (request.IsAllDetail)
+                if (request.isAllDetail)
                 {
                     query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.Faculty);
+                    query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.HeadDepartment_Teacher);
                 }
                 else
                 {
-                    if (request.IsGetFaculty == true)
+                    if (request.isGetFaculty == true)
                     {
                         query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.Faculty);
                     }
+
+                    if (request.isGetHeadDepartment == true)
+                    {
+                        query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.HeadDepartment_Teacher);
+                    }
                 }
 
-                var findDepartment = await query.SingleAsync();
+                var findDepartment = await query.SingleOrDefaultAsync();
 
                 if (findDepartment is null)
                 {
                     return Result<DepartmentDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.Id.ToString()),
+                        ValidatorTranform.NotExistsValue("id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

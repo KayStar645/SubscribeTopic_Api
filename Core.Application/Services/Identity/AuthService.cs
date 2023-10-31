@@ -1,144 +1,155 @@
-﻿using Core.Application.Constants;
+﻿using AutoMapper;
+using Core.Application.Constants;
 using Core.Application.Contracts.Identity;
+using Core.Application.DTOs.Faculty;
+using Core.Application.Interfaces.Repositories;
 using Core.Application.Models.Identity;
 using Core.Application.Models.Identity.Validators;
+using Core.Application.Responses;
 using Core.Application.Transform;
 using Core.Domain.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace Core.Application.Services.Identity
 {
     public class AuthService : IAuthService
     {
-        private readonly UserManager<Users> _userManager;
-        private readonly SignInManager<Users> _signInManager;
-        private readonly JwtSettings _jwtSettings;
+        private readonly IUserRepository _userRepo;
+        private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public AuthService(UserManager<Users> userManager,
-            IOptions<JwtSettings> jwtSettings,
-            SignInManager<Users> signInManager)
+        public AuthService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper)
         {
-            _userManager = userManager;
-            _jwtSettings = jwtSettings.Value;
-            _signInManager = signInManager;
-        }
+            _userRepo = userRepository;
+            _configuration = configuration;
+            _mapper = mapper;
+        }    
 
-        public async Task<AuthResponse> Login(AuthRequest request)
+        public async Task<Result<AuthResponse>> Login(AuthRequest request)
         {
-            var user = await _userManager.FindByNameAsync(request.UserName);
-
-            if (user == null)
+            try
             {
-                throw new HttpRequestException(IdentityTranform.UserNotExists(request.UserName));
-            }
+                User user = await _userRepo.FindByNameAsync(request.UserName);
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
-
-            if (result.Succeeded == false)
-            {
-                throw new HttpRequestException(IdentityTranform.InvalidCredentials(request.UserName));
-            }
-
-            JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
-
-            AuthResponse response = new AuthResponse
-            {
-                Id = user.Id,
-                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-                UserName = user.UserName
-            };
-
-            return response;
-        }
-
-        public async Task<RegistrationResponse> Register(RegistrationRequest request)
-        {
-            RegistrationRequestValidator validator = new RegistrationRequestValidator();
-            var validationResult = await validator.ValidateAsync(request);
-
-            if (validationResult.IsValid == false)
-            {
-                throw new HttpRequestException(validationResult.Errors.Select(q => q.ErrorMessage).First());
-            }
-
-            var existingUser = await _userManager.FindByNameAsync(request.UserName);
-
-            if (existingUser != null)
-            {
-                throw new HttpRequestException(IdentityTranform.UserAlreadyExists(request.UserName));
-            }
-
-            var user = new Users
-            {
-                UserName = request.UserName,
-            };
-
-            var existingUserName = await _userManager.FindByEmailAsync(request.UserName);
-
-            if (existingUserName == null)
-            {
-                var result = await _userManager.CreateAsync(user, request.Password);
-
-                if (result.Succeeded)
+                if (user == null)
                 {
-                    // Add quyền nè
-                    //await _userManager.AddToRoleAsync(user, RoleConfig.Ministry());
-                    return new RegistrationResponse() { UserId = user.Id };
+                    return Result<AuthResponse>
+                        .Failure(IdentityTranform.UserNotExists(request.UserName),
+                    (int)HttpStatusCode.BadRequest);
+                }
+
+                bool result = await _userRepo.PasswordSignInAsync(user.UserName, request.Password);
+
+                if (result == false)
+                {
+                    return Result<AuthResponse>
+                        .Failure(IdentityTranform.InvalidCredentials(request.UserName),
+                        (int)HttpStatusCode.BadRequest);
+                }
+
+                JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
+
+                AuthResponse auth = new AuthResponse
+                {
+                    Id = user.Id.ToString(),
+                    Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+                    UserName = user.UserName
+                };
+
+                return Result<AuthResponse>.Success(auth, (int)HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                return Result<AuthResponse>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public async Task<Result<RegistrationResponse>> Register(RegistrationRequest request)
+        {
+            try
+            {
+                RegistrationRequestValidator validator = new RegistrationRequestValidator();
+                var validationResult = await validator.ValidateAsync(request);
+
+                if (validationResult.IsValid == false)
+                {
+                    return Result<RegistrationResponse>
+                        .Failure(validationResult.Errors.Select(q => q.ErrorMessage).First(),
+                        (int)HttpStatusCode.BadRequest);
+                }
+
+                User user = await _userRepo.FindByNameAsync(request.UserName);
+
+                if (user != null)
+                {
+                    return Result<RegistrationResponse>
+                        .Failure(IdentityTranform.UserAlreadyExists(request.UserName),
+                        (int)HttpStatusCode.BadRequest);
+                }
+
+                var result = await _userRepo.CreateAsync(new User(request.UserName, request.Password));
+
+                if (result)
+                {
+                    return Result<RegistrationResponse>
+                        .Success(new RegistrationResponse() { UserName = request.UserName },
+                        (int)HttpStatusCode.Created);
                 }
                 else
                 {
-                    throw new Exception($"{result.Errors}");
+                    // Chưa làm biến dịch
+                    return Result<RegistrationResponse>.Failure("Tạo không thành công!", (int)HttpStatusCode.BadRequest);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                throw new HttpRequestException(IdentityTranform.UserAlreadyExists(request.UserName));
+                return Result<RegistrationResponse>.Failure(ex.Message,
+                    (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        private async Task<JwtSecurityToken> GenerateToken(Users user)
+        private async Task<JwtSecurityToken> GenerateToken(User user)
         {
-            var roles = await _userManager.GetRolesAsync(user);
-            var permissions = await _userManager.GetClaimsAsync(user);
+            var roles = await _userRepo.GetRolesAsync(user);
+            var permissions = await _userRepo.GetPermissionsAsync(user);
+            var result = await _userRepo.GetFacultyAsync(user);
+            var facultyDto = _mapper.Map<FacultyDto>(result.faculty);
+            string type = "";
+            if (result.type == 0)
+                type = "student";
+            else if (result.type == 1)
+                type = "teacher";
 
-            var roleClaims = new List<Claim>();
-
-            for (int i = 0; i < roles.Count; i++)
-            {
-                roleClaims.Add(new Claim(ClaimTypes.Role, roles[i]));
-            }
-
-            var permissionClaims = new List<Claim>();
-
-            for (int i = 0; i < permissions.Count; i++)
-            {
-                permissionClaims.Add(new Claim(CustomClaimTypes.Permission, roles[i]));
-            }
+            var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role.Name));
+            var permissionClaims = permissions.Select(permission => new Claim(CONSTANT_CLAIM_TYPES.Permission, permission.Name));
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(CustomClaimTypes.Uid, user.Id) 
+                new Claim(CONSTANT_CLAIM_TYPES.Uid, user.Id.ToString()),
+                new Claim(CONSTANT_CLAIM_TYPES.UserName, user.UserName),
+                new Claim(CONSTANT_CLAIM_TYPES.Type, type),
+                new Claim(CONSTANT_CLAIM_TYPES.Faculty, JsonSerializer.Serialize(facultyDto))
             }
             .Union(permissionClaims)
             .Union(roleClaims);
 
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
+            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
             var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
             var jwtSecurityToken = new JwtSecurityToken(
-                issuer: _jwtSettings.Issuer,
-                audience: _jwtSettings.Audience,
+                issuer: _configuration["JwtSettings:SubscribeTopic"],
+                audience: _configuration["JwtSettings:SubscribeTopicUser"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+                expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["JwtSettings:DurationInMinutes"])),
                 signingCredentials: signingCredentials);
             return jwtSecurityToken;
         }
+
     }
 }

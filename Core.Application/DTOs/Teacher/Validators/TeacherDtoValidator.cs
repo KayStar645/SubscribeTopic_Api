@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
-using Core.Application.Custom;
 using Core.Application.Transform;
 using Core.Application.Contracts.Persistence;
 using DepartmentEntity = Core.Domain.Entities.Department;
+using TeacherEntity = Core.Domain.Entities.Teacher;
+using Core.Application.Services;
 
 namespace Core.Application.DTOs.Teacher.Validators
 {
@@ -21,20 +22,16 @@ namespace Core.Application.DTOs.Teacher.Validators
                 })
                 .WithMessage(id => ValidatorTranform.NotExistsValueInTable("departmentId", "departments"));
 
-            // Chưa validator trùng code và name trong 1 bảng
-            RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"));
-
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
                 .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));
 
             RuleFor(x => x.Gender)
-                .Must(gender => gender == CommonTranform.male || gender == CommonTranform.female || gender == CommonTranform.other)
+                .Must(gender => string.IsNullOrEmpty(gender) || CommonTranform.GetGender().Any(x => x.Equals(gender)))
                 .WithMessage(ValidatorTranform.Must("gender", CommonTranform.GetGender()));
 
             RuleFor(x => x.DateOfBirth)
-                .Must(dateOfBirth => CustomValidator.IsAtLeastNYearsOld(dateOfBirth, 16))
+                .Must(dateOfBirth => string.IsNullOrEmpty(dateOfBirth.ToString()) || CustomValidator.IsAtLeastNYearsOld(dateOfBirth, 16))
                 .WithMessage(ValidatorTranform.MustDate("dateOfBirth", 16));
 
             RuleFor(x => x.PhoneNumber)
@@ -46,15 +43,14 @@ namespace Core.Application.DTOs.Teacher.Validators
                 .WithMessage(ValidatorTranform.ValidValue("email"));
 
             RuleFor(x => x.AcademicTitle)
-                .Must(academicTitle => string.IsNullOrEmpty(academicTitle) || academicTitle == CommonTranform.bachelor || academicTitle == CommonTranform.engineer ||
-                academicTitle == CommonTranform.postgraduate || academicTitle == CommonTranform.master || academicTitle == CommonTranform.doctorate)
+                .Must(academicTitle => string.IsNullOrEmpty(academicTitle) || CommonTranform.GetListAcademicTitle().Any(x => x.Equals(academicTitle)))
                 .WithMessage(ValidatorTranform.Must("academicTitle", CommonTranform.GetListAcademicTitle()));
 
             RuleFor(x => x.Degree)
                 .Must((dto, degree) =>
                     string.IsNullOrEmpty(dto.AcademicTitle) || dto.AcademicTitle != CommonTranform.doctorate
                     ? string.IsNullOrEmpty(degree)
-                    : degree == CommonTranform.associateProfessor || degree == CommonTranform.professor || string.IsNullOrWhiteSpace(degree))
+                    : CommonTranform.GetListDegree().Any(x => x.Equals(degree)) || string.IsNullOrWhiteSpace(degree))
                 .WithMessage(ValidatorTranform.MustWhen("degree", CommonTranform.GetListDegree(), "academicTitle", CommonTranform.doctorate));
         }    
     }

@@ -1,11 +1,4 @@
-﻿using Sieve.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Core.Application.DTOs.Faculty
+﻿namespace Core.Application.DTOs.Faculty
 {
     public interface IFacultyDto
     {

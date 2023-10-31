@@ -13,44 +13,75 @@ namespace Infrastructure.Persistence.Repositories
         {
             _dbContext = dbContext;
         }
-        public async Task<List<T>> GetAllAsync()
-        {
-            return await _dbContext
-                .Set<T>()
-                .ToListAsync();
-        }
 
         // Async
-        public async Task<T> GetByIdAsync(int? id)
+
+        public virtual async Task<List<T>> GetAllAsync()
         {
-            return await _dbContext.Set<T>().FindAsync(id);
+            return await _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false)
+                .ToListAsync();
+        }
+        public virtual async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+#pragma warning disable CS8603 // Possible null reference return.
+            return await _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false)
+                .FirstOrDefaultAsync(predicate);
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
-        public async Task<T> AddAsync(T entity)
+        public virtual async Task<T> GetByIdAsync(int? id)
+        {
+#pragma warning disable CS8603 // Possible null reference return.
+            return await _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false && x.Id == id)
+                .FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public virtual async Task<T> AddAsync(T entity)
         {
             await _dbContext.Set<T>().AddAsync(entity);
             return entity;
         }
 
-        public async Task<T> UpdateAsync(T entity)
+        public virtual async Task<T> UpdateAsync(T entity)
         {
-            T exist = _dbContext.Set<T>().Find(entity.Id);
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            T exist = await _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false && x.Id == entity.Id)
+                .FirstOrDefaultAsync();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8634 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'class' constraint.
             _dbContext.Entry(exist).CurrentValues.SetValues(entity);
+#pragma warning restore CS8634 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'class' constraint.
             return entity;
         }
 
-        public Task DeleteAsync(T entity)
+        public virtual Task DeleteAsync(T entity)
         {
             _dbContext.Set<T>().Remove(entity);
             return Task.CompletedTask;
         }
 
         // Query
-        public IQueryable<T> Entities => _dbContext.Set<T>();
+        public virtual IQueryable<T> Entities => _dbContext.Set<T>();
 
-        public IQueryable<T> GetAllInclude(Expression<Func<T, object>> includeProperties = null)
+        public virtual IQueryable<T> Query()
         {
-            var query = _dbContext.Set<T>().AsNoTracking();
+            var query = _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false)
+                .AsNoTracking();
+
+            return query;
+        }
+
+        public virtual IQueryable<T> GetAllInclude(Expression<Func<T, object>> includeProperties = null)
+        {
+            var query = _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false)
+                .AsNoTracking();
 
             if (includeProperties != null)
             {
@@ -60,9 +91,18 @@ namespace Infrastructure.Persistence.Repositories
             return query;
         }
 
-        public IQueryable<T> GetByIdInclude(int? id, params Expression<Func<T, object>>[] includeProperties)
+        public virtual IQueryable<T> FindByCondition(Expression<Func<T, bool>> predicate)
         {
-            var query = _dbContext.Set<T>().AsQueryable();
+            return _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false)
+                .Where(predicate);
+        }
+
+        public virtual IQueryable<T> GetByIdInclude(int? id, params Expression<Func<T, object>>[] includeProperties)
+        {
+            var query = _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false)
+                .AsQueryable();
 
             if (includeProperties != null)
             {
@@ -80,21 +120,13 @@ namespace Infrastructure.Persistence.Repositories
             return query;
         }
 
-        public IQueryable<T> AddInclude(IQueryable<T> query, Expression<Func<T, object>> includeProperties = null)
+        public virtual IQueryable<T> AddInclude(IQueryable<T> query, Expression<Func<T, object>> includeProperties = null)
         {
             if (includeProperties != null)
             {
                 query = query.Include(includeProperties);
             }
             return query;
-        }
-
-
-        public IQueryable<T> GetAllSieve()
-        {
-            return _dbContext
-                .Set<T>()
-                .AsNoTracking();
         }
     }
 }

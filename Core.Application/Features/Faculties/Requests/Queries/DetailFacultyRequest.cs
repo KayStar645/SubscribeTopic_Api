@@ -7,6 +7,7 @@ namespace Core.Application.Features.Faculties.Requests.Queries
 {
     public class DetailFacultyRequest : DetailBaseRequest, IRequest<Result<FacultyDto>>
     {
-        public bool IsGetDepartment { get; set; }
+        public bool isGetDepartment { get; set; }
+        public bool isGetDean { get; set; }
     }
 }

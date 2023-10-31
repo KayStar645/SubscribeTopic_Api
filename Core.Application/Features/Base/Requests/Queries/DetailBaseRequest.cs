@@ -2,7 +2,7 @@
 {
     public class DetailBaseRequest
     {
-        public int Id { get; set; }
-        public bool IsAllDetail { get; set; }
+        public int id { get; set; }
+        public bool isAllDetail { get; set; }
     }
 }

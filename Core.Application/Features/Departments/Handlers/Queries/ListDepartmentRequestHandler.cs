@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Department;
-using Core.Application.Features.Base.Requests.Queries;
 using Core.Application.Features.Departments.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
@@ -9,11 +8,12 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services.Interface;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 
 namespace Core.Application.Features.Departments.Handlers.Queries
 {
-    public class ListDepartmentRequestHandler : IRequestHandler<ListDepartmentRequest<DepartmentDto>, PaginatedResult<List<DepartmentDto>>>
+    public class ListDepartmentRequestHandler : IRequestHandler<ListDepartmentRequest, PaginatedResult<List<DepartmentDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -25,32 +25,62 @@ namespace Core.Application.Features.Departments.Handlers.Queries
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
         }
-        public async Task<PaginatedResult<List<DepartmentDto>>> Handle(ListDepartmentRequest<DepartmentDto> request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<DepartmentDto>>> Handle(ListDepartmentRequest request, CancellationToken cancellationToken)
         {
+            var validator = new DepartmentDtoValidator(_unitOfWork);
+            var result = await validator.ValidateAsync(request);
+
+            if (result.IsValid == false)
+            {
+                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                return PaginatedResult<List<DepartmentDto>>
+                    .Failure((int)HttpStatusCode.BadRequest, errorMessages);
+            }
+
+            var validationContext = new ValidationContext(request, null, null);
+            var validationResults = new List<ValidationResult>();
+
+            bool isValid = Validator.TryValidateObject(request, validationContext, validationResults, true);
+
+            if (isValid == false)
+            {
+                var errorMessages = validationResults.Select(x => x.ErrorMessage).ToList();
+                return PaginatedResult<List<DepartmentDto>>
+                    .Failure((int)HttpStatusCode.BadRequest, errorMessages);
+            }
+
             var sieve = _mapper.Map<SieveModel>(request);
 
-            var query = _unitOfWork.Repository<Department>().GetAllInclude();
+            var query = _unitOfWork.Repository<Department>().GetAllInclude()
+                                   .Where(x => x.FacultyId == request.facultyId);
 
-            if (request.IsAllDetail)
+            if (request.isAllDetail)
             {
                 query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.Faculty);
+                query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.HeadDepartment_Teacher);
             }
             else
             {
-                if (request.IsGetFaculty == true)
+                if (request.isGetFaculty == true)
                 {
                     query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.Faculty);
                 }
+
+                if (request.isGetHeadDepartment == true)
+                {
+                    query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.HeadDepartment_Teacher);
+                }
             }
+            int totalCount = await query.CountAsync();
 
             query = _sieveProcessor.Apply(sieve, query);
 
             var departments = await query.ToListAsync();
 
             var mapTeachers = _mapper.Map<List<DepartmentDto>>(departments);
-            return PaginatedResult<List<DepartmentDto>>.Create(
-                mapTeachers, 0, request.Page,
-                request.PageSize, (int)HttpStatusCode.OK);
+            return PaginatedResult<List<DepartmentDto>>.Success(
+                mapTeachers, totalCount, request.page,
+                request.pageSize);
         }
     }
 }
