@@ -37,22 +37,22 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
 
             try
             {
-                var query = _unitOfWork.Repository<Faculty>().GetByIdInclude(request.id);
+                var query = _unitOfWork.Repository<Domain.Entities.Faculties>().GetByIdInclude(request.id);
 
                 if (request.isAllDetail)
                 {
-                    query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Dean_Teacher);
-                    query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Departments);
+                    query = _unitOfWork.Repository<Domain.Entities.Faculties>().AddInclude(query, x => x.Dean_Teacher);
+                    query = _unitOfWork.Repository<Domain.Entities.Faculties>().AddInclude(query, x => x.Departments);
                 }
                 else
                 {
                     if (request.isGetDean == true)
                     {
-                        query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Dean_Teacher);
+                        query = _unitOfWork.Repository<Domain.Entities.Faculties>().AddInclude(query, x => x.Dean_Teacher);
                     }
                     if (request.isGetDepartment == true)
                     {
-                        query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Departments);
+                        query = _unitOfWork.Repository<Domain.Entities.Faculties>().AddInclude(query, x => x.Departments);
                     }
                 }
 

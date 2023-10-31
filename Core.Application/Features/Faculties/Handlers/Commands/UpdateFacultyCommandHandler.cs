@@ -36,7 +36,7 @@ namespace Core.Application.Features.Faculties.Handlers.Commands
 
             try
             {
-                var findFaculty = await _unitOfWork.Repository<Faculty>().GetByIdAsync(request.updateFacultyDto.Id);
+                var findFaculty = await _unitOfWork.Repository<Domain.Entities.Faculties>().GetByIdAsync(request.updateFacultyDto.Id);
 
                 if (findFaculty is null)
                 {
@@ -48,7 +48,7 @@ namespace Core.Application.Features.Faculties.Handlers.Commands
 
                 findFaculty.CopyPropertiesFrom(request.updateFacultyDto);
 
-                var newFaculty = await _unitOfWork.Repository<Faculty>().UpdateAsync(findFaculty);
+                var newFaculty = await _unitOfWork.Repository<Domain.Entities.Faculties>().UpdateAsync(findFaculty);
                 await _unitOfWork.Save(cancellationToken);
 
                 var facultyDto = _mapper.Map<FacultyDto>(newFaculty);

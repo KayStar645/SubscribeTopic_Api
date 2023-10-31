@@ -2,7 +2,7 @@
 using Core.Application.Services;
 using Core.Application.Transform;
 using FluentValidation;
-using FacultyEntity = Core.Domain.Entities.Faculty;
+using FacultyEntity = Core.Domain.Entities.Faculties;
 
 namespace Core.Application.DTOs.RegistrationPeriod.Validators
 {

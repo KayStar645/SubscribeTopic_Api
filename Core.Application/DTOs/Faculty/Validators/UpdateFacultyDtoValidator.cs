@@ -2,7 +2,7 @@
 using Core.Application.Transform;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using FacultyEntity = Core.Domain.Entities.Faculty;
+using FacultyEntity = Core.Domain.Entities.Faculties;
 using TeacherEntity = Core.Domain.Entities.Teacher;
 
 namespace Core.Application.DTOs.Faculty.Validators

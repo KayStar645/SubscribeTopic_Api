@@ -1,7 +1,7 @@
 ﻿using Core.Application.Contracts.Persistence;
 using Core.Application.Transform;
 using FluentValidation;
-using FacultyEntity = Core.Domain.Entities.Faculty;
+using FacultyEntity = Core.Domain.Entities.Faculties;
 using FacultyDutyEntity = Core.Domain.Entities.FacultyDuty;
 
 namespace Core.Application.DTOs.FacultyDuty.Validators

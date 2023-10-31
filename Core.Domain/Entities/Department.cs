@@ -41,7 +41,7 @@ namespace Core.Domain.Entities
         [Sieve(CanFilter = true, CanSort = true)]
         public int? FacultyId { get; set; }
         [ForeignKey("FacultyId")]
-        public Faculty? Faculty { get; set; }
+        public Faculties? Faculty { get; set; }
 
         #endregion
 

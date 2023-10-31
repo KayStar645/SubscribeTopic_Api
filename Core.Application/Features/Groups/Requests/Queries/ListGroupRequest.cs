@@ -4,7 +4,7 @@ using Core.Application.DTOs.Group;
 using Core.Application.Features.Base.Requests.Queries;
 using Core.Application.Transform;
 using FluentValidation;
-using FacultyEntity = Core.Domain.Entities.Faculty;
+using FacultyEntity = Core.Domain.Entities.Faculties;
 
 namespace Core.Application.Features.Groups.Requests.Queries
 {

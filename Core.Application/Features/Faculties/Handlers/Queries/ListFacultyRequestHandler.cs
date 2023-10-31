@@ -40,17 +40,17 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
 
             var sieve = _mapper.Map<SieveModel>(request);
 
-            var query = _unitOfWork.Repository<Faculty>().GetAllInclude();
+            var query = _unitOfWork.Repository<Domain.Entities.Faculties>().GetAllInclude();
 
             if (request.isAllDetail)
             {
-                query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Dean_Teacher);
+                query = _unitOfWork.Repository<Domain.Entities.Faculties>().AddInclude(query, x => x.Dean_Teacher);
             }
             else
             {
                 if(request.isGetDean == true)
                 {
-                    query = _unitOfWork.Repository<Faculty>().AddInclude(query, x => x.Dean_Teacher);
+                    query = _unitOfWork.Repository<Domain.Entities.Faculties>().AddInclude(query, x => x.Dean_Teacher);
                 }
             }
 
