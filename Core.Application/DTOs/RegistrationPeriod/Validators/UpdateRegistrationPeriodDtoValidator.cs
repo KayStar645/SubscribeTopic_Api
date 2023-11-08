@@ -16,7 +16,7 @@ namespace Core.Application.DTOs.RegistrationPeriod.Validators
             Include(new RegistrationPeriodDtoValidator(_unitOfWork, start));
 
             RuleFor(x => x.Id)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("id"));
+                .NotEmpty().WithMessage(ValidatorTransform.Required("id"));
         }
     }
 }

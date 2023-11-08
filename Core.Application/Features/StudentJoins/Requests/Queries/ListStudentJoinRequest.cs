@@ -45,7 +45,7 @@ namespace Core.Application.Features.StudentJoins.Requests.Queries
                         .FirstOrDefaultAsync(x => x.Id == majorId);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.MustIn("majorId"));
+                .WithMessage(id => ValidatorTransform.MustIn("majorId"));
             }
             else if (industryId != null)
             {
@@ -56,7 +56,7 @@ namespace Core.Application.Features.StudentJoins.Requests.Queries
                         .FirstOrDefaultAsync(x => x.Id == industryId);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.MustIn("industryId"));
+                .WithMessage(id => ValidatorTransform.MustIn("industryId"));
             }
             else
             {
@@ -67,7 +67,7 @@ namespace Core.Application.Features.StudentJoins.Requests.Queries
                         .FirstOrDefaultAsync(x => x.Id == facultyId);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.MustIn("facultyId"));
+                .WithMessage(id => ValidatorTransform.MustIn("facultyId"));
             }
 
             if(periodId != null)
@@ -79,7 +79,7 @@ namespace Core.Application.Features.StudentJoins.Requests.Queries
                         .FirstOrDefaultAsync(x => x.Id == periodId);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.MustIn("periodId"));
+                .WithMessage(id => ValidatorTransform.MustIn("periodId"));
             }    
         }
     }

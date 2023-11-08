@@ -27,7 +27,7 @@ namespace Core.Application.Features.Notifications.Handlders.Queries
 
         public async Task<PaginatedResult<List<NotificationDto>>> Handle(ListNotificationRequest request, CancellationToken cancellationToken)
         {
-            var validator = new NotificationDtoValidator(_unitOfWork);
+            var validator = new ListNotificationDtoValidator(_unitOfWork);
             var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)

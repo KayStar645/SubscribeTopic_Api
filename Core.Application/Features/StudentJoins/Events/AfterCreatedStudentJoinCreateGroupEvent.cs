@@ -4,21 +4,21 @@ using MediatR;
 
 namespace Core.Application.Features.StudentJoins.Events
 {
-    public class CreateGroupAfterCreatedStudentJoinEvent : INotification
+    public class AfterCreatedStudentJoinCreateGroupEvent : INotification
     {
         public StudentJoin _studentJoin { get; set; }
         public IUnitOfWork _unitOfWork { get; set; }
 
-        public CreateGroupAfterCreatedStudentJoinEvent(StudentJoin studentJoin, IUnitOfWork unitOfWork)
+        public AfterCreatedStudentJoinCreateGroupEvent(StudentJoin studentJoin, IUnitOfWork unitOfWork)
         {
             _studentJoin = studentJoin;
             _unitOfWork = unitOfWork;
         }
     }
 
-    public class CreateGroupAfterCreatedStudentJoinEventHandler : INotificationHandler<CreateGroupAfterCreatedStudentJoinEvent>
+    public class AfterCreatedStudentJoinCreateGroupHandler : INotificationHandler<AfterCreatedStudentJoinCreateGroupEvent>
     {
-        public async Task Handle(CreateGroupAfterCreatedStudentJoinEvent pEvent, CancellationToken cancellationToken)
+        public async Task Handle(AfterCreatedStudentJoinCreateGroupEvent pEvent, CancellationToken cancellationToken)
         {
             await Task.Yield();
 

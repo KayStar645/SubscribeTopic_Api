@@ -18,27 +18,27 @@ namespace Core.Application.DTOs.Department.Validators
             Include(new DepartmentDtoValidator(_unitOfWork));
 
             RuleFor(x => x.Id)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("id"));
+                .NotEmpty().WithMessage(ValidatorTransform.Required("id"));
 
             RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"))
-                .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
+                .NotEmpty().WithMessage(ValidatorTransform.Required("internalCode"))
+                .MaximumLength(50).WithMessage(ValidatorTransform.MaximumLength("internalCode", 50))
                 .MustAsync(async (internalCode, token) =>
                 {
                     var exists = await _unitOfWork.Repository<DepartmentEntity>()
                         .FirstOrDefaultAsync(x => x.Id != currentId && x.InternalCode == internalCode);
                     return exists == null;
-                }).WithMessage(ValidatorTranform.Exists("internalCode"));
+                }).WithMessage(ValidatorTransform.Exists("internalCode"));
 
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
-                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190))
+                .NotEmpty().WithMessage(ValidatorTransform.Required("name"))
+                .MaximumLength(190).WithMessage(ValidatorTransform.MaximumLength("name", 190))
                 .MustAsync(async (name, token) =>
                 {
                     var exists = await _unitOfWork.Repository<DepartmentEntity>()
                         .FirstOrDefaultAsync(x => x.Id != currentId && x.Name == name && x.FacultyId == currentFacultyId);
                     return exists == null;
-                }).WithMessage(ValidatorTranform.Exists("name"));
+                }).WithMessage(ValidatorTransform.Exists("name"));
 
             RuleFor(x => x.HeadDepartment_TeacherId)
                 .MustAsync(async (id, token) =>
@@ -48,7 +48,7 @@ namespace Core.Application.DTOs.Department.Validators
                                            .FirstOrDefaultAsync();
                     return exists != null || id == null;
                 })
-                .WithMessage(id => ValidatorTranform.MustIn("headDepartment_TeacherId"));
+                .WithMessage(id => ValidatorTransform.MustIn("headDepartment_TeacherId"));
         }
     }
 }

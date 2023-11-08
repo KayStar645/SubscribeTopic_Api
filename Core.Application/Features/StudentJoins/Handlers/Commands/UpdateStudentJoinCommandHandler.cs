@@ -40,7 +40,7 @@ namespace Core.Application.Features.StudentJoins.Handlers.Commands
                 if (findStudentJoin is null)
                 {
                     return Result<StudentJoinDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.updateStudentJoinDto.Id.ToString()),
+                        ValidatorTransform.NotExistsValue("Id", request.updateStudentJoinDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

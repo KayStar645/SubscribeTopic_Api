@@ -56,7 +56,7 @@ namespace Core.Application.Features.Majors.Handlers.Queries
                 if (findMajor is null)
                 {
                     return Result<MajorDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.id.ToString()),
+                        ValidatorTransform.NotExistsValue("Id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

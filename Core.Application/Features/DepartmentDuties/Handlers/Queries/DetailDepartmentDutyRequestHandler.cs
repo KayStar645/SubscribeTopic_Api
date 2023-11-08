@@ -60,7 +60,7 @@ namespace Core.Application.Features.DepartmentDuties.Handlers.Queries
                 if (findDepartmentDuty is null)
                 {
                     return Result<DepartmentDutyDto>.Failure(
-                        ValidatorTranform.NotExistsValue("id", request.id.ToString()),
+                        ValidatorTransform.NotExistsValue("id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

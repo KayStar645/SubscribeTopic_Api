@@ -55,7 +55,7 @@ namespace Core.Application.Features.Teachers.Handlers.Commands
                         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                         var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
-                        await mediator.Publish(new CreateAccountAfterCreateTeacherEvent(newTeacher, unitOfWork, userRepository));
+                        await mediator.Publish(new AfterCreateTeacherCreateAccountEvent(newTeacher, unitOfWork, userRepository));
                     }
                 });
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed

@@ -15,11 +15,11 @@ namespace Core.Application.Features.Notifications.Requests.Queries
         public int? facultyId { get; set; }
     }
 
-    public class NotificationDtoValidator : AbstractValidator<ListNotificationRequest>
+    public class ListNotificationDtoValidator : AbstractValidator<ListNotificationRequest>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public NotificationDtoValidator(IUnitOfWork unitOfWork)
+        public ListNotificationDtoValidator(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
 
@@ -32,7 +32,7 @@ namespace Core.Application.Features.Notifications.Requests.Queries
                         .FirstOrDefaultAsync(x => x.Id == facultyId);
                     return exists != null || facultyId == null;
                 })
-                .WithMessage(id => ValidatorTranform.MustIn("facultyId"));
+                .WithMessage(id => ValidatorTransform.MustIn("facultyId"));
         }
     }
 }

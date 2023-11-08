@@ -15,15 +15,15 @@ namespace Core.Application.DTOs.RegistrationPeriod.Validators
 
             RuleFor(x => x.Semester)
                 .Must(semester => CommonTranform.GetListSemester().Any(value => value == semester))
-                .WithMessage(ValidatorTranform.Must("semester", CommonTranform.GetListSemester()));
+                .WithMessage(ValidatorTransform.Must("semester", CommonTranform.GetListSemester()));
 
             RuleFor(x => x.TimeStart)
                 .Must(timeStart => CustomValidator.IsEqualOrAfterDay(timeStart, DateTime.Now))
-                .WithMessage(ValidatorTranform.GreaterEqualOrThanDay("timestart", DateTime.Now));
+                .WithMessage(ValidatorTransform.GreaterEqualOrThanDay("timestart", DateTime.Now));
 
             RuleFor(x => x.TimeEnd)
                 .Must(timeEnd => CustomValidator.IsAfterDay(timeEnd, start))
-                .WithMessage(ValidatorTranform.GreaterThanDay("timeEnd", start));
+                .WithMessage(ValidatorTransform.GreaterThanDay("timeEnd", start));
 
             RuleFor(x => x.FacultyId)
                 .MustAsync(async (id, token) =>
@@ -31,7 +31,7 @@ namespace Core.Application.DTOs.RegistrationPeriod.Validators
                     var existsFaculty = await _unitOfWork.Repository<FacultyEntity>().GetByIdAsync(id);
                     return existsFaculty != null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "faculty"));
+                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("facultyId", "faculty"));
         }
     }
 }

@@ -37,5 +37,9 @@ namespace Infrastructure.Persistence
         public DbSet<FacultyDuty> FacultyDuties { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
+        public DbSet<Thesis> Thesiss { get; set; }
+        public DbSet<ThesisInstruction> ThesisInstructions { get; set; }
+        public DbSet<ThesisMajor> ThesisMajors { get; set; }
+        public DbSet<ThesisReview> ThesisReviews { get; set; }
     }
 }
