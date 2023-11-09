@@ -94,6 +94,7 @@ namespace Core.Application.Profiles
             CreateMap<Thesis, ThesisDto>().ReverseMap();
             CreateMap<Thesis, CreateThesisDto>().ReverseMap();
             CreateMap<Thesis, UpdateThesisDto>().ReverseMap();
+            CreateMap<ThesisDto, CreateThesisDto>().ReverseMap();
 
         }
 

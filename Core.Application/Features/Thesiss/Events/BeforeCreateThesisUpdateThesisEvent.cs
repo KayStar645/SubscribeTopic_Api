@@ -1,5 +1,5 @@
 ﻿using Core.Application.Constants;
-using Core.Application.Interfaces.Repositories;
+using Core.Application.Contracts.Persistence;
 using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -11,14 +11,14 @@ namespace Core.Application.Features.Thesiss.Events
         public Thesis _thesis { get; set; }
 
         public IHttpContextAccessor _httpContextAccessor;
-        public IUserRepository _userRepository { get; set; }
+        public IUnitOfWork _unitOfWork;
 
         public BeforeCreateThesisUpdateThesisEvent(Thesis thesis, 
-            IHttpContextAccessor httpContextAccessor, IUserRepository userRepository)
+            IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork)
         {
             _thesis = thesis;
             _httpContextAccessor = httpContextAccessor;
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
         }
     }
 
@@ -28,19 +28,29 @@ namespace Core.Application.Features.Thesiss.Events
         {
             try
             {
-                var x = pEvent._httpContextAccessor.HttpContext.User;
+                var userId = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;
+                var userType = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Type)?.Value;
 
-                var username = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;
+                if(userType == CLAIMS_VALUES.TYPE_TEACHER)
+                {
+                    // Từ id của người dùng lấy ra id của giáo viên
+                    var teacher = await pEvent._unitOfWork.Repository<Teacher>()
+                        .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
 
-                int a = 1;
+                    pEvent._thesis.LecturerThesisId = teacher.Id;
+                    //pEvent._thesis.LecturerThesis = teacher;
+                    pEvent._thesis.Type = Thesis.TYPE_LECTURER_OUT;
+                }    
+                else if(userType == CLAIMS_VALUES.TYPE_STUDENT)
+                {
+                    var student = await pEvent._unitOfWork.Repository<Student>()
+                        .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
 
-                // Status = D
-
-                // Type = tùy thuộc vào người tạo
-
-                // Người tạo = tùy thuộc vào type
-
-                
+                    pEvent._thesis.ProposedStudentId = student.Id;
+                    //pEvent._thesis.ProposedStudent = student;
+                    pEvent._thesis.Type = Thesis.TYPE_STUDENT_PROPOSAL;
+                }
+                pEvent._thesis.Status = Thesis.STATUS_DRAFT;
             }
             catch (Exception ex)
             {

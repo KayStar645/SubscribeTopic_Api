@@ -2,6 +2,7 @@
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Thesis;
 using Core.Application.DTOs.Thesis.Validators;
+using Core.Application.Exceptions;
 using Core.Application.Features.Thesiss.Events;
 using Core.Application.Features.Thesiss.Requests.Commands;
 using Core.Application.Interfaces.Repositories;
@@ -9,6 +10,7 @@ using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 
@@ -43,24 +45,23 @@ namespace Core.Application.Features.Thesiss.Handlers.Commands
             {
                 var thesis = _mapper.Map<Thesis>(request.createThesisDto);
 
-                // Người ra đề
                 await Task.Run(async () =>
                 {
                     using (var scope = _serviceProvider.CreateScope())
                     {
                         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-                        var userRepo = scope.ServiceProvider.GetRequiredService<IUserRepository>();
                         var httpContextAccessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
+                        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-                        await mediator.Publish(new BeforeCreateThesisUpdateThesisEvent(thesis, httpContextAccessor, userRepo));
+                        await mediator.Publish(new BeforeCreateThesisUpdateThesisEvent(thesis, httpContextAccessor, unitOfWork));
 
                     }
                 });
 
-                if(thesis.Type == "")
+                if(thesis.Type == null)
                 {
-                    // rollback
-                }    
+                    throw new BadRequestException("401");
+                }
 
                 var newThesis = await _unitOfWork.Repository<Thesis>().AddAsync(thesis);
                 await _unitOfWork.Save(cancellationToken);
