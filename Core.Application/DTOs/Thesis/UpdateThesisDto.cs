@@ -8,8 +8,6 @@ namespace Core.Application.DTOs.Thesis
 
         public string? Name { get; set; }
 
-        public int? ParentId { get; set; }
-
         public string? Summary { get; set; }
 
         public int? MinQuantity { get; set; }

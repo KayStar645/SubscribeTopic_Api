@@ -11,6 +11,7 @@ namespace Core.Application.Features.Thesiss.Events
         public Thesis _thesis { get; set; }
 
         public IHttpContextAccessor _httpContextAccessor;
+
         public IUnitOfWork _unitOfWork;
 
         public BeforeCreateThesisUpdateThesisEvent(Thesis thesis, 
@@ -38,16 +39,15 @@ namespace Core.Application.Features.Thesiss.Events
                         .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
 
                     pEvent._thesis.LecturerThesisId = teacher.Id;
-                    //pEvent._thesis.LecturerThesis = teacher;
                     pEvent._thesis.Type = Thesis.TYPE_LECTURER_OUT;
                 }    
                 else if(userType == CLAIMS_VALUES.TYPE_STUDENT)
                 {
+                    // Từ id của người dùng lấy ra id của sinh viên
                     var student = await pEvent._unitOfWork.Repository<Student>()
                         .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
 
                     pEvent._thesis.ProposedStudentId = student.Id;
-                    //pEvent._thesis.ProposedStudent = student;
                     pEvent._thesis.Type = Thesis.TYPE_STUDENT_PROPOSAL;
                 }
                 pEvent._thesis.Status = Thesis.STATUS_DRAFT;

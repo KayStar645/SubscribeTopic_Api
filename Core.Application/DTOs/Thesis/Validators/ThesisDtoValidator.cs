@@ -13,14 +13,6 @@ namespace Core.Application.DTOs.Thesis.Validators
         {
             _unitOfWork = unitOfWork;
 
-            RuleFor(x => x.ParentId)
-                .MustAsync(async (id, token) =>
-                {
-                    var exists = await _unitOfWork.Repository<ThesisEntity>().GetByIdAsync(id);
-                    return exists != null || id == null;
-                })
-                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("parentId", "thesiss"));
-
             RuleFor(x => x.MinQuantity)
                 .NotEmpty().WithMessage(ValidatorTransform.Required("minQuantity"))
                 .GreaterThanOrEqualTo(1).WithMessage(ValidatorTransform.GreaterThanOrEqualTo("minQuantity", 1))
