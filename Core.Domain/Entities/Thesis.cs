@@ -25,8 +25,6 @@ namespace Core.Domain.Entities
         public const string STATUS_APPROVE_REQUEST = "AR";
         [NotMapped]
         public const string STATUS_APPROVED = "A";
-        [NotMapped]
-        public const string STATUS_CANCEL = "C";
 
         // Sinh viên đề xuất
 
@@ -121,7 +119,6 @@ namespace Core.Domain.Entities
                 STATUS_DRAFT,
                 STATUS_APPROVE_REQUEST,
                 STATUS_APPROVED,
-                STATUS_CANCEL
             };
         }
 

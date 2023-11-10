@@ -36,15 +36,3 @@ namespace Core.Application.DTOs.Thesis.Validators
 
     }
 }
-
-/*
-        public const string STATUS_DRAFT = "D";
-        public const string STATUS_APPROVE_REQUEST = "AR";
-        public const string STATUS_EDITING_REQUEST = "ER";
-        public const string STATUS_APPROVED = "A";
-        public const string STATUS_CANCEL = "C";
-
-        D  -> AR
-        AR -> ER/A/C
-        ER -> AR
- */

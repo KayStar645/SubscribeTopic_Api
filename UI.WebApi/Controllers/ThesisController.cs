@@ -14,7 +14,7 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/Thesis")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class ThesisController : Controller
     {
         private readonly IMediator _mediator;
@@ -60,7 +60,8 @@ namespace UI.WebApi.Controllers
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
-        /// - Name: string, required, max(190)
+        /// - Name: string, required, max(190), unique
+        /// - internalCode: string, required, max(190), unique
         /// </remarks>
         [HttpPost]
         public async Task<ActionResult<ThesisDto>> Post([FromBody] CreateThesisDto request)
@@ -77,7 +78,8 @@ namespace UI.WebApi.Controllers
         /// <remarks>
         /// Ràng buộc: 
         /// - Id: int, required
-        /// - Name: string, required, max(190)
+        /// - Name: string, required, max(190), unique
+        /// - internalCode: string, required, max(190), unique
         /// </remarks>
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UpdateThesisDto request)
@@ -125,7 +127,10 @@ namespace UI.WebApi.Controllers
         /// <remarks>
         /// Ràng buộc: 
         /// - Id: int, required
-        /// - Name: string, required, max(190)
+        /// - Status: Required
+        /// D -> AR
+        /// AR -> A/D
+        /// 
         /// </remarks>
         [HttpPut("ChangeStatus")]
         public async Task<ActionResult> ChangeStatus([FromBody] ChangeStatusThesisDto request)
