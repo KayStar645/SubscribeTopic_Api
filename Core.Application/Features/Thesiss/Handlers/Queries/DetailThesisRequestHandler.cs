@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Group;
+using Core.Application.DTOs.Major;
+using Core.Application.DTOs.StudentJoin;
+using Core.Application.DTOs.Teacher;
 using Core.Application.DTOs.Thesis;
 using Core.Application.Features.Thesiss.Requests.Queries;
 using Core.Application.Responses;
@@ -9,6 +13,7 @@ using Core.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Security.Cryptography;
 
 namespace Core.Application.Features.Thesiss.Handlers.Queries
 {
@@ -41,9 +46,6 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
                 if (request.isAllDetail)
                 {
                     query = _unitOfWork.Repository<Thesis>().AddInclude(query, x => x.LecturerThesis);
-                    query = query.Include(x => x.ThesisInstructions);
-                    query = query.Include(x => x.ThesisReviews);
-                    query = query.Include(x => x.ThesisMajors);
                 }
                 else
                 {
@@ -79,6 +81,42 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
                 }
 
                 var thesisDto = _mapper.Map<ThesisDto>(findThesis);
+
+                if (request.isAllDetail == true || request.isGetThesisInstructions == true)
+                {
+                    var thesisInstructions = await _unitOfWork.Repository<ThesisInstruction>()
+                                                .Query()
+                                                .Where(x => x.ThesisId == findThesis.Id)
+                                                .Include(x => x.Teacher)
+                                                .Select(x => x.Teacher)
+                                                .ToListAsync();
+
+                    thesisDto.ThesisInstructions = _mapper.Map<List<TeacherDto>>(thesisInstructions);
+                }
+
+                if (request.isAllDetail == true || request.isGetThesisReviews == true)
+                {
+                    var thesisReviews = await _unitOfWork.Repository<ThesisReview>()
+                                                .Query()
+                                                .Where(x => x.ThesisId == findThesis.Id)
+                                                .Include(x => x.Teacher)
+                                                .Select(x => x.Teacher)
+                                                .ToListAsync();
+
+                    thesisDto.ThesisReviews = _mapper.Map<List<TeacherDto>>(thesisReviews);
+                }
+
+                if (request.isAllDetail == true || request.isGetThesisMajors == true)
+                {
+                    var thesisMajors = await _unitOfWork.Repository<ThesisMajor>()
+                                                .Query()
+                                                .Where(x => x.ThesisId == findThesis.Id)
+                                                .Include(x => x.Major)
+                                                .Select(x => x.Major)
+                                                .ToListAsync();
+
+                    thesisDto.ThesisMajors = _mapper.Map<List<MajorDto>>(thesisMajors);
+                }
 
                 return Result<ThesisDto>.Success(thesisDto, (int)HttpStatusCode.OK);
             }
