@@ -41,7 +41,7 @@ namespace Core.Application.Features.Faculties.Handlers.Commands
                 if (findFaculty is null)
                 {
                     return Result<FacultyDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.updateFacultyDto.Id.ToString()),
+                        ValidatorTransform.NotExistsValue("Id", request.updateFacultyDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

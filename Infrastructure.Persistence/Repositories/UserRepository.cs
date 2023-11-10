@@ -26,7 +26,6 @@ namespace Infrastructure.Persistence.Repositories
 
             try
             {
-                // Chưa lấy token để lưu người cập nhật nè
                 await _dbContext.SaveChangesAsync();
 
                 return true;

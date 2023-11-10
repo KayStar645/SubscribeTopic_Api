@@ -9,12 +9,12 @@ namespace Core.Application.Exceptions
 
         }
 
-        public NotFoundException(string key, string value) : base(ValidatorTranform.ValidValue(key, value))
+        public NotFoundException(string key, string value) : base(ValidatorTransform.ValidValue(key, value))
         {
 
         }
 
-        public NotFoundException(string name) : base(ValidatorTranform.ValidValue(name))
+        public NotFoundException(string name) : base(ValidatorTransform.ValidValue(name))
         {
 
         }

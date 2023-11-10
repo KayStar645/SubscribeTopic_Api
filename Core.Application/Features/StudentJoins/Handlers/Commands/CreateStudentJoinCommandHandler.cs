@@ -53,7 +53,7 @@ namespace Core.Application.Features.StudentJoins.Handlers.Commands
                         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
                         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-                        await mediator.Publish(new CreateGroupAfterCreatedStudentJoinEvent(newStudentJoin, unitOfWork));
+                        await mediator.Publish(new AfterCreatedStudentJoinCreateGroupEvent(newStudentJoin, unitOfWork));
                     }
                 });
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed

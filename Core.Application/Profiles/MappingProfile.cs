@@ -12,6 +12,7 @@ using Core.Application.DTOs.RegistrationPeriod;
 using Core.Application.DTOs.Student;
 using Core.Application.DTOs.StudentJoin;
 using Core.Application.DTOs.Teacher;
+using Core.Application.DTOs.Thesis;
 using Core.Application.Features.Base.Requests.Queries;
 using Core.Domain.Entities;
 using Sieve.Models;
@@ -88,6 +89,12 @@ namespace Core.Application.Profiles
 
             CreateMap<SieveModel, ListBaseRequest<InvitationDto>>().ReverseMap();
             CreateMap<Invitation, InvitationDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<ThesisDto>>().ReverseMap();
+            CreateMap<Thesis, ThesisDto>().ReverseMap();
+            CreateMap<Thesis, CreateThesisDto>().ReverseMap();
+            CreateMap<Thesis, UpdateThesisDto>().ReverseMap();
+            CreateMap<ThesisDto, CreateThesisDto>().ReverseMap();
 
         }
 

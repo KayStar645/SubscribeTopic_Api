@@ -1,7 +1,7 @@
 ﻿
 namespace Core.Application.Transform
 {
-    public static class ValidatorTranform
+    public static class ValidatorTransform
     {
         public static string MaximumLength(string name, int max)
         {
@@ -112,6 +112,11 @@ namespace Core.Application.Transform
         public static string GreaterThanOrEqualTo(string name, int number)
         {
             return $"Trường {name} ít nhất lớn hơn hoặc bằng {number}!";
+        }
+
+        public static string LessThanOrEqualTo(string name, int number)
+        {
+            return $"Trường {name} phải nhỏ hơn hoặc bằng {number}!";
         }
 
         public static string GreaterThanToday(string name)

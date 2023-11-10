@@ -28,7 +28,7 @@ namespace Core.Application.Features.DepartmentDuties.Handlers.Commands
             if(request.UpdateDepartmentDutyDto.Id == null)
             {
                 return Result<DepartmentDutyDto>.Failure(
-                    ValidatorTranform.Required("id"),
+                    ValidatorTransform.Required("id"),
                     (int)HttpStatusCode.BadRequest);
             }
 
@@ -39,7 +39,7 @@ namespace Core.Application.Features.DepartmentDuties.Handlers.Commands
                 if (findDepartmentDuty is null)
                 {
                     return Result<DepartmentDutyDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.UpdateDepartmentDutyDto.Id.ToString()),
+                        ValidatorTransform.NotExistsValue("Id", request.UpdateDepartmentDutyDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

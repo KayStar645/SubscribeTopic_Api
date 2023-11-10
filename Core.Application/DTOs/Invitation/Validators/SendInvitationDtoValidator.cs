@@ -10,12 +10,12 @@ namespace Core.Application.DTOs.Invitation.Validators
         public SendInvitationDtoValidator()
         {
             RuleFor(x => x.Message)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("message"))
-                .MaximumLength(CONSTANT_COMMON.MESSAGE).WithMessage(ValidatorTranform.MaximumLength("message", CONSTANT_COMMON.MESSAGE));
+                .NotEmpty().WithMessage(ValidatorTransform.Required("message"))
+                .MaximumLength(CONSTANT_COMMON.MESSAGE).WithMessage(ValidatorTransform.MaximumLength("message", CONSTANT_COMMON.MESSAGE));
 
             RuleFor(x => x.Status)
                 .Must(status => InvitationEntity.GetSatus().Any(x => x.Equals(status)))
-                .WithMessage(ValidatorTranform.Must("gender", InvitationEntity.GetSatus()));
+                .WithMessage(ValidatorTransform.Must("gender", InvitationEntity.GetSatus()));
         }
     }
 }

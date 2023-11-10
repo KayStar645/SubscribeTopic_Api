@@ -29,7 +29,7 @@ namespace Core.Application.Features.FacultyDuties.Handlers.Commands
             if (request.UpdateFacultyDutyDto.Id == null)
             {
                 return Result<FacultyDutyDto>.Failure(
-                    ValidatorTranform.Required("id"),
+                    ValidatorTransform.Required("id"),
                     (int)HttpStatusCode.BadRequest);
             }
 
@@ -40,7 +40,7 @@ namespace Core.Application.Features.FacultyDuties.Handlers.Commands
                 if (findFacultyDuty is null)
                 {
                     return Result<FacultyDutyDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.UpdateFacultyDutyDto.Id.ToString()),
+                        ValidatorTransform.NotExistsValue("Id", request.UpdateFacultyDutyDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

@@ -56,7 +56,7 @@ namespace Core.Application.Features.Industries.Handlers.Queries
                 if (findIndustry is null)
                 {
                     return Result<IndustryDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.id.ToString()),
+                        ValidatorTransform.NotExistsValue("Id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

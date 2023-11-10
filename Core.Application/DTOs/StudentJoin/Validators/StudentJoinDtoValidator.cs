@@ -19,7 +19,7 @@ namespace Core.Application.DTOs.StudentJoin.Validators
                     var exists = await _unitOfWork.Repository<StudentEntity>().GetByIdAsync(id);
                     return exists != null;
             })
-            .WithMessage(id => ValidatorTranform.NotExistsValueInTable("studentId", "students"));
+            .WithMessage(id => ValidatorTransform.NotExistsValueInTable("studentId", "students"));
 
             RuleFor(x => x.registrationPeriodId)
             .MustAsync(async (id, token) =>
@@ -27,7 +27,7 @@ namespace Core.Application.DTOs.StudentJoin.Validators
                 var exists = await _unitOfWork.Repository<RegistrationPeriodEntity>().GetByIdAsync(id);
                 return exists != null;
             })
-            .WithMessage(id => ValidatorTranform.NotExistsValueInTable("registrationPeriodId", "registrationPeriods"));
+            .WithMessage(id => ValidatorTransform.NotExistsValueInTable("registrationPeriodId", "registrationPeriods"));
         }
     }
 }

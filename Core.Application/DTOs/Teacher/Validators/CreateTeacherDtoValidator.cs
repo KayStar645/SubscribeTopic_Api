@@ -18,19 +18,19 @@ namespace Core.Application.DTOs.Teacher.Validators
             Include(new TeacherDtoValidator(_unitOfWork));
 
             RuleFor(x => x.InternalCode)
-               .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"))
-               .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
+               .NotEmpty().WithMessage(ValidatorTransform.Required("internalCode"))
+               .MaximumLength(50).WithMessage(ValidatorTransform.MaximumLength("internalCode", 50))
                .MustAsync(async (internalCode, token) =>
                {
                    var teacher = await _unitOfWork.Repository<TeacherEntity>()
                        .FirstOrDefaultAsync(x => x.InternalCode == internalCode);
                    return teacher == null;
                })
-               .WithMessage(internalCode => ValidatorTranform.Exists("internalCode"));
+               .WithMessage(internalCode => ValidatorTransform.Exists("internalCode"));
 
             RuleFor(x => x.Type)
                 .Must(type => string.IsNullOrEmpty(type) || TeacherEntity.GetType().Any(x => x.Equals(type)))
-                .WithMessage(ValidatorTranform.Must("type", TeacherEntity.GetType()))
+                .WithMessage(ValidatorTransform.Must("type", TeacherEntity.GetType()))
                 .MustAsync(async (type, token) =>
                 {
                     if(type == TeacherEntity.TYPE_TEACHER_MINISTRY)
@@ -46,7 +46,7 @@ namespace Core.Application.DTOs.Teacher.Validators
                     }
                     return true;
                 })
-                .WithMessage(ValidatorTranform.ExistsIn(TeacherEntity.TYPE_TEACHER_MINISTRY, "Faculty"));
+                .WithMessage(ValidatorTransform.ExistsIn(TeacherEntity.TYPE_TEACHER_MINISTRY, "Faculty"));
         }
     }
 }

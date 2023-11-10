@@ -60,7 +60,7 @@ namespace Core.Application.Features.FacultyDuties.Handlers.Queries
                 if (findFacultyDuty is null)
                 {
                     return Result<FacultyDutyDto>.Failure(
-                        ValidatorTranform.NotExistsValue("id", request.id.ToString()),
+                        ValidatorTransform.NotExistsValue("id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

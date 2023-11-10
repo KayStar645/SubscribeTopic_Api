@@ -122,9 +122,9 @@ namespace Core.Application.Services.Identity
             var facultyDto = _mapper.Map<FacultyDto>(result.faculty);
             string type = "";
             if (result.type == 0)
-                type = "student";
+                type = CLAIMS_VALUES.TYPE_STUDENT;
             else if (result.type == 1)
-                type = "teacher";
+                type = CLAIMS_VALUES.TYPE_TEACHER;
 
             var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role.Name));
             var permissionClaims = permissions.Select(permission => new Claim(CONSTANT_CLAIM_TYPES.Permission, permission.Name));
@@ -143,8 +143,8 @@ namespace Core.Application.Services.Identity
             var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
             var jwtSecurityToken = new JwtSecurityToken(
-                issuer: _configuration["JwtSettings:SubscribeTopic"],
-                audience: _configuration["JwtSettings:SubscribeTopicUser"],
+                issuer: _configuration["JwtSettings:Issuer"],
+                audience: _configuration["JwtSettings:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["JwtSettings:DurationInMinutes"])),
                 signingCredentials: signingCredentials);

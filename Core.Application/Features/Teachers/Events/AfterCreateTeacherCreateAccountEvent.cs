@@ -4,26 +4,26 @@ using Core.Domain.Entities;
 using Core.Domain.Entities.Identity;
 using MediatR;
 
-namespace Core.Application.Features.Students.Events
+namespace Core.Application.Features.Teachers.Events
 {
-    public class CreateAccountAfterCreateStudentEvent : INotification
+    public class AfterCreateTeacherCreateAccountEvent : INotification
     {
-        public Student _student { get; set; }
+        public Teacher _teacher { get; set; }
         public IUserRepository _userRepository { get; set; }
 
         public IUnitOfWork _unitOfWork { get; set; }
 
-        public CreateAccountAfterCreateStudentEvent(Student student, IUnitOfWork unitOfWork, IUserRepository userRepository)
+        public AfterCreateTeacherCreateAccountEvent(Teacher teacher, IUnitOfWork unitOfWork, IUserRepository userRepository)
         {
-            _student = student;
+            _teacher = teacher;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
         }
     }
 
-    public class CreateAccountAfterCreateStudentHandler : INotificationHandler<CreateAccountAfterCreateStudentEvent>
+    public class AfterCreateTeacherCreateAccountHandler : INotificationHandler<AfterCreateTeacherCreateAccountEvent>
     {
-        public async Task Handle(CreateAccountAfterCreateStudentEvent pEvent, CancellationToken cancellationToken)
+        public async Task Handle(AfterCreateTeacherCreateAccountEvent pEvent, CancellationToken cancellationToken)
         {
             await Task.Yield();
 
@@ -31,17 +31,17 @@ namespace Core.Application.Features.Students.Events
             {
                 User user = new User()
                 {
-                    UserName = pEvent._student.InternalCode,
-                    Password = pEvent._student.InternalCode,
+                    UserName = pEvent._teacher.InternalCode,
+                    Password = pEvent._teacher.InternalCode,
                 };
 
                 await pEvent._userRepository.CreateAsync(user);
 
                 var userFind = await pEvent._userRepository.FindByNameAsync(user.UserName);
-                var student = pEvent._student;
-                student.UserId = userFind.Id;
+                var teacher = pEvent._teacher;
+                teacher.UserId = userFind.Id;
 
-                await pEvent._unitOfWork.Repository<Student>().UpdateAsync(student);
+                await pEvent._unitOfWork.Repository<Teacher>().UpdateAsync(teacher);
                 await pEvent._unitOfWork.Save(cancellationToken);
             }
             catch (Exception ex)

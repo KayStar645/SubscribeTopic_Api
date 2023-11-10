@@ -19,18 +19,18 @@ namespace Core.Application.DTOs.Notification.Validators
                     var facultyEntityExists = await _unitOfWork.Repository<FacultyEntity>().GetByIdAsync(id);
                     return facultyEntityExists != null || id == null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("dacultyId", "faculty"));
+                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("dacultyId", "faculty"));
 
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
-                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));
+                .NotEmpty().WithMessage(ValidatorTransform.Required("name"))
+                .MaximumLength(190).WithMessage(ValidatorTransform.MaximumLength("name", 190));
 
             RuleFor(x => x.Describe)
-                .MaximumLength(5000).WithMessage(ValidatorTranform.MaximumLength("describe", 5000));
+                .MaximumLength(5000).WithMessage(ValidatorTransform.MaximumLength("describe", 5000));
 
             RuleFor(x => x.Image)
                 .Must(image => string.IsNullOrEmpty(image) || Uri.TryCreate(image, UriKind.Absolute, out _))
-                .WithMessage(ValidatorTranform.MustUrl("image"));
+                .WithMessage(ValidatorTransform.MustUrl("image"));
 
             RuleFor(x => x.Images)
                 .Must(images =>
@@ -45,7 +45,7 @@ namespace Core.Application.DTOs.Notification.Validators
 
                     return true;
                 })
-                .WithMessage(ValidatorTranform.MustUrls("images"));
+                .WithMessage(ValidatorTransform.MustUrls("images"));
 
         }
     }

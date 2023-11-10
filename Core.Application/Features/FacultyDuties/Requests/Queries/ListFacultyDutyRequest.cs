@@ -36,7 +36,7 @@ namespace Core.Application.Features.FacultyDuties.Requests.Queries
                             .FirstOrDefaultAsync(x => x.Id == departmentId);
                         return exists != null;
                     })
-                    .WithMessage(id => ValidatorTranform.MustIn("departmentId"));
+                    .WithMessage(id => ValidatorTransform.MustIn("departmentId"));
             }
             else
             {
@@ -47,7 +47,7 @@ namespace Core.Application.Features.FacultyDuties.Requests.Queries
                             .FirstOrDefaultAsync(x => x.Id == facultyId);
                         return exists != null;
                     })
-                    .WithMessage(id => ValidatorTranform.MustIn("facultyId"));
+                    .WithMessage(id => ValidatorTransform.MustIn("facultyId"));
             }
         }
     }
