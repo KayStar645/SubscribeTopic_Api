@@ -19,8 +19,6 @@ namespace Core.Application.Features.Thesiss.Requests.Queries
 
         public bool? isGetThesisMajors { get; set; }
 
-        public string? type { get; set; }
-
         public int? facultyId { get; set; }
 
         public int? departmentId { get; set; }

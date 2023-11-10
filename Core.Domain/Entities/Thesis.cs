@@ -24,8 +24,6 @@ namespace Core.Domain.Entities
         [NotMapped]
         public const string STATUS_APPROVE_REQUEST = "AR";
         [NotMapped]
-        public const string STATUS_EDITING_REQUEST = "ER";
-        [NotMapped]
         public const string STATUS_APPROVED = "A";
         [NotMapped]
         public const string STATUS_CANCEL = "C";
@@ -122,7 +120,6 @@ namespace Core.Domain.Entities
             {
                 STATUS_DRAFT,
                 STATUS_APPROVE_REQUEST,
-                STATUS_EDITING_REQUEST,
                 STATUS_APPROVED,
                 STATUS_CANCEL
             };

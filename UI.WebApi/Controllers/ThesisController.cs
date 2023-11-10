@@ -14,7 +14,7 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/Thesis")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ThesisController : Controller
     {
         private readonly IMediator _mediator;
@@ -63,9 +63,9 @@ namespace UI.WebApi.Controllers
         /// - Name: string, required, max(190)
         /// </remarks>
         [HttpPost]
-        public async Task<ActionResult<ThesisDto>> Post([FromBody] CreateThesisDto ThesisRequest)
+        public async Task<ActionResult<ThesisDto>> Post([FromBody] CreateThesisDto request)
         {
-            var command = new CreateThesisRequest { createThesisDto = ThesisRequest };
+            var command = new CreateThesisRequest { createThesisDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
@@ -80,9 +80,9 @@ namespace UI.WebApi.Controllers
         /// - Name: string, required, max(190)
         /// </remarks>
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] UpdateThesisDto ThesisRequest)
+        public async Task<ActionResult> Put([FromBody] UpdateThesisDto request)
         {
-            var command = new UpdateThesisRequest { updateThesisDto = ThesisRequest };
+            var command = new UpdateThesisRequest { updateThesisDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
@@ -117,6 +117,23 @@ namespace UI.WebApi.Controllers
                 }
                 return StatusCode(responses.Code, responses);
             }
+        }
+
+        /// <summary>
+        /// Sửa đề tài
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// - Name: string, required, max(190)
+        /// </remarks>
+        [HttpPut("ChangeStatus")]
+        public async Task<ActionResult> ChangeStatus([FromBody] ChangeStatusThesisDto request)
+        {
+            var command = new ChangeStatusThesisRequest { changeStatusThesis = request };
+            var response = await _mediator.Send(command);
+
+            return StatusCode(response.Code, response);
         }
     }
 }

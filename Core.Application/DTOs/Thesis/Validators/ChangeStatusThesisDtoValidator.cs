@@ -1,4 +1,5 @@
-﻿using Core.Application.Transform;
+﻿using Core.Application.Contracts.Persistence;
+using Core.Application.Transform;
 using FluentValidation;
 using ThesisEntity = Core.Domain.Entities.Thesis;
 
@@ -6,36 +7,31 @@ namespace Core.Application.DTOs.Thesis.Validators
 {
     public class ChangeStatusThesisDtoValidator : AbstractValidator<ChangeStatusThesisDto>
     {
-        public ChangeStatusThesisDtoValidator()
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ChangeStatusThesisDtoValidator(IUnitOfWork unitOfWork, int pId)
         {
+            _unitOfWork = unitOfWork;
+
+            RuleFor(x => x.Id)
+                .NotEmpty().WithMessage(ValidatorTransform.Required("id"));
+
             RuleFor(x => x.Status)
-                .NotEmpty().WithMessage(ValidatorTransform.Required("status"))
-                .Must(status => ThesisEntity.GetSatus().Contains(status)).WithMessage(ValidatorTransform.Exists("status"))
                 .MustAsync(async (status, token) =>
                 {
-                    var isValid = await ValidateStatusTransitionAsync(status);
-                    return isValid;
-                }).WithMessage(ValidatorTransform.Exists("status"));
-        }
+                    var oldStatus = (await _unitOfWork.Repository<ThesisEntity>().FirstOrDefaultAsync(x => x.Id == pId)).Status;
 
-        private async Task<bool> ValidateStatusTransitionAsync(string status)
-        {
-            var validTransitions = new Dictionary<string, List<string>>
-            {
-                { ThesisEntity.STATUS_DRAFT, new List<string> { ThesisEntity.STATUS_APPROVE_REQUEST } },
-                { ThesisEntity.STATUS_APPROVE_REQUEST, new List<string> { ThesisEntity.STATUS_EDITING_REQUEST, ThesisEntity.STATUS_APPROVED, ThesisEntity.STATUS_CANCEL } },
-                { ThesisEntity.STATUS_EDITING_REQUEST, new List<string> { ThesisEntity.STATUS_APPROVE_REQUEST } }
-            };
+                    if(oldStatus == ThesisEntity.STATUS_DRAFT)
+                    {
+                        return status == ThesisEntity.STATUS_APPROVE_REQUEST;
+                    }
+                    if(oldStatus == ThesisEntity.STATUS_APPROVE_REQUEST)
+                    {
+                        return ThesisEntity.GetSatus().Contains(status);
+                    }
 
-            if (validTransitions.TryGetValue(status, out var validNextStatusList))
-            {
-                // Kiểm tra xem `status` có hợp lệ theo nguyên tắc không
-                // Trong trường hợp này, `status` phải nằm trong danh sách `validNextStatusList`
-                return validNextStatusList.Contains(status);
-            }
-
-            // Nếu không tìm thấy quy tắc cho `status`, mặc định trả về false
-            return false;
+                    return false;
+                }).WithMessage(ValidatorTransform.MustIn("status"));
         }
 
     }
