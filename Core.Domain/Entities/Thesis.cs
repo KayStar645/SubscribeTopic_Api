@@ -47,12 +47,6 @@ namespace Core.Domain.Entities
 
 
         [Sieve(CanFilter = true, CanSort = true)]
-        public int? ParentId { get; set; }
-        [ForeignKey(nameof(ParentId))]
-        public Thesis? ThesisParent { get; set; }
-
-
-        [Sieve(CanFilter = true, CanSort = true)]
         public string? Summary { get; set; }
 
 

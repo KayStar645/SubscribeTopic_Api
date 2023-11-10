@@ -30,10 +30,12 @@ namespace Core.Application.Features.Thesiss.Events
 
             try
             {
-                var thesisReviewsId = await pEvent._unitOfWork.Repository<ThesisReview>()
-                    .GetAllInclude(x => x.ThesisId == pEvent._updateThesisDto.Id).Select(x => x.TeacherId).ToListAsync();
+                var thesisReviews = await pEvent._unitOfWork.Repository<ThesisReview>()
+                                            .GetAllInclude()
+                                            .Where(x => x.ThesisId == pEvent._updateThesisDto.Id)
+                                            .ToListAsync();
 
-                if (thesisReviewsId == null)
+                if (thesisReviews == null)
                 {
                     // Create
                     if (pEvent._updateThesisDto.ThesisReviewsId != null)
@@ -55,15 +57,16 @@ namespace Core.Application.Features.Thesiss.Events
                     // Update
                     if (pEvent._updateThesisDto.ThesisReviewsId != null)
                     {
-                        List<int?> exceptNewList = thesisReviewsId.Except(pEvent._updateThesisDto.ThesisReviewsId).ToList();
-                        List<int?> exceptOldList = pEvent._updateThesisDto.ThesisReviewsId.Except(thesisReviewsId).ToList();
+                        List<int?> exceptNewList = thesisReviews.Select(x => x.TeacherId)
+                                    .Except(pEvent._updateThesisDto.ThesisReviewsId).ToList();
+                        List<int?> exceptOldList = pEvent._updateThesisDto.ThesisReviewsId
+                                    .Except(thesisReviews.Select(x => x.TeacherId)).ToList();
 
                         foreach (int teacherId in exceptNewList)
                         {
                             ThesisReview thesisReview = new ThesisReview()
                             {
-                                TeacherId = teacherId,
-                                ThesisId = pEvent._thesisDto.Id
+                                Id = thesisReviews.FirstOrDefault(x => x.TeacherId == teacherId).Id
                             };
                             await pEvent._unitOfWork.Repository<ThesisReview>().DeleteAsync(thesisReview);
                         }
@@ -80,6 +83,20 @@ namespace Core.Application.Features.Thesiss.Events
 
                         await pEvent._unitOfWork.Save(cancellationToken);
                     }
+                    else
+                    {
+                        // Delete all
+                        foreach (int teacherId in thesisReviews.Select(x => x.TeacherId))
+                        {
+                            ThesisReview thesisReview = new ThesisReview()
+                            {
+                                Id = thesisReviews.FirstOrDefault(x => x.TeacherId == teacherId).Id
+                            };
+                            await pEvent._unitOfWork.Repository<ThesisReview>().DeleteAsync(thesisReview);
+                        }
+
+                        await pEvent._unitOfWork.Save(cancellationToken);
+                    }    
                 }
             }
             catch (Exception ex)

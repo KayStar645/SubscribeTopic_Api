@@ -30,10 +30,12 @@ namespace Core.Application.Features.Thesiss.Events
 
             try
             {
-                var thesisInstructionsId = await pEvent._unitOfWork.Repository<ThesisInstruction>()
-                    .GetAllInclude(x => x.ThesisId == pEvent._updateThesisDto.Id).Select(x => x.TeacherId).ToListAsync();
+                var thesisInstructions = await pEvent._unitOfWork.Repository<ThesisInstruction>()
+                                            .GetAllInclude()
+                                            .Where(x => x.ThesisId == pEvent._updateThesisDto.Id)
+                                            .ToListAsync();
 
-                if(thesisInstructionsId == null)
+                if (thesisInstructions == null)
                 {
                     // Create
                     if (pEvent._updateThesisDto.ThesisInstructionsId != null)
@@ -55,16 +57,18 @@ namespace Core.Application.Features.Thesiss.Events
                     // Update
                     if (pEvent._updateThesisDto.ThesisInstructionsId != null)
                     {
-                        List<int?> exceptNewList = thesisInstructionsId.Except(pEvent._updateThesisDto.ThesisInstructionsId).ToList();
-                        List<int?> exceptOldList = pEvent._updateThesisDto.ThesisInstructionsId.Except(thesisInstructionsId).ToList();
+                        List<int?> exceptNewList = thesisInstructions.Select(x => x.TeacherId)
+                                                            .Except(pEvent._updateThesisDto.ThesisInstructionsId).ToList();
+                        List<int?> exceptOldList = pEvent._updateThesisDto.ThesisInstructionsId
+                                                            .Except(thesisInstructions.Select(x => x.TeacherId)).ToList();
 
-                        foreach (int teacherId in exceptNewList)
+                        foreach (int? teacherId in exceptNewList)
                         {
                             ThesisInstruction thesisInstruction = new ThesisInstruction()
                             {
-                                TeacherId = teacherId,
-                                ThesisId = pEvent._thesisDto.Id
+                                Id = thesisInstructions.FirstOrDefault(x => x.TeacherId == teacherId).Id
                             };
+                            // Để xóa thì cần id của nó
                             await pEvent._unitOfWork.Repository<ThesisInstruction>().DeleteAsync(thesisInstruction);
                         }
 
@@ -80,6 +84,20 @@ namespace Core.Application.Features.Thesiss.Events
 
                         await pEvent._unitOfWork.Save(cancellationToken);
                     }
+                    else
+                    {
+                        // Delete all
+                        foreach (int teacherId in thesisInstructions.Select(x => x.TeacherId))
+                        {
+                            ThesisInstruction thesisInstruction = new ThesisInstruction()
+                            {
+                                Id = thesisInstructions.FirstOrDefault(x => x.TeacherId == teacherId).Id
+                            };
+                            await pEvent._unitOfWork.Repository<ThesisInstruction>().DeleteAsync(thesisInstruction);
+                        }
+
+                        await pEvent._unitOfWork.Save(cancellationToken);
+                    }    
                 }
             }
             catch (Exception ex)
