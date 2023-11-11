@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Feedback;
 using Core.Application.DTOs.Group;
+using Core.Application.Features.Feedbacks.Requests.Queries;
 using Core.Application.Features.Groups.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
@@ -10,58 +13,51 @@ using Sieve.Models;
 using Sieve.Services.Interface;
 using System.Net;
 
-namespace Core.Application.Features.Groups.Handlers.Queries
+namespace Core.Application.Features.Feedbacks.Handlers.Queries
 {
-    public class ListGroupRequestHandler : IRequestHandler<ListGroupRequest, PaginatedResult<List<GroupDto>>>
+    public class ListFeedbackRequestHandler : IRequestHandler<ListFeedbackRequest, PaginatedResult<List<FeedbackDto>>>
     {
         readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
 
-        public ListGroupRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
+        public ListFeedbackRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
         }
-        public async Task<PaginatedResult<List<GroupDto>>> Handle(ListGroupRequest request, CancellationToken cancellationToken)
+
+        public async Task<PaginatedResult<List<FeedbackDto>>> Handle(ListFeedbackRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListGroupDtoValidator(_unitOfWork);
+            var validator = new ListFeedbackDtoValidator(_unitOfWork);
             var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {
                 var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
-                return PaginatedResult<List<GroupDto>>
+                return PaginatedResult<List<FeedbackDto>>
                     .Failure((int)HttpStatusCode.BadRequest, errorMessages);
             }
 
             var sieve = _mapper.Map<SieveModel>(request);
 
-            var query = _unitOfWork.Repository<Group>().GetAllInclude();
-            
-            query = query.Where(x => x.Leader.Student.Major.Industry.FacultyId == request.facultyId);
+            // Start Query
+            var query = _unitOfWork.Repository<Feedback>().GetAllInclude();
 
-            if (request.isAllDetail)
-            {
-                query = _unitOfWork.Repository<Group>().AddInclude(query, x => x.Leader.Student);
-            }
-            else
-            {
-                if (request.isGetLeader == true)
-                {
-                    query = _unitOfWork.Repository<Group>().AddInclude(query, x => x.Leader.Student);
-                }
-            }
+            query = query.Where(x => x.ThesisId == request.thesisId);
+
+            query = _unitOfWork.Repository<Feedback>().AddInclude(query, x => x.Commenter);
 
             int totalCount = await query.CountAsync();
+            // End Query
 
             query = _sieveProcessor.Apply(sieve, query);
 
             var groups = await query.ToListAsync();
 
-            var mapGroups = _mapper.Map<List<GroupDto>>(groups);
-            return PaginatedResult<List<GroupDto>>.Success(
+            var mapGroups = _mapper.Map<List<FeedbackDto>>(groups);
+            return PaginatedResult<List<FeedbackDto>>.Success(
                 mapGroups, totalCount, request.page,
                 request.pageSize);
         }

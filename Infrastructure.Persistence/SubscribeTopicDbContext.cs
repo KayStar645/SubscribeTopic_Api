@@ -41,5 +41,6 @@ namespace Infrastructure.Persistence
         public DbSet<ThesisInstruction> ThesisInstructions { get; set; }
         public DbSet<ThesisMajor> ThesisMajors { get; set; }
         public DbSet<ThesisReview> ThesisReviews { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
     }
 }

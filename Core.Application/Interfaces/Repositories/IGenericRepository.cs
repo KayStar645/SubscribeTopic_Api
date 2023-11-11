@@ -12,6 +12,7 @@ namespace Core.Application.Contracts.Persistence
         Task<T> AddAsync(T entity);
         Task<T> UpdateAsync(T entity);
         Task DeleteAsync(T entity);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
 
         // Query
         IQueryable<T> Entities { get; }

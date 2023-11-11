@@ -78,6 +78,10 @@ namespace Core.Domain.Entities
         [NotMapped]
         public ICollection<DepartmentDuty> Departments { get; } = new HashSet<DepartmentDuty>();
 
+        // Nhận xét và góp ý
+        [NotMapped]
+        public ICollection<Feedback> Feedbacks { get; set; } = new HashSet<Feedback>();
+
         #endregion
 
 
