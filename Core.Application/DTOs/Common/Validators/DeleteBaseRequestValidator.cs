@@ -9,7 +9,7 @@ namespace Core.Application.DTOs.Common.Validators
         public DeleteBaseRequestValidator()
         {
             RuleFor(x => x.id)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("id"));
+                .NotEmpty().WithMessage(ValidatorTransform.Required("id"));
         }
     }
 }

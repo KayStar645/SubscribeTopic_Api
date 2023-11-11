@@ -17,14 +17,14 @@ namespace Core.Application.DTOs.DepartmentDuty.Validators
             Include(new DepartmentDutyDtoValidator(_unitOfWork, departmentId, start));
 
             RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"))
-                .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
+                .NotEmpty().WithMessage(ValidatorTransform.Required("internalCode"))
+                .MaximumLength(50).WithMessage(ValidatorTransform.MaximumLength("internalCode", 50))
                 .MustAsync(async (internalCode, token) =>
                 {
                     var exists = await _unitOfWork.Repository<DepartmentDutyEntity>()
                         .FirstOrDefaultAsync(x => x.InternalCode == internalCode);
                     return exists == null;
-                }).WithMessage(ValidatorTranform.Exists("internalCode"));
+                }).WithMessage(ValidatorTransform.Exists("internalCode"));
 
             RuleFor(x => x.DepartmentId)
                 .MustAsync(async (id, token) =>
@@ -32,7 +32,7 @@ namespace Core.Application.DTOs.DepartmentDuty.Validators
                     var exists = await _unitOfWork.Repository<DepartmentEntity>().GetByIdAsync(id);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("departmentId", "departments"));
+                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("departmentId", "departments"));
 
         }
     }

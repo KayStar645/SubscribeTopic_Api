@@ -20,15 +20,15 @@ namespace Core.Application.DTOs.Department.Validators
                     var exists = await _unitOfWork.Repository<FacultyEntity>().GetByIdAsync(id);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "faculties"));
+                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("facultyId", "faculties"));
 
             RuleFor(x => x.PhoneNumber)
                 .Must(phoneNumber => string.IsNullOrEmpty(phoneNumber) || phoneNumber.Length == 10)
-                .WithMessage(ValidatorTranform.Length("phoneNumber", 10));
+                .WithMessage(ValidatorTransform.Length("phoneNumber", 10));
 
             RuleFor(x => x.Email)
                 .Must(email => string.IsNullOrEmpty(email) || CustomValidator.BeValidEmail(email))
-                .WithMessage(ValidatorTranform.ValidValue("email"));
+                .WithMessage(ValidatorTransform.ValidValue("email"));
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Core.Application.Features.Departments.Requests.Queries
                         .FirstOrDefaultAsync(x => x.Id == facultyId);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.MustIn("facultyId"));
+                .WithMessage(id => ValidatorTransform.MustIn("facultyId"));
         }
     }
 }

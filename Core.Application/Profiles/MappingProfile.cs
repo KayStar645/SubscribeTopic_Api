@@ -3,6 +3,7 @@ using Core.Application.DTOs.Department;
 using Core.Application.DTOs.DepartmentDuty;
 using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.FacultyDuty;
+using Core.Application.DTOs.Feedback;
 using Core.Application.DTOs.Group;
 using Core.Application.DTOs.Industry;
 using Core.Application.DTOs.Invitation;
@@ -12,6 +13,7 @@ using Core.Application.DTOs.RegistrationPeriod;
 using Core.Application.DTOs.Student;
 using Core.Application.DTOs.StudentJoin;
 using Core.Application.DTOs.Teacher;
+using Core.Application.DTOs.Thesis;
 using Core.Application.Features.Base.Requests.Queries;
 using Core.Domain.Entities;
 using Sieve.Models;
@@ -88,6 +90,16 @@ namespace Core.Application.Profiles
 
             CreateMap<SieveModel, ListBaseRequest<InvitationDto>>().ReverseMap();
             CreateMap<Invitation, InvitationDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<ThesisDto>>().ReverseMap();
+            CreateMap<Thesis, ThesisDto>().ReverseMap();
+            CreateMap<Thesis, CreateThesisDto>().ReverseMap();
+            CreateMap<Thesis, UpdateThesisDto>().ReverseMap();
+            CreateMap<ThesisDto, CreateThesisDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<FeedbackDto>>().ReverseMap();
+            CreateMap<Feedback, FeedbackDto>().ReverseMap();
+            CreateMap<Feedback, CreateFeedbackDto>().ReverseMap();
 
         }
 

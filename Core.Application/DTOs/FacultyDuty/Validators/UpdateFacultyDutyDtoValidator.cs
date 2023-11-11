@@ -17,17 +17,17 @@ namespace Core.Application.DTOs.FacultyDuty.Validators
             Include(new FacultyDutyDtoValidator(_unitOfWork, facultyId, start));
 
             RuleFor(x => x.Id)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("id"));
+                .NotEmpty().WithMessage(ValidatorTransform.Required("id"));
 
             RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"))
-                .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
+                .NotEmpty().WithMessage(ValidatorTransform.Required("internalCode"))
+                .MaximumLength(50).WithMessage(ValidatorTransform.MaximumLength("internalCode", 50))
                 .MustAsync(async (internalCode, token) =>
                 {
                     var exists = await _unitOfWork.Repository<FacultyDutyEntity>()
                         .FirstOrDefaultAsync(x => x.Id != currentId && x.InternalCode == internalCode);
                     return exists == null;
-                }).WithMessage(ValidatorTranform.Exists("internalCode"));
+                }).WithMessage(ValidatorTransform.Exists("internalCode"));
 
 
 

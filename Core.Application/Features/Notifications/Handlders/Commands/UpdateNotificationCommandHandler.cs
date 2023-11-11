@@ -41,7 +41,7 @@ namespace Core.Application.Features.Notifications.Handlers.Commands
                 if (findNotification is null)
                 {
                     return Result<NotificationDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.updateNotificationDto.Id.ToString()),
+                        ValidatorTransform.NotExistsValue("Id", request.updateNotificationDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

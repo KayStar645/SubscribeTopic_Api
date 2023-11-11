@@ -17,14 +17,14 @@ namespace Core.Application.DTOs.FacultyDuty.Validators
             Include(new FacultyDutyDtoValidator(_unitOfWork, facultyId, start));
 
             RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"))
-                .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
+                .NotEmpty().WithMessage(ValidatorTransform.Required("internalCode"))
+                .MaximumLength(50).WithMessage(ValidatorTransform.MaximumLength("internalCode", 50))
                 .MustAsync(async (internalCode, token) =>
                 {
                     var exists = await _unitOfWork.Repository<FacultyDutyEntity>()
                         .FirstOrDefaultAsync(x => x.InternalCode == internalCode);
                     return exists == null;
-                }).WithMessage(ValidatorTranform.Exists("internalCode"));
+                }).WithMessage(ValidatorTransform.Exists("internalCode"));
 
             RuleFor(x => x.FacultyId)
                 .MustAsync(async (id, token) =>
@@ -32,7 +32,7 @@ namespace Core.Application.DTOs.FacultyDuty.Validators
                     var exists = await _unitOfWork.Repository<FacultyEntity>().GetByIdAsync(id);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("facultyId", "faculties"));
+                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("facultyId", "faculties"));
 
         }
     }

@@ -40,7 +40,7 @@ namespace Core.Application.Features.Industries.Handlers.Commands
                 if (findIndustry is null)
                 {
                     return Result<IndustryDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.updateIndustryDto.Id.ToString()),
+                        ValidatorTransform.NotExistsValue("Id", request.updateIndustryDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

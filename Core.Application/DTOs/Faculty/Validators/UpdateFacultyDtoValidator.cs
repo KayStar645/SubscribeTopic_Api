@@ -18,24 +18,24 @@ namespace Core.Application.DTOs.Faculty.Validators
             Include(new FacultyDtoValidator(_unitOfWork));
 
             RuleFor(x => x.InternalCode)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("internalCode"))
-                .MaximumLength(50).WithMessage(ValidatorTranform.MaximumLength("internalCode", 50))
+                .NotEmpty().WithMessage(ValidatorTransform.Required("internalCode"))
+                .MaximumLength(50).WithMessage(ValidatorTransform.MaximumLength("internalCode", 50))
                 .MustAsync(async (internalCode, token) =>
                 {
                     var exists = await _unitOfWork.Repository<FacultyEntity>()
                                .FirstOrDefaultAsync(x => x.Id != currentId && x.InternalCode == internalCode);
                     return exists == null;
-                }).WithMessage(ValidatorTranform.Exists("internalCode"));
+                }).WithMessage(ValidatorTransform.Exists("internalCode"));
 
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
-                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190))
+                .NotEmpty().WithMessage(ValidatorTransform.Required("name"))
+                .MaximumLength(190).WithMessage(ValidatorTransform.MaximumLength("name", 190))
                 .MustAsync(async (name, token) =>
                 {
                     var exists = await _unitOfWork.Repository<FacultyEntity>()
                                         .FirstOrDefaultAsync(x => x.Id != currentId && x.Name == name);
                     return exists == null;
-                }).WithMessage(ValidatorTranform.Exists("name"));
+                }).WithMessage(ValidatorTransform.Exists("name"));
 
             RuleFor(x => x.Dean_TeacherId)
                 .MustAsync(async (id, token) =>
@@ -46,7 +46,7 @@ namespace Core.Application.DTOs.Faculty.Validators
 
                     return exists != null || id == null;
                 })
-                .WithMessage(id => ValidatorTranform.MustIn("dean_TeacherId"));
+                .WithMessage(id => ValidatorTransform.MustIn("dean_TeacherId"));
         }
     }
 }

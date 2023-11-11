@@ -19,11 +19,11 @@ namespace Core.Application.DTOs.Major.Validators
                     var exists = await _unitOfWork.Repository<IndustryEntity>().GetByIdAsync(id);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("industryId", "industries"));
+                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("industryId", "industries"));
 
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
-                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));
+                .NotEmpty().WithMessage(ValidatorTransform.Required("name"))
+                .MaximumLength(190).WithMessage(ValidatorTransform.MaximumLength("name", 190));
         }
     }
 }

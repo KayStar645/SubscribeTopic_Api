@@ -4,32 +4,55 @@ using Core.Application;
 using Core.Application.Features.Teachers.Requests.Commands;
 using Infrastructure.Persistence;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Sieve;
 using System.Reflection;
+using System.Text;
 
 namespace UI.WebApi
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        //services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = _configuration.GetValue<string>("JwtSettings:Issuer"),
+                        ValidAudience = _configuration.GetValue<string>("JwtSettings:Audience"),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]))
+                    };
+                });
+
+
+            services.AddAuthorization();
+
 
             services.AddHttpContextAccessor();
             AddSwaggerDoc(services);
 
             services.ConfigureApplicationServices();
-            services.ConfigureSieveServices(Configuration);
-            services.ConfigurePersistenceServices(Configuration);
+            services.ConfigureSieveServices(_configuration);
+            services.ConfigurePersistenceServices(_configuration);
 
             services.AddControllers();
 

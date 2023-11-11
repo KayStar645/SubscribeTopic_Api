@@ -20,32 +20,32 @@ namespace Core.Application.DTOs.Student.Validators
                     var majorEntityExists = await _unitOfWork.Repository<MajorEntity>().GetByIdAsync(id);
                     return majorEntityExists != null;
                 })
-                .WithMessage(id => ValidatorTranform.NotExistsValueInTable("majorId", "major"));
+                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("majorId", "major"));
 
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("name"))
-                .MaximumLength(190).WithMessage(ValidatorTranform.MaximumLength("name", 190));
+                .NotEmpty().WithMessage(ValidatorTransform.Required("name"))
+                .MaximumLength(190).WithMessage(ValidatorTransform.MaximumLength("name", 190));
 
             RuleFor(x => x.Gender)
                 .Must(gender => string.IsNullOrEmpty(gender) || gender == CommonTranform.male 
                             || gender == CommonTranform.female || gender == CommonTranform.other)
-                .WithMessage(ValidatorTranform.Must("gender", CommonTranform.GetGender()));
+                .WithMessage(ValidatorTransform.Must("gender", CommonTranform.GetGender()));
 
             RuleFor(x => x.DateOfBirth)
                 .Must(dateOfBirth => string.IsNullOrEmpty(dateOfBirth.ToString()) || 
                                     CustomValidator.IsAtLeastNYearsOld(dateOfBirth, 16))
-                .WithMessage(ValidatorTranform.MustDate("dateOfBirth", 16));
+                .WithMessage(ValidatorTransform.MustDate("dateOfBirth", 16));
 
             RuleFor(x => x.PhoneNumber)
                 .Must(phoneNumber => string.IsNullOrEmpty(phoneNumber) || phoneNumber.Length == 10)
-                .WithMessage(ValidatorTranform.Length("phoneNumber", 10));
+                .WithMessage(ValidatorTransform.Length("phoneNumber", 10));
 
             RuleFor(x => x.Email)
                 .Must(email => string.IsNullOrEmpty(email) || CustomValidator.BeValidEmail(email))
-                .WithMessage(ValidatorTranform.ValidValue("email"));
+                .WithMessage(ValidatorTransform.ValidValue("email"));
 
             RuleFor(x => x.Class)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("Class"));
+                .NotEmpty().WithMessage(ValidatorTransform.Required("Class"));
         }
     }
 }

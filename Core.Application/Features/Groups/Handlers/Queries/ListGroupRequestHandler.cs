@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.Group;
 using Core.Application.Features.Groups.Requests.Queries;
 using Core.Application.Responses;
@@ -27,9 +26,8 @@ namespace Core.Application.Features.Groups.Handlers.Queries
         }
         public async Task<PaginatedResult<List<GroupDto>>> Handle(ListGroupRequest request, CancellationToken cancellationToken)
         {
-
-            var validator = new ListBaseRequestValidator<GroupDto>();
-            var result = validator.Validate(request);
+            var validator = new ListGroupDtoValidator(_unitOfWork);
+            var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {

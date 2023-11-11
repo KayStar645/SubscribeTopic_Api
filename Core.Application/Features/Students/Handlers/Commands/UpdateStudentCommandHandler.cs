@@ -40,7 +40,7 @@ namespace Core.Application.Features.Students.Handlers.Commands
                 if (findStudent is null)
                 {
                     return Result<StudentDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.updateStudentDto.Id.ToString()),
+                        ValidatorTransform.NotExistsValue("Id", request.updateStudentDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

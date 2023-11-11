@@ -42,7 +42,7 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Commands
                 if (findPeriod is null)
                 {
                     return Result<RegistrationPeriodDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.UpdateRegistrationPeriodDto.Id.ToString()),
+                        ValidatorTransform.NotExistsValue("Id", request.UpdateRegistrationPeriodDto.Id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }

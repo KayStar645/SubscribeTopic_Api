@@ -10,11 +10,11 @@ namespace Core.Application.DTOs.Common.Validators
         {
             RuleFor(x => x.page)
                 .GreaterThanOrEqualTo(1)
-                .WithMessage(ValidatorTranform.GreaterThanOrEqualTo("pageNumber", 1));
+                .WithMessage(ValidatorTransform.GreaterThanOrEqualTo("pageNumber", 1));
 
             RuleFor(x => x.pageSize)
                 .GreaterThanOrEqualTo(1)
-                .WithMessage(ValidatorTranform.GreaterThanOrEqualTo("pageSize", 1));
+                .WithMessage(ValidatorTransform.GreaterThanOrEqualTo("pageSize", 1));
         }
     }
 }

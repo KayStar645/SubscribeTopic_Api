@@ -18,20 +18,20 @@ namespace Core.Application.Models.Identity.Validators
         public RegistrationRequestValidator() 
         {
             RuleFor(p => p.UserName)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("UserName"))
-                .MinimumLength(6).WithMessage(ValidatorTranform.MinimumLength("UserName", 6));
+                .NotEmpty().WithMessage(ValidatorTransform.Required("UserName"))
+                .MinimumLength(6).WithMessage(ValidatorTransform.MinimumLength("UserName", 6));
 
             RuleFor(p => p.Password)
-                .NotEmpty().WithMessage(ValidatorTranform.Required("Password"))
-                .MinimumLength(6).WithMessage(ValidatorTranform.MinimumLength("Password", 6))
+                .NotEmpty().WithMessage(ValidatorTransform.Required("Password"))
+                .MinimumLength(6).WithMessage(ValidatorTransform.MinimumLength("Password", 6))
                 .Must(password => password.Any(char.IsLower))
-                .WithMessage(ValidatorTranform.AnyIsLower("Password"))
+                .WithMessage(ValidatorTransform.AnyIsLower("Password"))
                 .Must(password => password.Any(char.IsUpper))
-                .WithMessage(ValidatorTranform.AnyIsUpper("Password"))
+                .WithMessage(ValidatorTransform.AnyIsUpper("Password"))
                 .Must(password => password.Any(char.IsDigit))
-                .WithMessage(ValidatorTranform.AnyIsDigit("Password"))
+                .WithMessage(ValidatorTransform.AnyIsDigit("Password"))
                 .Must(password => password.Any(ch => !char.IsLetterOrDigit(ch)))
-                .WithMessage(ValidatorTranform.AnyIsLetterOrDigit("Password"));
+                .WithMessage(ValidatorTransform.AnyIsLetterOrDigit("Password"));
         }
     }
 }

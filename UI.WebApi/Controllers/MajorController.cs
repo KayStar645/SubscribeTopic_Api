@@ -102,18 +102,19 @@ namespace UI.WebApi.Controllers
                 var response = await _mediator.Send(request);
                 return StatusCode((int)HttpStatusCode.NoContent);
             }
+            catch (NotFoundException ex)
+            {
+                var responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.NotFound);
+                return StatusCode(responses.Code, responses);
+            }
+            catch (BadRequestException ex)
+            {
+                var responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.BadRequest);
+                return StatusCode(responses.Code, responses);
+            }
             catch (Exception ex)
             {
                 var responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
-                switch (ex)
-                {
-                    case NotFoundException:
-                        responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.NotFound);
-                        break;
-                    case BadRequestException:
-                        responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.BadRequest);
-                        break;
-                }
                 return StatusCode(responses.Code, responses);
             }
         }

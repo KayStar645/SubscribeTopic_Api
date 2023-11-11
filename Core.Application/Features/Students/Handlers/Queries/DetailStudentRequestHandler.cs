@@ -56,7 +56,7 @@ namespace Core.Application.Features.Students.Handlers.Queries
                 if (findStudent is null)
                 {
                     return Result<StudentDto>.Failure(
-                        ValidatorTranform.NotExistsValue("Id", request.id.ToString()),
+                        ValidatorTransform.NotExistsValue("Id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }
