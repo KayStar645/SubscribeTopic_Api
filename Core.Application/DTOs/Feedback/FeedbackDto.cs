@@ -15,7 +15,5 @@ namespace Core.Application.DTOs.Feedback
         public TeacherDto? Commenter { get; set; }
 
         public int? ThesisId { get; set; }
-
-        public ThesisDto? Thesis { get; set; }
     }
 }

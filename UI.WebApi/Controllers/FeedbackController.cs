@@ -1,7 +1,9 @@
 ﻿using Core.Application.DTOs.Feedback;
 using Core.Application.DTOs.Thesis;
 using Core.Application.Features.Feedbacks.Requests.Commands;
+using Core.Application.Features.Feedbacks.Requests.Queries;
 using Core.Application.Features.Thesiss.Requests.Commands;
+using Core.Application.Features.Thesiss.Requests.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +20,22 @@ namespace UI.WebApi.Controllers
         public FeedbackController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        /// <summary>
+        /// Lấy góp ý theo đề tài
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// thesisId: required
+        /// 
+        /// </remarks>
+        [HttpGet]
+        public async Task<ActionResult<List<FeedbackDto>>> Get([FromQuery] ListFeedbackRequest request)
+        {
+            var response = await _mediator.Send(request);
+
+            return StatusCode(response.Code, response);
         }
 
         /// <summary>
