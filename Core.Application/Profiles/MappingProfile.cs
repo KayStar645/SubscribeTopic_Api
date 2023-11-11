@@ -3,6 +3,7 @@ using Core.Application.DTOs.Department;
 using Core.Application.DTOs.DepartmentDuty;
 using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.FacultyDuty;
+using Core.Application.DTOs.Feedback;
 using Core.Application.DTOs.Group;
 using Core.Application.DTOs.Industry;
 using Core.Application.DTOs.Invitation;
@@ -95,6 +96,10 @@ namespace Core.Application.Profiles
             CreateMap<Thesis, CreateThesisDto>().ReverseMap();
             CreateMap<Thesis, UpdateThesisDto>().ReverseMap();
             CreateMap<ThesisDto, CreateThesisDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<FeedbackDto>>().ReverseMap();
+            CreateMap<Feedback, FeedbackDto>().ReverseMap();
+            CreateMap<Feedback, CreateFeedbackDto>().ReverseMap();
 
         }
 

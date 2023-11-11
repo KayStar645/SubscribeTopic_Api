@@ -37,6 +37,10 @@ namespace Core.Application.DTOs.Thesis.Validators
                     return exists == null;
                 }).WithMessage(ValidatorTransform.Exists("name"));
 
+            RuleFor(x => x.Summary)
+                .NotEmpty().WithMessage(ValidatorTransform.Required("summary"))
+                .MaximumLength(6000).WithMessage(ValidatorTransform.MaximumLength("summary", 6000));
+
             RuleFor(x => x.ThesisInstructionsId)
             .MustAsync(async (instructionsId, token) =>
             {

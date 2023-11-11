@@ -65,6 +65,13 @@ namespace Infrastructure.Persistence.Repositories
             return Task.CompletedTask;
         }
 
+        public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbContext.Set<T>()
+                .Where(x => x.IsDeleted == false)
+                .AnyAsync(predicate);
+        }
+
         // Query
         public virtual IQueryable<T> Entities => _dbContext.Set<T>();
 

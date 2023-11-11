@@ -101,6 +101,10 @@ namespace Core.Domain.Entities
         [NotMapped]
         public ICollection<ThesisMajor> ThesisMajors { get; set; } = new HashSet<ThesisMajor>();
 
+        // Nhận xét và góp ý
+        [NotMapped]
+        public ICollection<Feedback> Feedbacks { get; set; } = new HashSet<Feedback>();
+
 
         #region FUNCTION
         public static string[] GetType()
