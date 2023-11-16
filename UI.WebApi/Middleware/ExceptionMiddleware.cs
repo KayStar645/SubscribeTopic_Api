@@ -2,9 +2,11 @@
 using Core.Application.Exceptions;
 using Core.Application.Transform;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 
 namespace API.WebApi.Middleware
@@ -17,47 +19,84 @@ namespace API.WebApi.Middleware
             _next = next;
         }
 
+
+        private int STATUS()
+        {
+            return 1;
+        }
+
+
         public async Task InvokeAsync(HttpContext httpContext)
         {
             try
             {
-                var authorizationHeader = httpContext.Request.Headers["Authorization"].ToString();
+                int statusCode = 0;
 
-                if (string.IsNullOrEmpty(authorizationHeader) == false && authorizationHeader.StartsWith("Bearer "))
+                do
                 {
-                    var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+                    var authorizationHeader = httpContext.Request.Headers["Authorization"].ToString();
 
+                    if ((string.IsNullOrEmpty(authorizationHeader) == false && authorizationHeader.StartsWith("Bearer ")) == false)
+                    {
+                        break;
+                    }
+
+                    var token = authorizationHeader.Substring("Bearer ".Length).Trim();
                     var tokenHandler = new JwtSecurityTokenHandler();
                     var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
 
-                    if (jwtToken != null)
+                    if (jwtToken == null)
                     {
-                        // Lấy danh sách quyền của người dùng từ token
-                        var permissions = jwtToken.Claims
-                                                .Where(c => c.Type == CONSTANT_CLAIM_TYPES.Permission)
-                                                .Select(c => c.Value).ToList();
-
-                        // Lấy danh sách quyền yêu cầu của action hiện tại
-                        var endpoint = httpContext.GetEndpoint();
-                        var authorizationAttributes = endpoint?.Metadata.GetOrderedMetadata<IAuthorizeData>();
-                        var requiredRoles = authorizationAttributes?.SelectMany(attr => attr.Roles.Split(','));
-
-                        // Kiểm tra xem người dùng có quyền truy cập hay không
-                        //if (requiredRoles != null && requiredRoles.Any() && userRoles.Intersect(requiredRoles).Any())
-                        //{
-                        //    // Người dùng có quyền truy cập
-                        //}
-                        //else
-                        //{
-                        //    // Người dùng không có quyền truy cập
-                        //    httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        //    await httpContext.Response.WriteAsync("Access Denied");
-                        //    return;
-                        //}
+                        break;
                     }
-                }
 
-                await _next(httpContext);
+                    // Lấy danh sách quyền của người dùng từ token
+                    var permissions = jwtToken.Claims
+                                            .Where(c => c.Type == CONSTANT_CLAIM_TYPES.Permission)
+                                            .Select(c => c.Value).ToList();
+
+                    var endpoint = httpContext.GetEndpoint();
+                    if (endpoint == null)
+                    {
+                        statusCode = (int)HttpStatusCode.NotImplemented;
+                    }
+
+                    var authorizeAttributes = endpoint.Metadata.GetOrderedMetadata<AuthorizeAttribute>();
+
+                    if ((authorizeAttributes != null && authorizeAttributes.Any()) == false)
+                    {
+                        httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        break;
+                    }
+
+                    var requiredRoles = authorizeAttributes
+                                            .SelectMany(attr => (attr.Roles ?? "").Split(','))
+                                            .Where(role => !string.IsNullOrEmpty(role))
+                                            .Distinct().ToList();
+
+                    if (requiredRoles.Except(permissions).Any())
+                    {
+                        httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        break;
+                    }
+
+
+                } while (false);
+
+                if (statusCode == (int)HttpStatusCode.Forbidden)
+                {
+                    // Người dùng không có quyền truy cập 403
+                    await httpContext.Response.WriteAsync("Forbidden!");
+                }
+                else if (statusCode == (int)HttpStatusCode.NotImplemented)
+                {
+                    // Yêu cầu không thể được máy chủ thực hiện 501
+                    await httpContext.Response.WriteAsync("Internal Server Error!");
+                }
+                else
+                {
+                    await _next(httpContext);
+                }
             }
             catch (Exception ex)
             {

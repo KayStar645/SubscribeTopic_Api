@@ -120,7 +120,7 @@ namespace Core.Application.Services.Identity
 
         private async Task<JwtSecurityToken> GenerateToken(User user)
         {
-            var roles = await _userRepo.GetRolesAsync(user); // Này sai nè
+            var roles = await _userRepo.GetRolesAsync(user);
             var permissions = await _userRepo.GetPermissionsAsync(user);
             var result = await _userRepo.GetFacultyAsync(user);
             var facultyDto = _mapper.Map<FacultyDto>(result.faculty);

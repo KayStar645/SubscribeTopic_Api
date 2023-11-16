@@ -14,7 +14,6 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/registrationPeriod")]
     [ApiController]
-    //[Authorize]
     public class RegistrationPeriodController : ControllerBase
     {
         private readonly IMediator _mediator;

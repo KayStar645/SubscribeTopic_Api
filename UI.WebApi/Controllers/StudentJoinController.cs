@@ -14,7 +14,6 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/studentJoin")]
     [ApiController]
-    [Authorize]
     public class StudentJoinController : ControllerBase
     {
         private readonly IMediator _mediator;

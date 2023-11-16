@@ -14,7 +14,6 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/notification")]
     [ApiController]
-    [Authorize]
     public class NotificationController : ControllerBase
     {
         private readonly IMediator _mediator;

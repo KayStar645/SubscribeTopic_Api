@@ -14,7 +14,6 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/major")]
     [ApiController]
-    [Authorize]
     public class MajorController : ControllerBase
     {
         private readonly IMediator _mediator;

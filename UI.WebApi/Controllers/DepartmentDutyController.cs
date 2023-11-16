@@ -16,7 +16,6 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/departmentDuty")]
     [ApiController]
-    [Authorize]
     public class DepartmentDutyController : ControllerBase
     {
         private readonly IMediator _mediator;

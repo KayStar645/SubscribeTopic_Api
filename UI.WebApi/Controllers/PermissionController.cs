@@ -7,7 +7,6 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
     public class PermissionController : ControllerBase
     {
         private readonly IPermissionService _permissionService;

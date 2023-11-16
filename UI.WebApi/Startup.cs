@@ -84,20 +84,20 @@ namespace UI.WebApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SubscribeTopic.Api v1"));
             }
 
-            app.UseMiddleware<ExceptionMiddleware>();
-
             app.UseAuthentication();
-
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SubscribeTopic.Api v1"));
 
             app.UseHttpsRedirection();
 
             app.UseCors("CorsPolicy");
 
             app.UseRouting();
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseAuthorization();
 
