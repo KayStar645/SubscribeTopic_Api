@@ -2,6 +2,8 @@
 using Core.Application.Constants;
 using Core.Application.Contracts.Identity;
 using Core.Application.DTOs.Faculty;
+using Core.Application.DTOs.Student;
+using Core.Application.DTOs.Teacher;
 using Core.Application.Interfaces.Repositories;
 using Core.Application.Models.Identity.Auths;
 using Core.Application.Models.Identity.Validators;
@@ -14,7 +16,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 
 namespace Core.Application.Services.Identity
 {
@@ -116,15 +120,23 @@ namespace Core.Application.Services.Identity
 
         private async Task<JwtSecurityToken> GenerateToken(User user)
         {
-            var roles = await _userRepo.GetRolesAsync(user);
+            var roles = await _userRepo.GetRolesAsync(user); // Này sai nè
             var permissions = await _userRepo.GetPermissionsAsync(user);
             var result = await _userRepo.GetFacultyAsync(user);
             var facultyDto = _mapper.Map<FacultyDto>(result.faculty);
+
+            var customer = await _userRepo.GetCustomerByUserName(user.UserName, result.type);
             string type = "";
             if (result.type == 0)
+            {
                 type = CLAIMS_VALUES.TYPE_STUDENT;
+                customer = _mapper.Map<StudentDto>(customer);
+            }    
             else if (result.type == 1)
+            {
                 type = CLAIMS_VALUES.TYPE_TEACHER;
+                customer = _mapper.Map<TeacherDto>(customer);
+            }
 
             var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role.Name));
             var permissionClaims = permissions.Select(permission => new Claim(CONSTANT_CLAIM_TYPES.Permission, permission.Name));
@@ -134,7 +146,14 @@ namespace Core.Application.Services.Identity
                 new Claim(CONSTANT_CLAIM_TYPES.Uid, user.Id.ToString()),
                 new Claim(CONSTANT_CLAIM_TYPES.UserName, user.UserName),
                 new Claim(CONSTANT_CLAIM_TYPES.Type, type),
-                new Claim(CONSTANT_CLAIM_TYPES.Faculty, JsonSerializer.Serialize(facultyDto))
+                new Claim(CONSTANT_CLAIM_TYPES.Customer, JsonSerializer.Serialize(customer,
+                                    new JsonSerializerOptions {
+                                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+                                    })),
+                new Claim(CONSTANT_CLAIM_TYPES.Faculty, JsonSerializer.Serialize(facultyDto, 
+                                    new JsonSerializerOptions { 
+                                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) 
+                                    })),
             }
             .Union(permissionClaims)
             .Union(roleClaims);

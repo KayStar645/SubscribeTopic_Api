@@ -1,9 +1,7 @@
-﻿using Azure.Core;
-using Core.Application.Constants;
+﻿using Core.Application.Constants;
 using Core.Application.Exceptions;
 using Core.Application.Transform;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
@@ -25,8 +23,6 @@ namespace API.WebApi.Middleware
             {
                 var authorizationHeader = httpContext.Request.Headers["Authorization"].ToString();
 
-                authorizationHeader = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIyIiwidXNlck5hbWUiOiJHVjAwMDAxIiwidHlwZSI6InRlYWNoZXIiLCJmYWN1bHR5Ijoie1wiSW50ZXJuYWxDb2RlXCI6XCJDTlRUXCIsXCJOYW1lXCI6XCJDXFx1MDBGNG5nIG5naFxcdTFFQzcgdGhcXHUwMEY0bmcgdGluXCIsXCJBZGRyZXNzXCI6XCJCMS4wMlwiLFwiUGhvbmVOdW1iZXJcIjpcIjAzMjE1NDY1ODdcIixcIkVtYWlsXCI6XCJjbnR0QGh1ZmkuZWR1LnZuXCIsXCJEZWFuX1RlYWNoZXJJZFwiOm51bGwsXCJEZWFuX1RlYWNoZXJcIjpudWxsLFwiSWRcIjoyfSIsImV4cCI6MTcwMDA2OTI3OSwiaXNzIjoiU3Vic2NyaWJlVG9waWMiLCJhdWQiOiJTdWJzY3JpYmVUb3BpY1VzZXIifQ.6Dv8luXLPCzgWmIwmdBlobFqVM0ji82D4Gr6Gmu_R8I";
-
                 if (string.IsNullOrEmpty(authorizationHeader) == false && authorizationHeader.StartsWith("Bearer "))
                 {
                     var token = authorizationHeader.Substring("Bearer ".Length).Trim();
@@ -36,82 +32,28 @@ namespace API.WebApi.Middleware
 
                     if (jwtToken != null)
                     {
-                        var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == CONSTANT_CLAIM_TYPES.Uid)?.Value;
-                        var userName = jwtToken.Claims.FirstOrDefault(c => c.Type == CONSTANT_CLAIM_TYPES.UserName)?.Value;
+                        // Lấy danh sách quyền của người dùng từ token
+                        var permissions = jwtToken.Claims
+                                                .Where(c => c.Type == CONSTANT_CLAIM_TYPES.Permission)
+                                                .Select(c => c.Value).ToList();
 
-                        var requestPath = httpContext.Request?.Path.Value ?? "";
-                        var controller = requestPath.Substring(requestPath.LastIndexOf('/') + 1);
-                        var requestMethod = httpContext.Request?.Method ?? "";
-
-                        var permission = requestMethod + "_" + controller;
-
-
-                        var isAuthenticated = !string.IsNullOrEmpty(userId);
-                        // Lấy danh sách quyền
-                        var hasPermission = true;// Kiểm tra quyền của người dùng dựa trên các claim khác trong token.
-
+                        // Lấy danh sách quyền yêu cầu của action hiện tại
                         var endpoint = httpContext.GetEndpoint();
-                        if (endpoint?.Metadata != null)
-                        {
-                            var controllerActionDescriptor = endpoint.Metadata.OfType<ControllerActionDescriptor>().FirstOrDefault();
-                            if (controllerActionDescriptor != null)
-                            {
-                                var controllerName = controllerActionDescriptor.ControllerName;
-                                var actionName = controllerActionDescriptor.ActionName;
+                        var authorizationAttributes = endpoint?.Metadata.GetOrderedMetadata<IAuthorizeData>();
+                        var requiredRoles = authorizationAttributes?.SelectMany(attr => attr.Roles.Split(','));
 
-                                // Lấy quyền của action hiện tại
-                                var requiredRoles = controllerActionDescriptor.EndpointMetadata
-                                    .OfType<AuthorizeAttribute>()
-                                    .Select(attr => attr.Roles)
-                                    .FirstOrDefault();
-
-                                // ...
-                            }
-                        }
-
-                        var roles = "";
-                        // Kiểm tra quyền
-                        if (roles.Contains("ViewFaculty"))
-                        {
-                            // Có quyền truy cập vào action
-                        }
-                        else
-                        {
-                            // Không có quyền, xử lý tương ứng
-                            //return StatusCode(403); // Hoặc một mã lỗi tương ứng với việc không có quyền truy cập
-                        }
-
-                        if (isAuthenticated && hasPermission)
-                        {
-                            httpContext.Items["UserId"] = userId;
-                            httpContext.Items["UserName"] = userName;
-
-                            // Lấy thông tin về controller và action hiện tại
-                            //var endpoint = httpContext.GetEndpoint();
-                            //if (endpoint?.Metadata != null)
-                            //{
-                            //    var controllerActionDescriptor = endpoint.Metadata.OfType<ControllerActionDescriptor>().FirstOrDefault();
-                            //    if (controllerActionDescriptor != null)
-                            //    {
-                            //        var controllerName = controllerActionDescriptor.ControllerName;
-                            //        var actionName = controllerActionDescriptor.ActionName;
-
-                            //        // Lấy quyền của action hiện tại
-                            //        var requiredRoles = controllerActionDescriptor.EndpointMetadata
-                            //            .OfType<AuthorizeAttribute>()
-                            //            .Select(attr => attr.Roles)
-                            //            .FirstOrDefault();
-
-                            //        // ...
-                            //    }
-                            //}
-
-                        }
-                        else
-                        {
-                            // Người dùng không có quyền, xử lý tương ứng
-                            // Ví dụ: throw new ForbiddenException("Access denied");
-                        }
+                        // Kiểm tra xem người dùng có quyền truy cập hay không
+                        //if (requiredRoles != null && requiredRoles.Any() && userRoles.Intersect(requiredRoles).Any())
+                        //{
+                        //    // Người dùng có quyền truy cập
+                        //}
+                        //else
+                        //{
+                        //    // Người dùng không có quyền truy cập
+                        //    httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        //    await httpContext.Response.WriteAsync("Access Denied");
+                        //    return;
+                        //}
                     }
                 }
 
@@ -120,6 +62,9 @@ namespace API.WebApi.Middleware
             catch (Exception ex)
             {
                 await HandleExceptionAsync(httpContext, ex);
+                httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                await httpContext.Response.WriteAsync("Access Denied: " + ex.Message);
+                return;
             }
         }
 
