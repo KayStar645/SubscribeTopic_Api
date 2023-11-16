@@ -6,6 +6,7 @@ using Core.Application.Features.Students.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -13,7 +14,7 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/student")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class StudentController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -31,6 +32,7 @@ namespace UI.WebApi.Controllers
         /// - facultyId/industryId/majorId: required
         /// </remarks>
         [HttpGet]
+        [Authorize(Roles = "Student.View")]
         public async Task<ActionResult<List<StudentDto>>> Get([FromQuery] ListStudentRequest request)
         {
             var response = await _mediator.Send(request);
@@ -46,6 +48,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
+        [Authorize(Roles = "Student.View")]
         public async Task<ActionResult<StudentDto>> Get([FromQuery] DetailStudentRequest request)
         {
             var response = await _mediator.Send(request);
@@ -66,6 +69,7 @@ namespace UI.WebApi.Controllers
         /// - Class: string, required
         /// </remarks>
         [HttpPost]
+        [Authorize(Roles = "Student.Create")]
         public async Task<ActionResult<StudentDto>> Post([FromBody] CreateStudentDto studentRequest)
         {
             var command = new CreateStudentRequest { createStudentDto = studentRequest };
@@ -88,6 +92,7 @@ namespace UI.WebApi.Controllers
         /// - Class: string, required
         /// </remarks>
         [HttpPut]
+        [Authorize(Roles = "Student.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateStudentDto studentRequest)
         {
             var command = new UpdateStudentRequest { updateStudentDto = studentRequest };
@@ -104,6 +109,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
+        [Authorize(Roles = "Student.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Student> request)
         {
             try

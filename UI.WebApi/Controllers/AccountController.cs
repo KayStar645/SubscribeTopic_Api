@@ -1,6 +1,7 @@
 ﻿using Core.Application.Contracts.Identity;
-using Core.Application.Models.Identity;
+using Core.Application.Models.Identity.Auths;
 using Core.Application.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace UI.WebApi.Controllers
@@ -24,6 +25,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost("register")]
+        [Authorize(Roles = "Account.Create")]
         public async Task<ActionResult<Result<RegistrationResponse>>> Register(RegistrationRequest request)
         {
             Result<RegistrationResponse> response = await _authenticationService.Register(request);

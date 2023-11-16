@@ -6,6 +6,7 @@ using Core.Application.Features.RegistrationPeriods.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -30,6 +31,7 @@ namespace UI.WebApi.Controllers
         /// Ràng buộc: 
         /// </remarks>
         [HttpGet]
+        [Authorize(Roles = "RegistrationPeriod.View")]
         public async Task<ActionResult<List<RegistrationPeriodDto>>> Get([FromQuery] ListRegistrationPeriodRequest request)
         {
             var response = await _mediator.Send(request);
@@ -45,6 +47,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
+        [Authorize(Roles = "RegistrationPeriod.View")]
         public async Task<ActionResult<RegistrationPeriodDto>> Get([FromQuery] DetailRegistrationPeriodRequest request)
         {
             var response = await _mediator.Send(request);
@@ -62,6 +65,7 @@ namespace UI.WebApi.Controllers
         /// - TimeEnd: DateTime, After TimeStart (TimeEnd > TimeStart)
         /// </remarks>
         [HttpPost]
+        [Authorize(Roles = "RegistrationPeriod.Create")]
         public async Task<ActionResult<RegistrationPeriodDto>> Post([FromBody] CreateRegistrationPeriodDto periodRequest)
         {
             var command = new CreateRegistrationPeriodRequest { CreateRegistrationPeriodDto = periodRequest };
@@ -80,6 +84,7 @@ namespace UI.WebApi.Controllers
         /// - TimeEnd: DateTime, After TimeStart (TimeEnd > TimeStart)
         /// </remarks>
         [HttpPut]
+        [Authorize(Roles = "RegistrationPeriod.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateRegistrationPeriodDto periodRequest)
         {
             var command = new UpdateRegistrationPeriodRequest { UpdateRegistrationPeriodDto = periodRequest };
@@ -96,6 +101,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
+        [Authorize(Roles = "RegistrationPeriod.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<RegistrationPeriod> request)
         {
             try

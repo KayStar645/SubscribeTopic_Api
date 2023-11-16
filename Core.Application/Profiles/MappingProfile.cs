@@ -15,7 +15,9 @@ using Core.Application.DTOs.StudentJoin;
 using Core.Application.DTOs.Teacher;
 using Core.Application.DTOs.Thesis;
 using Core.Application.Features.Base.Requests.Queries;
+using Core.Application.Models.Identity.Roles;
 using Core.Domain.Entities;
+using Core.Domain.Entities.Identity;
 using Sieve.Models;
 
 namespace Core.Application.Profiles
@@ -100,6 +102,10 @@ namespace Core.Application.Profiles
             CreateMap<SieveModel, ListBaseRequest<FeedbackDto>>().ReverseMap();
             CreateMap<Feedback, FeedbackDto>().ReverseMap();
             CreateMap<Feedback, CreateFeedbackDto>().ReverseMap();
+
+            CreateMap<Role, RoleRequest>().ReverseMap();
+            CreateMap<Role, RoleResult>().ReverseMap();
+
 
         }
 

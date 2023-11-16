@@ -22,7 +22,7 @@ namespace Infrastructure.Persistence.Repositories
             var hashedPassword = _passwordHasher.HashPassword(user, user.Password);
             user.Password = hashedPassword;
 
-            _dbContext.Set<User>().Add(user);
+            await _dbContext.Set<User>().AddAsync(user);
 
             try
             {

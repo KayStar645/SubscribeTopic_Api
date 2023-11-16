@@ -31,6 +31,7 @@ namespace UI.WebApi.Controllers
         /// 
         /// </remarks>
         [HttpGet]
+        [Authorize(Roles = "Feedback.View")]
         public async Task<ActionResult<List<FeedbackDto>>> Get([FromQuery] ListFeedbackRequest request)
         {
             var response = await _mediator.Send(request);
@@ -47,6 +48,7 @@ namespace UI.WebApi.Controllers
         /// - thesisId: mã đề tài hợp lệ
         /// </remarks>
         [HttpPost]
+        [Authorize(Roles = "Feedback.Create")]
         public async Task<ActionResult<FeedbackDto>> Post([FromBody] CreateFeedbackDto request)
         {
             var command = new CreateFeedbackRequest { createFeedbackDto = request };

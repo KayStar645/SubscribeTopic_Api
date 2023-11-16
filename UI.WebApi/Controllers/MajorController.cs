@@ -6,6 +6,7 @@ using Core.Application.Features.Majors.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -13,7 +14,7 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/major")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class MajorController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -32,6 +33,7 @@ namespace UI.WebApi.Controllers
         /// 
         /// </remarks>
         [HttpGet]
+        [Authorize(Roles = "Major.View")]
         public async Task<ActionResult<List<MajorDto>>> Get([FromQuery] ListMajorRequest request)
         {
             var response = await _mediator.Send(request);
@@ -47,6 +49,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
+        [Authorize(Roles = "Major.View")]
         public async Task<ActionResult<MajorDto>> Get([FromQuery] DetailMajorRequest request)
         {
             var response = await _mediator.Send(request);
@@ -62,6 +65,7 @@ namespace UI.WebApi.Controllers
         /// - Name: string, required, max(190)
         /// </remarks>
         [HttpPost]
+        [Authorize(Roles = "Major.Create")]
         public async Task<ActionResult<MajorDto>> Post([FromBody] CreateMajorDto majorRequest)
         {
             var command = new CreateMajorRequest { createMajorDto = majorRequest };
@@ -79,6 +83,7 @@ namespace UI.WebApi.Controllers
         /// - Name: string, required, max(190)
         /// </remarks>
         [HttpPut]
+        [Authorize(Roles = "Major.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateMajorDto majorRequest)
         {
             var command = new UpdateMajorRequest { updateMajorDto = majorRequest };
@@ -95,6 +100,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
+        [Authorize(Roles = "Major.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Major> request)
         {
             try

@@ -1,4 +1,5 @@
 ﻿using Core.Application.DTOs.Teacher;
+using Core.Application.Models.Identity.Auths;
 using Core.Application.Transform;
 using FluentValidation;
 using System;

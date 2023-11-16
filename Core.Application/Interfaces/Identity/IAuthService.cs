@@ -1,4 +1,4 @@
-﻿using Core.Application.Models.Identity;
+﻿using Core.Application.Models.Identity.Auths;
 using Core.Application.Responses;
 
 namespace Core.Application.Contracts.Identity

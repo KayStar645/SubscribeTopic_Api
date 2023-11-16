@@ -3,7 +3,7 @@ using Core.Application.Constants;
 using Core.Application.Contracts.Identity;
 using Core.Application.DTOs.Faculty;
 using Core.Application.Interfaces.Repositories;
-using Core.Application.Models.Identity;
+using Core.Application.Models.Identity.Auths;
 using Core.Application.Models.Identity.Validators;
 using Core.Application.Responses;
 using Core.Application.Transform;
