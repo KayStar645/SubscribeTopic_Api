@@ -22,7 +22,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpGet]
-        //[Permission("Role.View")]
+        [Permission("Role.View")]
         public async Task<ActionResult<List<RoleResult>>> Get()
         {
             var response = await _roleService.GetList();
@@ -31,7 +31,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpGet("Detail")]
-        //[Permission("Role.View")]
+        [Permission("Role.View")]
         public async Task<ActionResult<RoleResult>> Get(int pId)
         {
             var response = await _roleService.GetDetail(pId);
@@ -40,7 +40,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost]
-        //[Permission("Role.Create")]
+        [Permission("Role.Create")]
         public async Task<ActionResult<RoleResult>> Create([FromBody] RoleRequest pRequest)
         {
             Result<RoleResult> response = await _roleService.CreateAsync(pRequest);
@@ -49,7 +49,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPut]
-        //[Permission("Role.Update")]
+        [Permission("Role.Update")]
         public async Task<ActionResult<RoleResult>> Update([FromBody] RoleRequest pRequest)
         {
             var response = await _roleService.UpdateAsync(pRequest);
@@ -84,7 +84,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost("assign")]
-        //[Permission("Account.Assign")]
+        [Permission("Role.Assign")]
         public async Task<ActionResult<RoleResult>> AssignRoles([FromBody] AssignRoleRequest pRequest)
         {
             var response = await _roleService.AssignRoles(pRequest);

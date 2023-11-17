@@ -1,7 +1,7 @@
 ﻿using Core.Application.Interfaces.Identity;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
@@ -17,7 +17,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpGet]
-        //[Permission("Permission.View")]
+        [Permission("Permission.View")]
         public async Task<ActionResult<List<string>>> Get()
         {
             var response = await _permissionService.GetList(Assembly.GetExecutingAssembly());
@@ -26,7 +26,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost]
-        //[Permission("Permission.Create")]
+        [Permission("Permission.Create")]
         public async Task<ActionResult<List<string>>> Post()
         {
             var permission = await _permissionService.GetList(Assembly.GetExecutingAssembly());
