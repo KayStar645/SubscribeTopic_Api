@@ -9,6 +9,8 @@ namespace Core.Application.Contracts.Persistence
 
         Task<int> Save(CancellationToken cancellationToken);
 
+        Task<int> Save();
+
         Task<int> SaveAndRemoveCache(CancellationToken cancellationToken, params string[] cacheKeys);
 
         Task Rollback();

@@ -56,6 +56,7 @@ namespace Core.Application.Services.Identity
                                               .Where(x => x.RoleId == pId)
                                               .Include(x => x.Permission)
                                               .Select(x => x.Permission.Name)
+                                              .Distinct()
                                               .ToListAsync();
 #pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
 
@@ -164,7 +165,7 @@ namespace Core.Application.Services.Identity
                             }
                         }
 
-                        await _unitOfWork.Save(new CancellationToken());
+                        await _unitOfWork.Save();
                     }    
                     
                     transaction.Complete();
@@ -205,7 +206,7 @@ namespace Core.Application.Services.Identity
                     var role = await _unitOfWork.Repository<Role>().FirstOrDefaultAsync(x => x.Id == pId);
                     await _unitOfWork.Repository<Role>().DeleteAsync(role);
 
-                    await _unitOfWork.Save(new CancellationToken());
+                    await _unitOfWork.Save();
                     transaction.Complete();
                 }
                 catch

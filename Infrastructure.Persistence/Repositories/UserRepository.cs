@@ -1,5 +1,4 @@
-﻿using Core.Application.Constants;
-using Core.Application.Interfaces.Repositories;
+﻿using Core.Application.Interfaces.Repositories;
 using Core.Domain.Entities;
 using Core.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
