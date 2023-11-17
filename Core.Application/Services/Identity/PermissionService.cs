@@ -39,7 +39,7 @@ namespace Core.Application.Services.Identity
                         var authorizeAttribute = method.GetCustomAttribute<AuthorizeAttribute>();
                         if (authorizeAttribute != null)
                         {
-                            var rolesInAttribute = authorizeAttribute.Roles.Split(',');
+                            var rolesInAttribute = authorizeAttribute.Policy.Split(',');
                             roles.AddRange(rolesInAttribute);
                         }
                     }
