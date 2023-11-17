@@ -12,5 +12,7 @@ namespace Core.Application.Interfaces.Repositories
         Task<List<Permission>> GetPermissionsAsync(User user);
         Task<List<Role>> GetRolesAsync(User user);
         Task<bool> PasswordSignInAsync(string userName, string password);
+
+        Task<object> GetCustomerByUserName(string userName, int type);
     }
 }

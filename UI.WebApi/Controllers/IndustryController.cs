@@ -6,8 +6,10 @@ using Core.Application.Features.Industries.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
@@ -31,6 +33,7 @@ namespace UI.WebApi.Controllers
         /// FacultyId: request
         /// </remarks>
         [HttpGet]
+        [Permission("Industry.View")]
         public async Task<ActionResult<List<IndustryDto>>> Get([FromQuery] ListIndustryRequest request)
         {
             var response = await _mediator.Send(request);
@@ -46,6 +49,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
+        [Permission("Industry.View")]
         public async Task<ActionResult<IndustryDto>> Get([FromQuery] DetailIndustryRequest request)
         {
             var response = await _mediator.Send(request);
@@ -61,6 +65,7 @@ namespace UI.WebApi.Controllers
         /// - Name: string, required, max(190)
         /// </remarks>
         [HttpPost]
+        [Permission("Industry.Create")]
         public async Task<ActionResult<IndustryDto>> Post([FromBody] CreateIndustryDto IndustryRequest)
         {
             var command = new CreateIndustryRequest { createIndustryDto = IndustryRequest };
@@ -78,6 +83,7 @@ namespace UI.WebApi.Controllers
         /// - Name: string, required, max(190)
         /// </remarks>
         [HttpPut]
+        [Permission("Industry.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateIndustryDto IndustryRequest)
         {
             var command = new UpdateIndustryRequest { updateIndustryDto = IndustryRequest };
@@ -94,6 +100,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
+        [Permission("Industry.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Industry> request)
         {
             try

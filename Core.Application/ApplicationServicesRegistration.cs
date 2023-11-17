@@ -1,6 +1,7 @@
 ﻿using Core.Application.Contracts.Identity;
 using Core.Application.Features.Base.Handlers.Commands;
-using Core.Application.Models.Identity;
+using Core.Application.Interfaces.Identity;
+using Core.Application.Models.Identity.Auths;
 using Core.Application.Services.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +24,8 @@ namespace Core.Application
             services.AddScoped<JwtSettings>();
             services.AddScoped<IPasswordHasher<Core.Domain.Entities.Identity.User>, PasswordHasher<Core.Domain.Entities.Identity.User>>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IPermissionService, PermissionService>();
 
             return services;
         }
