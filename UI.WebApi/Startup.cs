@@ -5,11 +5,13 @@ using Core.Application.Features.Teachers.Requests.Commands;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Sieve;
 using System.Reflection;
 using System.Text;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi
 {
@@ -45,8 +47,14 @@ namespace UI.WebApi
                     };
                 });
 
+            services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
+            services.AddAuthorization(options =>
+            {
+                options.AddPermissionPoliciesFromAttributes(Assembly.GetExecutingAssembly());
+            });
 
-            services.AddAuthorization();
+
+
 
 
             services.AddHttpContextAccessor();
@@ -155,6 +163,8 @@ namespace UI.WebApi
                 });
 
             });
+
+            services.AddTransient<ExceptionMiddleware>();
         }
     }
 }

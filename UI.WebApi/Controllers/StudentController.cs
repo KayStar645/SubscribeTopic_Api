@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
@@ -31,7 +32,7 @@ namespace UI.WebApi.Controllers
         /// - facultyId/industryId/majorId: required
         /// </remarks>
         [HttpGet]
-        [Authorize(Roles = "Student.View")]
+        [Permission("Student.View")]
         public async Task<ActionResult<List<StudentDto>>> Get([FromQuery] ListStudentRequest request)
         {
             var response = await _mediator.Send(request);
@@ -47,7 +48,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
-        [Authorize(Roles = "Student.View")]
+        [Permission("Student.View")]
         public async Task<ActionResult<StudentDto>> Get([FromQuery] DetailStudentRequest request)
         {
             var response = await _mediator.Send(request);
@@ -68,7 +69,7 @@ namespace UI.WebApi.Controllers
         /// - Class: string, required
         /// </remarks>
         [HttpPost]
-        [Authorize(Roles = "Student.Create")]
+        [Permission("Student.Create")]
         public async Task<ActionResult<StudentDto>> Post([FromBody] CreateStudentDto studentRequest)
         {
             var command = new CreateStudentRequest { createStudentDto = studentRequest };
@@ -91,7 +92,7 @@ namespace UI.WebApi.Controllers
         /// - Class: string, required
         /// </remarks>
         [HttpPut]
-        [Authorize(Roles = "Student.Update")]
+        [Permission("Student.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateStudentDto studentRequest)
         {
             var command = new UpdateStudentRequest { updateStudentDto = studentRequest };
@@ -108,7 +109,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        [Authorize(Roles = "Student.Delete")]
+        [Permission("Student.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Student> request)
         {
             try

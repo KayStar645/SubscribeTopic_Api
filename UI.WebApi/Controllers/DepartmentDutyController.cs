@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Net;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
@@ -33,7 +34,7 @@ namespace UI.WebApi.Controllers
         /// - departmentId/teacherId: required
         /// </remarks>
         [HttpGet]
-        [Authorize(Roles = "DepartmentDuty.View")]
+        [Permission("DepartmentDuty.View")]
         public async Task<ActionResult> Get([FromQuery] ListDepartmentDutyRequest request)
         {
             var response = await _mediator.Send(request);
@@ -49,7 +50,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
-        [Authorize(Roles = "DepartmentDuty.View")]
+        [Permission("DepartmentDuty.View")]
         public async Task<ActionResult> Get([FromQuery] DetailDepartmentDutyRequest request)
         {
             var response = await _mediator.Send(request);
@@ -70,7 +71,7 @@ namespace UI.WebApi.Controllers
         /// - File: string, must be a valid file name (Ex: filename.extension)
         /// </remarks>
         [HttpPost]
-        [Authorize(Roles = "DepartmentDuty.Create")]
+        [Permission("DepartmentDuty.Create")]
         public async Task<ActionResult> Post([FromBody] CreateDepartmentDutyDto request)
         {
             var command = new CreateDepartmentDutyRequest { CreateDepartmentDutyDto = request };
@@ -106,7 +107,7 @@ namespace UI.WebApi.Controllers
         /// - File: string, must be a valid file name (Ex: filename.extension)
         /// </remarks>
         [HttpPut]
-        [Authorize(Roles = "DepartmentDuty.Update")]
+        [Permission("DepartmentDuty.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateDepartmentDutyDto request)
         {
             var command = new UpdateDepartmentDutyRequest { UpdateDepartmentDutyDto = request };
@@ -123,7 +124,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        [Authorize(Roles = "DepartmentDuty.Delete")]
+        [Permission("DepartmentDuty.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<DepartmentDuty> request)
         {
             try

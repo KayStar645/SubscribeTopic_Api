@@ -2,36 +2,19 @@
 using Core.Application.Exceptions;
 using Core.Application.Transform;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Reflection.PortableExecutable;
-using System.Security.Claims;
 
 namespace API.WebApi.Middleware
 {
-    public class ExceptionMiddleware
+    public class ExceptionMiddleware : IMiddleware
     {
-        private readonly RequestDelegate _next;
-        public ExceptionMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
-
-
-        private int STATUS()
-        {
-            return 1;
-        }
-
-
-        public async Task InvokeAsync(HttpContext httpContext)
+        /// <inheritdoc/>
+        public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
         {
             try
             {
-                int statusCode = 0;
-
                 do
                 {
                     var authorizationHeader = httpContext.Request.Headers["Authorization"].ToString();
@@ -58,19 +41,18 @@ namespace API.WebApi.Middleware
                     var endpoint = httpContext.GetEndpoint();
                     if (endpoint == null)
                     {
-                        statusCode = (int)HttpStatusCode.NotImplemented;
+                        httpContext.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
                     }
 
                     var authorizeAttributes = endpoint.Metadata.GetOrderedMetadata<AuthorizeAttribute>();
 
                     if ((authorizeAttributes != null && authorizeAttributes.Any()) == false)
                     {
-                        httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                         break;
                     }
 
                     var requiredRoles = authorizeAttributes
-                                            .SelectMany(attr => (attr.Roles ?? "").Split(','))
+                                            .SelectMany(attr => (attr.Policy ?? "").Split(','))
                                             .Where(role => !string.IsNullOrEmpty(role))
                                             .Distinct().ToList();
 
@@ -83,19 +65,19 @@ namespace API.WebApi.Middleware
 
                 } while (false);
 
-                if (statusCode == (int)HttpStatusCode.Forbidden)
+                if (httpContext.Response.StatusCode == (int)HttpStatusCode.Forbidden)
                 {
                     // Người dùng không có quyền truy cập 403
                     await httpContext.Response.WriteAsync("Forbidden!");
                 }
-                else if (statusCode == (int)HttpStatusCode.NotImplemented)
+                else if (httpContext.Response.StatusCode == (int)HttpStatusCode.NotImplemented)
                 {
                     // Yêu cầu không thể được máy chủ thực hiện 501
                     await httpContext.Response.WriteAsync("Internal Server Error!");
                 }
                 else
                 {
-                    await _next(httpContext);
+                    await next(httpContext);
                 }
             }
             catch (Exception ex)
@@ -103,13 +85,7 @@ namespace API.WebApi.Middleware
                 await HandleExceptionAsync(httpContext, ex);
                 httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 await httpContext.Response.WriteAsync("Access Denied: " + ex.Message);
-                return;
             }
-        }
-
-        private bool IsUserAuthorized(ClaimsPrincipal user)
-        {
-            return user.IsInRole("Admin");
         }
 
         private Task HandleExceptionAsync(HttpContext context, Exception exception)

@@ -17,7 +17,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "Permission.View")]
+        //[Permission("Permission.View")]
         public async Task<ActionResult<List<string>>> Get()
         {
             var response = await _permissionService.GetList(Assembly.GetExecutingAssembly());
@@ -26,7 +26,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Permission.Create")]
+        //[Permission("Permission.Create")]
         public async Task<ActionResult<List<string>>> Post()
         {
             var permission = await _permissionService.GetList(Assembly.GetExecutingAssembly());

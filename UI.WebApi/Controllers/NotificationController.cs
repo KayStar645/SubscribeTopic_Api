@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
@@ -30,7 +31,7 @@ namespace UI.WebApi.Controllers
         /// facultyId: null
         /// </remarks>
         [HttpGet]
-        [Authorize(Roles = "Notification.View")]
+        [Permission("Notification.View")]
         public async Task<ActionResult> Get([FromQuery] ListNotificationRequest request)
         {
             var response = await _mediator.Send(request);
@@ -46,7 +47,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
-        [Authorize(Roles = "Notification.View")]
+        [Permission("Notification.View")]
         public async Task<ActionResult<NotificationDto>> Get([FromQuery] DetailNotificationRequest request)
         {
             var response = await _mediator.Send(request);
@@ -65,7 +66,7 @@ namespace UI.WebApi.Controllers
         /// - Images: [string], url_format
         /// </remarks>
         [HttpPost]
-        [Authorize(Roles = "Notification.Create")]
+        [Permission("Notification.Create")]
         public async Task<ActionResult<NotificationDto>> Post([FromBody] CreateNotificationDto request)
         {
             var command = new CreateNotificationRequest { createNotificationDto = request };
@@ -86,7 +87,7 @@ namespace UI.WebApi.Controllers
         /// - Images: [string], url_format
         /// </remarks>
         [HttpPut]
-        [Authorize(Roles = "Notification.Update")]
+        [Permission("Notification.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateNotificationDto request)
         {
             var command = new UpdateNotificationRequest { updateNotificationDto = request };
@@ -103,7 +104,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        [Authorize(Roles = "Notification.Delete")]
+        [Permission("Notification.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Notification> request)
         {
             try

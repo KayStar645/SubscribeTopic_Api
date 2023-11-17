@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
@@ -31,7 +32,7 @@ namespace UI.WebApi.Controllers
         /// - facultyId/DepartmentId: required
         /// </remarks>
         [HttpGet]
-        [Authorize(Roles = "Teacher.View")]
+        [Permission("Teacher.View")]
         public async Task<ActionResult<List<TeacherDto>>> Get([FromQuery] ListTeacherRequest request)
         {
             var response = await _mediator.Send(request);
@@ -47,7 +48,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
-        [Authorize(Roles = "Teacher.View")]
+        [Permission("Teacher.View")]
         public async Task<ActionResult<TeacherDto>> Get([FromQuery] DetailTeacherRequest request)
         {
             var response = await _mediator.Send(request);
@@ -70,7 +71,7 @@ namespace UI.WebApi.Controllers
         /// - Type: string, in ["M", "L"]
         /// </remarks>
         [HttpPost]
-        [Authorize(Roles = "Teacher.Create")]
+        [Permission("Teacher.Create")]
         public async Task<ActionResult<TeacherDto>> Post([FromBody] CreateTeacherDto teacherRequest)
         {
             var command = new CreateTeacherRequest { createTeacherDto = teacherRequest };
@@ -95,7 +96,7 @@ namespace UI.WebApi.Controllers
         /// - Type: string, in ["M", "L"]
         /// </remarks>
         [HttpPut]
-        [Authorize(Roles = "Teacher.Update")]
+        [Permission("Teacher.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateTeacherDto teacherRequest)
         {
             var command = new UpdateTeacherRequest { updateTeacherDto = teacherRequest };
@@ -112,7 +113,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        [Authorize(Roles = "Teacher.Delete")]
+        [Permission("Teacher.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Teacher> request)
         {
             try

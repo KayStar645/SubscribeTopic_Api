@@ -6,9 +6,9 @@ using Core.Application.Features.Faculties.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
@@ -30,7 +30,7 @@ namespace UI.WebApi.Controllers
         /// Ràng buộc: 
         /// </remarks>
         [HttpGet]
-        [Authorize(Roles = "Faculty.View")]
+        [Permission("Faculty.View")]
         public async Task<ActionResult<List<FacultyDto>>> Get([FromQuery] ListFacultyRequest request)
         {
             var response = await _mediator.Send(request);
@@ -46,7 +46,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
-        [Authorize(Roles = "Faculty.View")]
+        [Permission("Faculty.View")]
         public async Task<ActionResult<FacultyDto>> Get([FromQuery] DetailFacultyRequest request)
         {
             var response = await _mediator.Send(request);
@@ -64,7 +64,7 @@ namespace UI.WebApi.Controllers
         /// - Email: string, email_format
         /// </remarks>
         [HttpPost]
-        [Authorize(Roles = "Faculty.Create")]
+        [Permission("Faculty.Create")]
         public async Task<ActionResult<FacultyDto>> Post([FromBody] CreateFacultyDto FacultyRequest)
         {
             var command = new CreateFacultyRequest { createFacultyDto = FacultyRequest };
@@ -85,7 +85,7 @@ namespace UI.WebApi.Controllers
         /// - Dean_TeacherId: Giảng viên của khoa
         /// </remarks>
         [HttpPut]
-        [Authorize(Roles = "Faculty.Update")]
+        [Permission("Faculty.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateFacultyDto FacultyRequest)
         {
             var command = new UpdateFacultyRequest { updateFacultyDto = FacultyRequest };
@@ -102,7 +102,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        [Authorize(Roles = "Faculty.Delete")]
+        [Permission("Faculty.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Faculties> request)
         {
             try

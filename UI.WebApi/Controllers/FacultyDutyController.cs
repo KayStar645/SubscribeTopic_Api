@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Net;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
@@ -33,7 +34,7 @@ namespace UI.WebApi.Controllers
         /// - facultyId/departmentId: required
         /// </remarks>
         [HttpGet]
-        [Authorize(Roles = "FacultyDuty.View")]
+        [Permission("FacultyDuty.View")]
         public async Task<ActionResult> Get([FromQuery] ListFacultyDutyRequest request)
         {
             var response = await _mediator.Send(request);
@@ -49,7 +50,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
-        [Authorize(Roles = "FacultyDuty.View")]
+        [Permission("FacultyDuty.View")]
         public async Task<ActionResult> Get([FromQuery] DetailFacultyDutyRequest request)
         {
             var response = await _mediator.Send(request);
@@ -70,7 +71,7 @@ namespace UI.WebApi.Controllers
         /// - File: string, must be a valid file name (Ex: filename.extension)
         /// </remarks>
         [HttpPost]
-        [Authorize(Roles = "FacultyDuty.Create")]
+        [Permission("FacultyDuty.Create")]
         public async Task<ActionResult> Post([FromBody] CreateFacultyDutyDto request)
         {
             var command = new CreateFacultyDutyRequest { CreateFacultyDutyDto = request };
@@ -106,7 +107,7 @@ namespace UI.WebApi.Controllers
         /// - File: string, must be a valid file name (Ex: filename.extension)
         /// </remarks>
         [HttpPut]
-        [Authorize(Roles = "FacultyDuty.Update")]
+        [Permission("FacultyDuty.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateFacultyDutyDto request)
         {
             var command = new UpdateFacultyDutyRequest { UpdateFacultyDutyDto = request };
@@ -123,7 +124,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        [Authorize(Roles = "FacultyDuty.Delete")]
+        [Permission("FacultyDuty.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<FacultyDuty> request)
         {
             try

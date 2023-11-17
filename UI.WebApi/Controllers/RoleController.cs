@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Security.Cryptography;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
@@ -21,7 +22,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "Role.View")]
+        //[Permission("Role.View")]
         public async Task<ActionResult<List<RoleResult>>> Get()
         {
             var response = await _roleService.GetList();
@@ -30,7 +31,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpGet("Detail")]
-        //[Authorize(Roles = "Role.View")]
+        //[Permission("Role.View")]
         public async Task<ActionResult<RoleResult>> Get(int pId)
         {
             var response = await _roleService.GetDetail(pId);
@@ -39,7 +40,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Role.Create")]
+        //[Permission("Role.Create")]
         public async Task<ActionResult<RoleResult>> Create([FromBody] RoleRequest pRequest)
         {
             Result<RoleResult> response = await _roleService.CreateAsync(pRequest);
@@ -48,7 +49,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPut]
-        //[Authorize(Roles = "Role.Update")]
+        //[Permission("Role.Update")]
         public async Task<ActionResult<RoleResult>> Update([FromBody] RoleRequest pRequest)
         {
             var response = await _roleService.UpdateAsync(pRequest);
@@ -57,7 +58,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Role.Delete")]
+        [Permission("Role.Delete")]
         public async Task<ActionResult<RoleResult>> Delete([FromQuery] int pId)
         {
             try
@@ -83,7 +84,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost("assign")]
-        //[Authorize(Roles = "Account.Assign")]
+        //[Permission("Account.Assign")]
         public async Task<ActionResult<RoleResult>> AssignRoles([FromBody] AssignRoleRequest pRequest)
         {
             var response = await _roleService.AssignRoles(pRequest);

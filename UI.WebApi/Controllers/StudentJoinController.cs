@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
@@ -32,7 +33,7 @@ namespace UI.WebApi.Controllers
         /// - periodId: null
         /// </remarks>
         [HttpGet]
-        [Authorize(Roles = "StudentJoin.View")]
+        [Permission("StudentJoin.View")]
         public async Task<ActionResult<List<StudentJoinDto>>> Get([FromQuery] ListStudentJoinRequest request)
         {
             var response = await _mediator.Send(request);
@@ -48,7 +49,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
-        [Authorize(Roles = "StudentJoin.View")]
+        [Permission("StudentJoin.View")]
         public async Task<ActionResult<StudentJoinDto>> Get([FromQuery] DetailStudentJoinRequest request)
         {
             var response = await _mediator.Send(request);
@@ -63,7 +64,7 @@ namespace UI.WebApi.Controllers
         /// Ràng buộc:
         /// </remarks>
         [HttpPost]
-        [Authorize(Roles = "StudentJoin.Create")]
+        [Permission("StudentJoin.Create")]
         public async Task<ActionResult<StudentJoinDto>> Post([FromBody] CreateStudentJoinDto StudentJoinRequest)
         {
             var command = new CreateStudentJoinRequest { createStudentJoinDto = StudentJoinRequest };
@@ -79,7 +80,7 @@ namespace UI.WebApi.Controllers
         /// Ràng buộc:
         /// </remarks>
         [HttpPut]
-        [Authorize(Roles = "StudentJoin.Update")]
+        [Permission("StudentJoin.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateStudentJoinDto StudentJoinRequest)
         {
             var command = new UpdateStudentJoinRequest { updateStudentJoinDto = StudentJoinRequest };
@@ -96,7 +97,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        [Authorize(Roles = "StudentJoin.Delete")]
+        [Permission("StudentJoin.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<StudentJoin> request)
         {
             try

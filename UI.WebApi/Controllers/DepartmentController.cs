@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Net;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
@@ -33,7 +34,7 @@ namespace UI.WebApi.Controllers
         /// - facultyId: required
         /// </remarks>
         [HttpGet]
-        [Authorize(Roles = "Department.View")]
+        [Permission("Department.View")]
         public async Task<ActionResult> Get([FromQuery] ListDepartmentRequest request)
         {
             var response = await _mediator.Send(request);
@@ -49,7 +50,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
-        [Authorize(Roles = "Department.View")]
+        [Permission("Department.View")]
         public async Task<ActionResult> Get([FromQuery] DetailDepartmentRequest request)
         {
             var response = await _mediator.Send(request);
@@ -67,7 +68,7 @@ namespace UI.WebApi.Controllers
         /// - Email: string, email_format
         /// </remarks>
         [HttpPost]
-        [Authorize(Roles = "Department.Create")]
+        [Permission("Department.Create")]
         public async Task<ActionResult> Post([FromBody] CreateDepartmentDto request)
         {
             var command = new CreateDepartmentRequest { createDepartmentDto = request };
@@ -101,7 +102,7 @@ namespace UI.WebApi.Controllers
         /// - HeadDepartment_TeacherId: Giảng viên của Bộ môn
         /// </remarks>
         [HttpPut]
-        [Authorize(Roles = "Department.Update")]
+        [Permission("Department.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateDepartmentDto request)
         {
             var command = new UpdateDepartmentRequest { updateDepartmentDto = request };
@@ -118,7 +119,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        [Authorize(Roles = "Department.Delete")]
+        [Permission("Department.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Department> request)
         {
             try

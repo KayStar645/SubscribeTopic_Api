@@ -4,6 +4,7 @@ using Core.Application.Features.Feedbacks.Requests.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
@@ -27,7 +28,7 @@ namespace UI.WebApi.Controllers
         /// 
         /// </remarks>
         [HttpGet]
-        [Authorize(Roles = "Feedback.View")]
+        [Permission("Feedback.View")]
         public async Task<ActionResult<List<FeedbackDto>>> Get([FromQuery] ListFeedbackRequest request)
         {
             var response = await _mediator.Send(request);
@@ -44,7 +45,7 @@ namespace UI.WebApi.Controllers
         /// - thesisId: mã đề tài hợp lệ
         /// </remarks>
         [HttpPost]
-        [Authorize(Roles = "Feedback.Create")]
+        [Permission("Feedback.Create")]
         public async Task<ActionResult<FeedbackDto>> Post([FromBody] CreateFeedbackDto request)
         {
             var command = new CreateFeedbackRequest { createFeedbackDto = request };
