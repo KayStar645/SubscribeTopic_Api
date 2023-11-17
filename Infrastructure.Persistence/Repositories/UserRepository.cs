@@ -73,7 +73,7 @@ namespace Infrastructure.Persistence.Repositories
                                         .ToListAsync();
 
             var userRoles = await _dbContext.Set<UserRole>()
-                                        .Where(ur => ur.Role != null)
+                                        .Where(ur => ur.Role != null && ur.UserId == user.Id)
                                         .ToListAsync();
 
             foreach (var userRole in userRoles)
