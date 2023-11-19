@@ -43,6 +43,11 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
             {
                 var query = _unitOfWork.Repository<Thesis>().GetByIdInclude(request.id);
 
+                if (request.isAllDetail == true || request.isGetIssuer == true)
+                {
+                    query = _unitOfWork.Repository<Thesis>().AddInclude(query, x => x.LecturerThesis);
+                }
+
                 var findThesis = await query.SingleAsync();
 
                 if (findThesis is null)
