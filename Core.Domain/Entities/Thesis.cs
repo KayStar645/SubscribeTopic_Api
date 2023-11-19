@@ -17,7 +17,7 @@ namespace Core.Domain.Entities
         #endregion
 
         #region CONST STATUS
-        // Trạng thái đề tài: (Nháp, yêu cầu duyệt, yêu cầu chỉnh sửa, Duyệt, Hủy) 
+        // Trạng thái đề tài: (Nháp, yêu cầu duyệt, Duyệt, Hủy) 
         // Giảng viên ra đề
         [NotMapped]
         public const string STATUS_DRAFT = "D";

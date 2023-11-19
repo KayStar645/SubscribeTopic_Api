@@ -4,9 +4,9 @@ using MediatR;
 
 namespace Core.Application.Features.Invitations.Request.Commands
 {
-    public class ChangeStatusRequest : IRequest<Result<InvitationDto>>
+    public class ChangeStatusInvitationRequest : IRequest<Result<InvitationDto>>
     {
-        public ChangeStatusInvitationDto? changeStatusInvitationDto { get; set; }
+        public ChangeStatusInvitationDto? changeStatusInvitation { get; set; }
     }
 
 }

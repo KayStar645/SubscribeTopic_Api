@@ -1,8 +1,10 @@
 ﻿using Core.Application.DTOs.Industry;
 using Core.Application.DTOs.Invitation;
+using Core.Application.DTOs.Thesis;
 using Core.Application.Features.Industries.Requests.Queries;
 using Core.Application.Features.Invitations.Request.Commands;
 using Core.Application.Features.Invitations.Request.Queries;
+using Core.Application.Features.Thesiss.Requests.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UI.WebApi.Middleware;
@@ -49,6 +51,26 @@ namespace UI.WebApi.Controllers
         public async Task<ActionResult<InvitationDto>> Post([FromBody] SendInvitationDto pRequest)
         {
             var command = new SendInvitationRequest { sendInvitationDto = pRequest };
+            var response = await _mediator.Send(command);
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// Cập nhật trạng thái lời mời 
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// - Status: Required
+        /// D -> A/C
+        /// 
+        /// </remarks>
+        [HttpPut("ChangeStatus")]
+        [Permission("Invitation.Change")]
+        public async Task<ActionResult> ChangeStatus([FromBody] ChangeStatusInvitationDto pRequest)
+        {
+            var command = new ChangeStatusInvitationRequest { changeStatusInvitation = pRequest };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);

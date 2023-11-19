@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Feedback;
 using Core.Application.DTOs.Thesis;
 using Core.Application.DTOs.Thesis.Validators;
 using Core.Application.Exceptions;
 using Core.Application.Features.Thesiss.Events;
 using Core.Application.Features.Thesiss.Requests.Commands;
 using Core.Application.Responses;
-using Core.Application.Transform;
 using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;

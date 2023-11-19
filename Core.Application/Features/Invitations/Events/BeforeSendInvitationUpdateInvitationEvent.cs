@@ -58,7 +58,15 @@ namespace Core.Application.Features.Invitations.Events
             {
                 throw new BadRequestException("Bạn không có trong đợt đăng ký đề tài hiện tại!");
             }
-            pEvent._invitation.GroupId = studentJoin?.GroupId;
+            pEvent._invitation.GroupId = studentJoin.GroupId;
+
+            var exists = await pEvent._unitOfWork.Repository<Invitation>()
+                                .AnyAsync(x => x.GroupId == studentJoin.GroupId &&
+                                        x.StudentJoinId == pEvent._invitation.StudentJoinId);
+            if (exists)
+            {
+                throw new BadRequestException("Sinh viên đã là thành viên nhóm hoặc chưa chấp nhận lời mời!");
+            } 
         }
     }
 }

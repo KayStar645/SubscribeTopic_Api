@@ -24,7 +24,7 @@ namespace Core.Application.DTOs.Invitation.Validators
                     var exists = await _unitOfWork.Repository<StudentJoinEntity>().GetByIdAsync(id);
                     return exists != null;
                 })
-                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("facultyId", "faculties"));
+                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("studentJoinId", "studentJoin"));
         }
     }
 }
