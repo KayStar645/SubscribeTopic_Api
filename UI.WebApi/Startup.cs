@@ -2,6 +2,7 @@
 using Autofac;
 using Core.Application;
 using Core.Application.Features.Teachers.Requests.Commands;
+using Core.Domain;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -61,6 +62,7 @@ namespace UI.WebApi
             AddSwaggerDoc(services);
 
             services.ConfigureApplicationServices();
+            services.ConfigureDomainServices(_configuration);
             services.ConfigureSieveServices(_configuration);
             services.ConfigurePersistenceServices(_configuration);
 
