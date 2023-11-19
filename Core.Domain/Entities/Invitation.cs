@@ -12,6 +12,8 @@ namespace Core.Domain.Entities
         public const string STATUS_SENT = "S";
         [NotMapped]
         public const string STATUS_ACCEPT = "A";
+        [NotMapped]
+        public const string STATUS_CANCEL = "C";
 
         #endregion
 

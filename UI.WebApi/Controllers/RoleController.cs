@@ -11,7 +11,7 @@ using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/role")]
     [ApiController]
     public class RoleController : ControllerBase
     {

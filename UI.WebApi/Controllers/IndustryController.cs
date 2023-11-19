@@ -6,14 +6,13 @@ using Core.Application.Features.Industries.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/industry")]
     [ApiController]
     //[Authorize]
     public class IndustryController : ControllerBase
