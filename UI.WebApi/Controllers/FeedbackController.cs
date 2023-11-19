@@ -2,13 +2,12 @@
 using Core.Application.Features.Feedbacks.Requests.Commands;
 using Core.Application.Features.Feedbacks.Requests.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/feedback")]
     [ApiController]
     public class FeedbackController : ControllerBase
     {

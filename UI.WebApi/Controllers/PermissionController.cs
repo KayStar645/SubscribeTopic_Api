@@ -6,7 +6,7 @@ using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/permission")]
     [ApiController]
     [Authorize]
     public class PermissionController : ControllerBase

@@ -58,11 +58,6 @@ namespace Core.Application.Features.Thesiss.Handlers.Commands
                     }
                 });
 
-                if(thesis.Type == null)
-                {
-                    throw new UnauthorizedException(StatusCodes.Status403Forbidden);
-                }
-
                 var newThesis = await _unitOfWork.Repository<Thesis>().AddAsync(thesis);
                 await _unitOfWork.Save(cancellationToken);
 

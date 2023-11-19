@@ -71,7 +71,7 @@ namespace Core.Application.Features.Groups.Handlers.Queries
                                         .Include(x => x.Student)
                                         .ToListAsync();
 
-                    groupDto.members = _mapper.Map<List<StudentJoinDto>>(members);
+                    groupDto.Members = _mapper.Map<List<StudentJoinDto>>(members);
                 }
 
                 return Result<GroupDto>.Success(groupDto, (int)HttpStatusCode.OK);
