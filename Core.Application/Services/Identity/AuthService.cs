@@ -1,14 +1,17 @@
 ﻿using AutoMapper;
 using Core.Application.Constants;
 using Core.Application.Contracts.Identity;
+using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.Student;
 using Core.Application.DTOs.Teacher;
 using Core.Application.Interfaces.Repositories;
 using Core.Application.Models.Identity.Auths;
 using Core.Application.Models.Identity.Validators;
+using Core.Application.Models.Identity.ViewModels;
 using Core.Application.Responses;
 using Core.Application.Transform;
+using Core.Domain.Entities;
 using Core.Domain.Entities.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -25,15 +28,44 @@ namespace Core.Application.Services.Identity
     public class AuthService : IAuthService
     {
         private readonly IUserRepository _userRepo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public AuthService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper)
+        public AuthService(IUserRepository userRepository, IUnitOfWork unitOfWork,
+            IConfiguration configuration, IMapper mapper)
         {
             _userRepo = userRepository;
+            _unitOfWork = unitOfWork;
             _configuration = configuration;
             _mapper = mapper;
-        }    
+        }
+
+        public async Task<Result<List<UserVM>>> GetList()
+        {
+            var users = await _userRepo.Get();
+
+            var mapUsers = _mapper.Map<List<UserVM>>(users);
+
+            foreach(var user in mapUsers)
+            {
+                if(user.Type == User.TYPE_STUDENT)
+                {
+                    var student = await _unitOfWork.Repository<Student>()
+                                        .FirstOrDefaultAsync(x => x.InternalCode == user.UserName);
+                    user.Student = _mapper.Map<StudentDto>(student);
+                }
+                else if(user.Type == User.TYPE_TEACHER)
+                {
+                    var teacher = await _unitOfWork.Repository<Teacher>()
+                                        .FirstOrDefaultAsync(x => x.InternalCode == user.UserName);
+
+                    user.Teacher = _mapper.Map<TeacherDto>(teacher);
+                }
+            }
+
+            return Result<List<UserVM>>.Success(mapUsers, (int)HttpStatusCode.OK);
+        }
 
         public async Task<Result<AuthResponse>> Login(AuthRequest request)
         {

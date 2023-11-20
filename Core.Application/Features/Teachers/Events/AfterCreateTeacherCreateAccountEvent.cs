@@ -33,6 +33,7 @@ namespace Core.Application.Features.Teachers.Events
                 {
                     UserName = pEvent._teacher.InternalCode,
                     Password = pEvent._teacher.InternalCode,
+                    Type = User.TYPE_TEACHER
                 };
 
                 await pEvent._userRepository.CreateAsync(user);
