@@ -6,6 +6,7 @@ namespace Core.Application.Interfaces.Repositories
 {
     public interface IUserRepository : IGenericRepository<User>
     {
+        Task<List<User>> Get();
         Task<bool> CreateAsync(User user);
         Task<User> FindByNameAsync(string userName);
         Task<(Faculties faculty, int type)> GetFacultyAsync(User user);

@@ -1,5 +1,8 @@
-﻿using Core.Application.Contracts.Identity;
+﻿using Azure.Core;
+using Core.Application.Contracts.Identity;
+using Core.Application.Features.Departments.Requests.Queries;
 using Core.Application.Models.Identity.Auths;
+using Core.Application.Models.Identity.ViewModels;
 using Core.Application.Responses;
 using Microsoft.AspNetCore.Mvc;
 using UI.WebApi.Middleware;
@@ -14,6 +17,21 @@ namespace UI.WebApi.Controllers
         public AccountController(IAuthService authenticationService)
         {
             _authenticationService = authenticationService;
+        }
+
+        /// <summary>
+        /// Lấy danh sách user
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// </remarks>
+        [HttpGet]
+        [Permission("Account.View")]
+        public async Task<ActionResult> Get()
+        {
+            var response = await _authenticationService.GetList();
+
+            return StatusCode(response.Code, response);
         }
 
         [HttpPost("login")]

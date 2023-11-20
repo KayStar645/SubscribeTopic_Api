@@ -17,6 +17,11 @@ namespace Infrastructure.Persistence.Repositories
             _passwordHasher = passwordHasher;
         }
 
+        public async Task<List<User>> Get()
+        {
+            return await _dbContext.Users.ToListAsync();
+        }
+
         public async Task<bool> CreateAsync(User user)
         {
             var hashedPassword = _passwordHasher.HashPassword(user, user.Password);
@@ -88,7 +93,6 @@ namespace Infrastructure.Persistence.Repositories
 
             return permissions;
         }
-
 
         public async Task<List<Role>> GetRolesAsync(User user)
         {
