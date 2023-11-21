@@ -1,67 +1,100 @@
 ﻿using Core.Application.Interfaces.Services;
+using Core.Application.Models.GoogleDrive;
 using Core.Application.Responses;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
-using Google.Apis.Util.Store;
-using Microsoft.AspNetCore.Http;
 using System.Net;
 
 namespace Core.Application.Services.GoogleDrive
 {
     public class GoogleDriveService : IGoogleDriveService
     {
-        private const string CLIENT_ID = "766566499840-hb43bmbgvup0aacmt7a0bp4m19hboiga.apps.googleusercontent.com";
-        private const string CLIENT_SECRET = "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";
-        private const string REDIRECT_URI = "https://developers.google.com/oauthplayground";
-        private const string REFRESH_TOKEN = "1//04yBWS43ntVnQCgYIARAAGAQSNwF-L9Ir7mwXuJaYz8sPTOeZ7Ek1iyJY61TrU_m8sVp7yDSGcjqC8IZtnbcB6snl68PZ4OK9RSQ";
+        private const string _credentialsPath = "../Core.Application/Services/GoogleDrive/client_secret.json";
+        private const string _folderId = "1T12wTE6cGjqOBJ2pTGo3vxGfXT3mELdq";
+        private const string _path = "https://drive.google.com/uc?id=";
 
-        public async Task<Result<string>> UploadImage(IFormFile file)
+        public async Task<Result<string>> UploadFilesToGoogleDrive(UploadRequest pRequest)
         {
-            try
+            GoogleCredential credential;
+
+            using (var stream1 = new FileStream(_credentialsPath, FileMode.Open, FileAccess.Read))
             {
-                UserCredential credential;
+                credential = GoogleCredential.FromStream(stream1)
+                     .CreateScoped(DriveService.ScopeConstants.DriveFile);
 
-                using (var stream = new FileStream("client_secret.json", FileMode.Open, FileAccess.Read))
-                {
-                    string credPath = "token.json";
-
-                    credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                        GoogleClientSecrets.Load(stream).Secrets,
-                        new[] { DriveService.Scope.DriveFile },
-                        "user",
-                        CancellationToken.None,
-                        new FileDataStore(credPath, true));
-                }
-
-                var driveService = new DriveService(new BaseClientService.Initializer()
+                var service = new DriveService(new BaseClientService.Initializer()
                 {
                     HttpClientInitializer = credential,
-                    ApplicationName = "SubscribeTopic",
+                    ApplicationName = "Google Drive Upload SubscribeTopic"
                 });
 
-                var fileMetadata = new Google.Apis.Drive.v3.Data.File()
-                {
-                    Name = file.FileName,
-                };
+                // Tạo thư mục trước khi lưu tệp tin
+                var folderId = _folderId;
 
-                FilesResource.CreateMediaUpload request;
-
-                using (var stream = file.OpenReadStream())
+                string[] folders = pRequest.FolderName.Split("/");
+                foreach(string name in folders)
                 {
-                    request = driveService.Files.Create(fileMetadata, stream, file.ContentType);
-                    request.Fields = "id";
-                    await request.UploadAsync();
+                    var existingFolderQuery = service.Files.List();
+                    existingFolderQuery.Q = $"name='{name}' and '{folderId}' in parents";
+                    existingFolderQuery.Fields = "files(id, name)";
+                    var existingFolders = existingFolderQuery.Execute().Files;
+
+                    if (existingFolders != null && existingFolders.Count > 0)
+                    {
+                        folderId = existingFolders.First().Id;
+                    }
+                    else
+                    {
+                        var folderMetadata = new Google.Apis.Drive.v3.Data.File()
+                        {
+                            Name = name,
+                            MimeType = "application/vnd.google-apps.folder",
+                            Parents = new List<string> { folderId },
+                        };
+
+                        var folderRequest = service.Files.Create(folderMetadata);
+                        folderRequest.Fields = "id";
+                        var folder = folderRequest.Execute();
+                        folderId = folder.Id;
+                    }
                 }
 
-                var fileDrive = request.ResponseBody;
-                var fileId = fileDrive.Id;
+                // Kiểm tra xem tệp tin đã tồn tại chưa
+                string fileExtension = Path.GetExtension(new Uri(pRequest.FilePath).AbsolutePath);
+                var existingFileQuery = service.Files.List();
+                existingFileQuery.Q = $"name='{pRequest.FileName + fileExtension}' and '{folderId}' in parents";
+                existingFileQuery.Fields = "files(id, name)";
+                var existingFiles = existingFileQuery.Execute().Files;
 
-                return Result<string>.Success(fileId, (int)HttpStatusCode.OK);
-            }
-            catch (Exception ex)
-            {
-                return Result<string>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
+                if (existingFiles != null && existingFiles.Count > 0)
+                {
+                    return Result<string>.Failure($"File có tên '{pRequest.FileName + fileExtension}' đã tồn tại!",
+                        (int)HttpStatusCode.BadRequest);
+                }
+                else
+                {
+                    var fileMetaData = new Google.Apis.Drive.v3.Data.File()
+                    {
+                        Name = pRequest.FileName + fileExtension,
+                        Parents = new List<string> { folderId },
+                    };
+
+                    using (var stream2 = new MemoryStream(new WebClient().DownloadData(pRequest.FilePath)))
+                    {
+                        FilesResource.CreateMediaUpload request = service.Files.Create(fileMetaData, stream2, "");
+                        request.Fields = "id";
+                        request.Upload();
+                        var uploadFile = request.ResponseBody;
+
+                        // Xây dựng đường dẫn đầy đủ
+                        string fileId = uploadFile.Id;
+                        string downloadUrl = $"{_path}{fileId}";
+                        string result = _path + pRequest.FolderName + pRequest.FileName + fileExtension;
+
+                        return Result<string>.Success(downloadUrl, (int)HttpStatusCode.Created);
+                    }
+                }
             }
         }
     }

@@ -1,10 +1,10 @@
-﻿using Core.Application.Responses;
-using Microsoft.AspNetCore.Http;
+﻿using Core.Application.Models.GoogleDrive;
+using Core.Application.Responses;
 
 namespace Core.Application.Interfaces.Services
 {
     public interface IGoogleDriveService
     {
-        Task<Result<string>> UploadImage(IFormFile file);
+        Task<Result<string>> UploadFilesToGoogleDrive(UploadRequest pRequest);
     }
 }

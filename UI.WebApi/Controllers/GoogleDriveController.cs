@@ -1,5 +1,5 @@
 ﻿using Core.Application.Interfaces.Services;
-using Core.Application.Responses;
+using Core.Application.Models.GoogleDrive;
 using Microsoft.AspNetCore.Mvc;
 using UI.WebApi.Middleware;
 
@@ -16,12 +16,13 @@ namespace UI.WebApi.Controllers
             _googleDriveService = googleDriveService;
         }
 
-        [HttpPost]
-        //[Permission("GoogleDrive.Upload")]
-        public async Task<ActionResult> UploadImage([FromForm] IFormFile file)
+        [HttpPost()]
+        [Permission("GoogleDrive.Upload")]
+        public async Task<ActionResult> UploadImage1([FromQuery] UploadRequest pRequest)
         {
-            var result = await _googleDriveService.UploadImage(file);
-            return Ok(result);
+            var response = await _googleDriveService.UploadFilesToGoogleDrive(pRequest);
+
+            return StatusCode(response.Code, response);
         }
     }
 }
