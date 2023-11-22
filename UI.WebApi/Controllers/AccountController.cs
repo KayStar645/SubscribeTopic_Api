@@ -1,8 +1,5 @@
-﻿using Azure.Core;
-using Core.Application.Contracts.Identity;
-using Core.Application.Features.Departments.Requests.Queries;
+﻿using Core.Application.Contracts.Identity;
 using Core.Application.Models.Identity.Auths;
-using Core.Application.Models.Identity.ViewModels;
 using Core.Application.Responses;
 using Microsoft.AspNetCore.Mvc;
 using UI.WebApi.Middleware;

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Thesis;
 using Core.Application.DTOs.ThesisRegistration;
 using Core.Application.DTOs.ThesisRegistration.Validators;
 using Core.Application.Exceptions;
