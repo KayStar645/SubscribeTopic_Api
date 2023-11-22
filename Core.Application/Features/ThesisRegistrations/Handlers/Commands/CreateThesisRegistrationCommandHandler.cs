@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Thesis;
 using Core.Application.DTOs.ThesisRegistration;
 using Core.Application.DTOs.ThesisRegistration.Validators;
+using Core.Application.Exceptions;
 using Core.Application.Features.ThesisRegistrations.Event;
 using Core.Application.Features.ThesisRegistrations.Requests.Commands;
 using Core.Application.Responses;
@@ -60,6 +62,18 @@ namespace Core.Application.Features.ThesisRegistrations.Handlers.Commands
                 var ThesisRegistrationDto = _mapper.Map<ThesisRegistrationDto>(newThesisRegistration);
 
                 return Result<ThesisRegistrationDto>.Success(ThesisRegistrationDto, (int)HttpStatusCode.Created);
+            }
+            catch (NotFoundException ex)
+            {
+                return Result<ThesisRegistrationDto>.Failure(ex.Message, (int)HttpStatusCode.NotFound);
+            }
+            catch (BadRequestException ex)
+            {
+                return Result<ThesisRegistrationDto>.Failure(ex.Message, (int)HttpStatusCode.BadRequest);
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Result<ThesisRegistrationDto>.Failure(ex.Message, ex.ErrorCode);
             }
             catch (Exception ex)
             {

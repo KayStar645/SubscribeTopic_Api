@@ -178,6 +178,7 @@ namespace Core.Application.Services.Identity
                 new Claim(CONSTANT_CLAIM_TYPES.Uid, user.Id.ToString()),
                 new Claim(CONSTANT_CLAIM_TYPES.UserName, user.UserName),
                 new Claim(CONSTANT_CLAIM_TYPES.Type, type),
+                new Claim(CONSTANT_CLAIM_TYPES.FacultyId, facultyDto?.Id?.ToString()),
                 new Claim(CONSTANT_CLAIM_TYPES.Customer, JsonSerializer.Serialize(customer,
                                     new JsonSerializerOptions {
                                         Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)

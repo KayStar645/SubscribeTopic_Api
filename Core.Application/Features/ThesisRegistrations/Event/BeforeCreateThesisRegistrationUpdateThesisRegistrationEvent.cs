@@ -28,18 +28,47 @@ namespace Core.Application.Features.ThesisRegistrations.Event
         public async Task Handle(BeforeCreateThesisRegistrationUpdateThesisRegistrationEvent pEvent, CancellationToken cancellationToken)
         {
             var userId = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;
-            var userType = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Type)?.Value;
+            var facultyId = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.FacultyId)?.Value;
 
-            var group = await pEvent._unitOfWork.Repository<Group>()
+            // Chỉ cho đợt đăng ký đề tài của đợt hiện tại trong thời gian quy định
+            var period = await pEvent._unitOfWork.Repository<RegistrationPeriod>()
                                 .Query()
-                                .Include(x => x.Leader)
-                                    .ThenInclude(x => x.Student)
-                                .Where(x => x.Leader.Student.UserId == int.Parse(userId))
+                                .Where(x => x.FacultyId == int.Parse(facultyId) && x.IsActive &&
+                                            x.TimeStart <= DateTime.Now && DateTime.Now <= x.TimeEnd)
                                 .FirstOrDefaultAsync();
+
+            if (period == null)
+            {
+                throw new UnauthorizedException(StatusCodes.Status403Forbidden);
+            }
+
+            var group = await pEvent._unitOfWork.Repository<StudentJoin>()
+                                    .Query()
+                                    .Where(x => x.RegistrationPeriodId == period.Id &&
+                                                x.Group.Leader.Student.UserId == int.Parse(userId))
+                                .FirstOrDefaultAsync();
+
             // Chỉ cho trưởng nhóm đăng ký
             if (group == null)
             {
                 throw new UnauthorizedException(StatusCodes.Status403Forbidden);
+            }
+
+            // Chỉ cho đăng ký đề tài đã duyệt
+            var thesis = await pEvent._unitOfWork.Repository<Thesis>()
+                                    .FirstOrDefaultAsync(x => x.Id == pEvent._thesisRegistration.ThesisId &&
+                                                              x.Status == Thesis.STATUS_APPROVED);
+            if (thesis == null)
+            {
+                throw new BadRequestException("Đề tài đăng ký không hợp lệ!");
+            }
+
+            // 1 nhóm chỉ được đăng ký 1 đề tài
+            var exists = await pEvent._unitOfWork.Repository<ThesisRegistration>()
+                                .AnyAsync(x => x.GroupId == group.Id);
+            if (exists)
+            {
+                throw new BadRequestException("Một nhóm chỉ được đăng ký 1 đề tài!");
             }
 
             pEvent._thesisRegistration.GroupId = group.Id;
