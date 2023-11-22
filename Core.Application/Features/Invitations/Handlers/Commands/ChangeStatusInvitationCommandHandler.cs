@@ -2,10 +2,8 @@
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Invitation;
 using Core.Application.DTOs.Invitation.Validators;
-using Core.Application.DTOs.Thesis;
 using Core.Application.Features.Invitations.Events;
 using Core.Application.Features.Invitations.Request.Commands;
-using Core.Application.Features.Thesiss.Events;
 using Core.Application.Responses;
 using Core.Application.Services;
 using Core.Application.Transform;
@@ -74,6 +72,8 @@ namespace Core.Application.Features.Invitations.Handlers.Commands
                         var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
                         await mediator.Publish(new AfterChangeStatusInvitationChangeInvitationEnvent(invitationDto, unitOfWork, mapper));
+                        await mediator.Publish(new AfterChangeStatusInvitationChangeGroupEnvent(invitationDto, unitOfWork, mapper));
+                        await mediator.Publish(new AfterChangeStatusInvitationChangeStudentJoinEnvent(invitationDto, unitOfWork, mapper));
 
                     }
                 });
