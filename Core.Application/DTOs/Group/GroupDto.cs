@@ -1,8 +1,9 @@
 ﻿using Core.Application.DTOs.StudentJoin;
+using KLTN.Core.Application.DTOs.Common;
 
 namespace Core.Application.DTOs.Group
 {
-    public class GroupDto
+    public class GroupDto : BaseDto
     {
         public string? Name { get; set; }
 

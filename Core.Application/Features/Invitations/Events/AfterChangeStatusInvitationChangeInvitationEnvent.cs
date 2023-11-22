@@ -9,9 +9,7 @@ namespace Core.Application.Features.Invitations.Events
     public class AfterChangeStatusInvitationChangeInvitationEnvent : INotification
     {
         public InvitationDto _invitationDto { get; set; }
-
         public IUnitOfWork _unitOfWork { get; set; }
-
         public IMapper _mapper { get; set; }
 
         public AfterChangeStatusInvitationChangeInvitationEnvent(InvitationDto invitationDto, 
