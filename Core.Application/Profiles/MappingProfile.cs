@@ -111,6 +111,7 @@ namespace Core.Application.Profiles
 
             CreateMap<User, UserVM>().ReverseMap();
 
+            CreateMap<SieveModel, ListBaseRequest<ThesisRegistrationDto>>().ReverseMap();
             CreateMap<ThesisRegistration, ThesisRegistrationDto>().ReverseMap();
             CreateMap<ThesisRegistration, CreateThesisRegistrationDto>().ReverseMap();
 

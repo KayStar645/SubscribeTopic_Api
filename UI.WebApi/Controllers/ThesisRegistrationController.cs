@@ -1,6 +1,8 @@
 ﻿using Core.Application.DTOs.ThesisRegistration;
 using Core.Application.Exceptions;
+using Core.Application.Features.Departments.Requests.Queries;
 using Core.Application.Features.ThesisRegistrations.Requests.Commands;
+using Core.Application.Features.ThesisRegistrations.Requests.Queries;
 using Core.Application.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +20,38 @@ namespace UI.WebApi.Controllers
         public ThesisRegistrationController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        /// <summary>
+        /// Lấy danh đăng ký đề tài theo mã khoa
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - facultyId: required
+        /// </remarks>
+        [HttpGet]
+        [Permission("ThesisRegistration.View")]
+        public async Task<ActionResult> Get([FromQuery] ListThesisRegistrationRequest request)
+        {
+            var response = await _mediator.Send(request);
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// Lấy thông đăng ký đề tài theo mã
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
+        [HttpGet("detail")]
+        [Permission("ThesisRegistration.View")]
+        public async Task<ActionResult> Get([FromQuery] DetailThesisRegistrationRequest request)
+        {
+            var response = await _mediator.Send(request);
+
+            return StatusCode(response.Code, response);
         }
 
         /// <summary>
