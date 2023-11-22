@@ -30,23 +30,19 @@ namespace Core.Application.Features.ThesisRegistrations.Event
             var userId = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;
             var userType = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Type)?.Value;
 
-            // Chỉ cho sinh đăng đăng ký đề tài
-            if (userType != CLAIMS_VALUES.TYPE_STUDENT)
-            {
-                throw new UnauthorizedException(StatusCodes.Status403Forbidden);
-            }
-
-            // Chỉ cho trưởng nhóm đăng ký
-
-
-            var groupId = await pEvent._unitOfWork.Repository<Group>()
+            var group = await pEvent._unitOfWork.Repository<Group>()
                                 .Query()
                                 .Include(x => x.Leader)
                                     .ThenInclude(x => x.Student)
                                 .Where(x => x.Leader.Student.UserId == int.Parse(userId))
-                                .Select(x => x.Id)
                                 .FirstOrDefaultAsync();
-            pEvent._thesisRegistration.GroupId = groupId;
+            // Chỉ cho trưởng nhóm đăng ký
+            if (group == null)
+            {
+                throw new UnauthorizedException(StatusCodes.Status403Forbidden);
+            }
+
+            pEvent._thesisRegistration.GroupId = group.Id;
 
         }
     }
