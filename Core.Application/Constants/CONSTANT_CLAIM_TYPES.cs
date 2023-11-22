@@ -12,6 +12,8 @@
 
         public const string Faculty = "faculty";
 
+        public const string FacultyId = "facultyId";
+
         public const string Permission = "permission";
     }
 

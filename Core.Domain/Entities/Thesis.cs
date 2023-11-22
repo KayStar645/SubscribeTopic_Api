@@ -61,7 +61,19 @@ namespace Core.Domain.Entities
         [Sieve(CanFilter = true, CanSort = true)]
         public string? Type { get; set; }
 
+        // Nhóm đăng ký: chỉ được 1 nhóm (Nếu đề tài đề xuất thì auto gán nhóm)
 
+
+        // Duyệt đề tài: Auto trưởng bộ môn tại thời điểm đó (DB là nhiều nhưng validator là 1)
+        //* Duyệt đề tài
+        // + Nếu giảng viên ra => auto trưởng bộ môn duyệt
+        // + Nếu sinh viên đề xuất thì phải được giảng viên hướng dẫn duyệt và chỉnh sửa xong
+        // mới chuyển qua trưởng bộ môn duyệt
+        //*/
+
+        #endregion
+
+        #region FOREIGN KEY
         // Giảng viên ra đề
         [Sieve(CanFilter = true, CanSort = true)]
         public int? LecturerThesisId { get; set; }
@@ -75,17 +87,8 @@ namespace Core.Domain.Entities
         [ForeignKey(nameof(ProposedStudentId))]
         public Student? ProposedStudent { get; set; }
 
-
-        // Nhóm đăng ký: chỉ được 1 nhóm (Nếu đề tài đề xuất thì auto gán nhóm)
-
-
-        // Duyệt đề tài: Auto trưởng bộ môn tại thời điểm đó (DB là nhiều nhưng validator là 1)
-        //* Duyệt đề tài
-        // + Nếu giảng viên ra => auto trưởng bộ môn duyệt
-        // + Nếu sinh viên đề xuất thì phải được giảng viên hướng dẫn duyệt và chỉnh sửa xong
-        // mới chuyển qua trưởng bộ môn duyệt
-        //*/
-
+        // Nhóm nào đăng ký đề tài này
+        public ThesisRegistration? ThesisRegistration { get; set; }
 
         #endregion
 

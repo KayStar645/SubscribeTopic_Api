@@ -59,6 +59,25 @@ namespace Infrastructure.Persistence.Repositories
             return entity;
         }
 
+        public virtual async Task<bool> UpdateRangeAsync(List<T> entities)
+        {
+            try
+            {
+                foreach (var entity in entities)
+                {
+                    _dbContext.Entry(entity).State = EntityState.Modified;
+                }
+
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
         public virtual Task DeleteAsync(T entity)
         {
             _dbContext.Set<T>().Remove(entity);

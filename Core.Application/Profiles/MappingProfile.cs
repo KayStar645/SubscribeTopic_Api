@@ -14,6 +14,7 @@ using Core.Application.DTOs.Student;
 using Core.Application.DTOs.StudentJoin;
 using Core.Application.DTOs.Teacher;
 using Core.Application.DTOs.Thesis;
+using Core.Application.DTOs.ThesisRegistration;
 using Core.Application.Features.Base.Requests.Queries;
 using Core.Application.Models.Identity.Roles;
 using Core.Application.Models.Identity.ViewModels;
@@ -109,6 +110,10 @@ namespace Core.Application.Profiles
             CreateMap<Role, RoleResult>().ReverseMap();
 
             CreateMap<User, UserVM>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<ThesisRegistrationDto>>().ReverseMap();
+            CreateMap<ThesisRegistration, ThesisRegistrationDto>().ReverseMap();
+            CreateMap<ThesisRegistration, CreateThesisRegistrationDto>().ReverseMap();
 
 
         }

@@ -30,6 +30,9 @@ namespace Core.Domain.Entities
         [ForeignKey("LeaderId")]
         public StudentJoin? Leader { get; set; }
 
+        // Đăng ký đề tài nào
+        public ThesisRegistration? ThesisRegistration { get; set; }
+
         #endregion
 
 
