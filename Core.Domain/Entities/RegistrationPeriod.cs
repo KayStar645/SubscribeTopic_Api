@@ -1,5 +1,6 @@
 ﻿using Core.Domain.Common;
 using Sieve.Attributes;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Domain.Entities
@@ -33,6 +34,9 @@ namespace Core.Domain.Entities
         [Sieve(CanFilter = true, CanSort = true)]
         [Column(TypeName = "datetime")]
         public DateTime? TimeEnd { get; set; }
+
+        [DefaultValue(false)]
+        public bool IsActive { get; set; }
 
         #endregion
 

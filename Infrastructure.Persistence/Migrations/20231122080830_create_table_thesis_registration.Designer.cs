@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubscribeTopicDbContext))]
-    partial class SubscribeTopicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231122080830_create_table_thesis_registration")]
+    partial class create_table_thesis_registration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -731,9 +734,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<int?>("FacultyId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -1107,6 +1107,9 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime");
+
+                    b.Property<string>("RegistrationForm")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ThesisId")
                         .HasColumnType("int");

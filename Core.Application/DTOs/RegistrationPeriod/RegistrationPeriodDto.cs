@@ -12,5 +12,6 @@ namespace Core.Application.DTOs.RegistrationPeriod
         public DateTime? TimeEnd { get; set; }
         public int? FacultyId { get; set; }
         public FacultyDto? Faculty { get; set; }
+        public bool IsActive { get; set; }
     }
 }
