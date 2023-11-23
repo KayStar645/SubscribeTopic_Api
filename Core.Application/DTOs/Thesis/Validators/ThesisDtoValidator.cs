@@ -1,7 +1,6 @@
 ﻿using Core.Application.Contracts.Persistence;
 using Core.Application.Transform;
 using FluentValidation;
-using ThesisEntity = Core.Domain.Entities.Thesis;
 
 namespace Core.Application.DTOs.Thesis.Validators
 {

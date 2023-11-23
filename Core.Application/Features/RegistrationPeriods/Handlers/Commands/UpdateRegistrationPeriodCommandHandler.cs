@@ -2,12 +2,16 @@
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.RegistrationPeriod;
 using Core.Application.DTOs.RegistrationPeriod.Validators;
+using Core.Application.DTOs.Thesis;
+using Core.Application.Features.RegistrationPeriods.Event;
 using Core.Application.Features.RegistrationPeriods.Requests.Commands;
+using Core.Application.Features.Thesiss.Events;
 using Core.Application.Responses;
 using Core.Application.Services;
 using Core.Application.Transform;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 
 namespace Core.Application.Features.RegistrationPeriods.Handlers.Commands
@@ -16,11 +20,13 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Commands
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IServiceProvider _serviceProvider;
 
-        public UpdateRegistrationPeriodCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public UpdateRegistrationPeriodCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IServiceProvider serviceProvider)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<Result<RegistrationPeriodDto>> Handle(UpdateRegistrationPeriodRequest request, CancellationToken cancellationToken)
@@ -53,6 +59,20 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Commands
                 await _unitOfWork.Save(cancellationToken);
 
                 var periodDto = _mapper.Map<RegistrationPeriodDto>(newPeriod);
+
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                Task.Run(async () =>
+                {
+                    using (var scope = _serviceProvider.CreateScope())
+                    {
+                        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+                        await mediator.Publish(new AfterUpdateRegistrationPeriodUpdateRegistrationPeriodEvent(periodDto, unitOfWork));
+
+                    }
+                });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
                 return Result<RegistrationPeriodDto>.Success(periodDto, (int)HttpStatusCode.OK);
             }

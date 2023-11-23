@@ -6,13 +6,15 @@ using Core.Application.Features.StudentJoins.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
     [Route("api/studentJoin")]
-    //[ApiController]
+    [ApiController]
     public class StudentJoinController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -31,6 +33,7 @@ namespace UI.WebApi.Controllers
         /// - periodId: null
         /// </remarks>
         [HttpGet]
+        [Permission("StudentJoin.View")]
         public async Task<ActionResult<List<StudentJoinDto>>> Get([FromQuery] ListStudentJoinRequest request)
         {
             var response = await _mediator.Send(request);
@@ -46,6 +49,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
+        [Permission("StudentJoin.View")]
         public async Task<ActionResult<StudentJoinDto>> Get([FromQuery] DetailStudentJoinRequest request)
         {
             var response = await _mediator.Send(request);
@@ -60,6 +64,7 @@ namespace UI.WebApi.Controllers
         /// Ràng buộc:
         /// </remarks>
         [HttpPost]
+        [Permission("StudentJoin.Create")]
         public async Task<ActionResult<StudentJoinDto>> Post([FromBody] CreateStudentJoinDto StudentJoinRequest)
         {
             var command = new CreateStudentJoinRequest { createStudentJoinDto = StudentJoinRequest };
@@ -75,6 +80,7 @@ namespace UI.WebApi.Controllers
         /// Ràng buộc:
         /// </remarks>
         [HttpPut]
+        [Permission("StudentJoin.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateStudentJoinDto StudentJoinRequest)
         {
             var command = new UpdateStudentJoinRequest { updateStudentJoinDto = StudentJoinRequest };
@@ -91,6 +97,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
+        [Permission("StudentJoin.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<StudentJoin> request)
         {
             try

@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Group;
 using Core.Application.DTOs.Major;
-using Core.Application.DTOs.StudentJoin;
 using Core.Application.DTOs.Teacher;
 using Core.Application.DTOs.Thesis;
 using Core.Application.Features.Thesiss.Requests.Queries;
@@ -13,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services.Interface;
 using System.Net;
-using System.Security.Cryptography;
 
 namespace Core.Application.Features.Thesiss.Handlers.Queries
 {

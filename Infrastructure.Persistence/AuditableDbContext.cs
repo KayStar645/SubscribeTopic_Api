@@ -11,27 +11,30 @@ namespace Infrastructure.Persistence
 
         public virtual async Task<int> SaveChangesAsync(string username = "SYSTEM")
         {
-            foreach (var entry in base.ChangeTracker.Entries<BaseAuditableEntity>()
+            if(username != "SKIP")
+            {
+                foreach (var entry in base.ChangeTracker.Entries<BaseAuditableEntity>()
                 .Where(q => q.State == EntityState.Added ||
                             q.State == EntityState.Modified ||
                             q.State == EntityState.Deleted))
-            {
-                entry.Entity.LastModifiedDate = DateTime.Now;
-                entry.Entity.LastModifiedBy = username;
-
-                if (entry.State == EntityState.Added)
                 {
-                    entry.Entity.DateCreated = DateTime.Now;
-                    entry.Entity.CreatedBy = username;
-                    entry.Entity.IsDeleted = false;
-                }
+                    entry.Entity.LastModifiedDate = DateTime.Now;
+                    entry.Entity.LastModifiedBy = username;
 
-                if (entry.State == EntityState.Deleted)
-                {
-                    entry.Entity.IsDeleted = true;
-                    entry.State = EntityState.Unchanged;
+                    if (entry.State == EntityState.Added)
+                    {
+                        entry.Entity.DateCreated = DateTime.Now;
+                        entry.Entity.CreatedBy = username;
+                        entry.Entity.IsDeleted = false;
+                    }
+
+                    if (entry.State == EntityState.Deleted)
+                    {
+                        entry.Entity.IsDeleted = true;
+                        entry.State = EntityState.Unchanged;
+                    }
                 }
-            }
+            }    
 
             var result = await base.SaveChangesAsync();
 

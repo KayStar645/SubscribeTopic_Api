@@ -413,10 +413,10 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime");
 
-                    b.Property<int?>("PermissionId")
+                    b.Property<int>("PermissionId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RoleId")
+                    b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -452,6 +452,9 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
@@ -727,6 +730,9 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<int?>("FacultyId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
@@ -1076,6 +1082,48 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("ThesisMajors");
                 });
 
+            modelBuilder.Entity("Core.Domain.Entities.ThesisRegistration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime");
+
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<int?>("ThesisId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId")
+                        .IsUnique()
+                        .HasFilter("[GroupId] IS NOT NULL");
+
+                    b.HasIndex("ThesisId")
+                        .IsUnique()
+                        .HasFilter("[ThesisId] IS NOT NULL");
+
+                    b.ToTable("ThesisRegistrations");
+                });
+
             modelBuilder.Entity("Core.Domain.Entities.ThesisReview", b =>
                 {
                     b.Property<int>("Id")
@@ -1196,11 +1244,15 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("Core.Domain.Entities.Identity.Permission", "Permission")
                         .WithMany()
-                        .HasForeignKey("PermissionId");
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Core.Domain.Entities.Identity.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Permission");
 
@@ -1378,6 +1430,21 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Thesis");
                 });
 
+            modelBuilder.Entity("Core.Domain.Entities.ThesisRegistration", b =>
+                {
+                    b.HasOne("Core.Domain.Entities.Group", "Group")
+                        .WithOne("ThesisRegistration")
+                        .HasForeignKey("Core.Domain.Entities.ThesisRegistration", "GroupId");
+
+                    b.HasOne("Core.Domain.Entities.Thesis", "Thesis")
+                        .WithOne("ThesisRegistration")
+                        .HasForeignKey("Core.Domain.Entities.ThesisRegistration", "ThesisId");
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Thesis");
+                });
+
             modelBuilder.Entity("Core.Domain.Entities.ThesisReview", b =>
                 {
                     b.HasOne("Core.Domain.Entities.Teacher", "Teacher")
@@ -1391,6 +1458,11 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Teacher");
 
                     b.Navigation("Thesis");
+                });
+
+            modelBuilder.Entity("Core.Domain.Entities.Group", b =>
+                {
+                    b.Navigation("ThesisRegistration");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Identity.User", b =>
@@ -1410,6 +1482,11 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Dean_Faculty");
 
                     b.Navigation("HeadDepartment_Department");
+                });
+
+            modelBuilder.Entity("Core.Domain.Entities.Thesis", b =>
+                {
+                    b.Navigation("ThesisRegistration");
                 });
 #pragma warning restore 612, 618
         }

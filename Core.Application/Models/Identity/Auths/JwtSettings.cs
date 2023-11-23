@@ -1,4 +1,4 @@
-﻿namespace Core.Application.Models.Identity
+﻿namespace Core.Application.Models.Identity.Auths
 {
     public class JwtSettings
     {

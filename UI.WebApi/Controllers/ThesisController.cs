@@ -9,12 +9,12 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
     [Route("api/Thesis")]
     [ApiController]
-    [Authorize]
     public class ThesisController : Controller
     {
         private readonly IMediator _mediator;
@@ -33,6 +33,7 @@ namespace UI.WebApi.Controllers
         /// 
         /// </remarks>
         [HttpGet]
+        [Permission("Thesis.View")]
         public async Task<ActionResult<List<ThesisDto>>> Get([FromQuery] ListThesisRequest request)
         {
             var response = await _mediator.Send(request);
@@ -48,6 +49,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
+        [Permission("Thesis.View")]
         public async Task<ActionResult<ThesisDto>> Get([FromQuery] DetailThesisRequest request)
         {
             var response = await _mediator.Send(request);
@@ -64,6 +66,7 @@ namespace UI.WebApi.Controllers
         /// - internalCode: string, required, max(190), unique
         /// </remarks>
         [HttpPost]
+        [Permission("Thesis.Create")]
         public async Task<ActionResult<ThesisDto>> Post([FromBody] CreateThesisDto request)
         {
             var command = new CreateThesisRequest { createThesisDto = request };
@@ -82,6 +85,7 @@ namespace UI.WebApi.Controllers
         /// - internalCode: string, required, max(190), unique
         /// </remarks>
         [HttpPut]
+        [Permission("Thesis.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateThesisDto request)
         {
             var command = new UpdateThesisRequest { updateThesisDto = request };
@@ -98,6 +102,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
+        [Permission("Thesis.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Thesis> request)
         {
             try
@@ -134,6 +139,7 @@ namespace UI.WebApi.Controllers
         /// 
         /// </remarks>
         [HttpPut("ChangeStatus")]
+        [Permission("Thesis.Change")]
         public async Task<ActionResult> ChangeStatus([FromBody] ChangeStatusThesisDto request)
         {
             var command = new ChangeStatusThesisRequest { changeStatusThesis = request };

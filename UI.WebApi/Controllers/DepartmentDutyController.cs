@@ -6,16 +6,17 @@ using Core.Application.Features.DepartmentDuties.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Net;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
     [Route("api/departmentDuty")]
     [ApiController]
-    //[Authorize]
     public class DepartmentDutyController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -33,6 +34,7 @@ namespace UI.WebApi.Controllers
         /// - departmentId/teacherId: required
         /// </remarks>
         [HttpGet]
+        [Permission("DepartmentDuty.View")]
         public async Task<ActionResult> Get([FromQuery] ListDepartmentDutyRequest request)
         {
             var response = await _mediator.Send(request);
@@ -48,6 +50,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
+        [Permission("DepartmentDuty.View")]
         public async Task<ActionResult> Get([FromQuery] DetailDepartmentDutyRequest request)
         {
             var response = await _mediator.Send(request);
@@ -68,6 +71,7 @@ namespace UI.WebApi.Controllers
         /// - File: string, must be a valid file name (Ex: filename.extension)
         /// </remarks>
         [HttpPost]
+        [Permission("DepartmentDuty.Create")]
         public async Task<ActionResult> Post([FromBody] CreateDepartmentDutyDto request)
         {
             var command = new CreateDepartmentDutyRequest { CreateDepartmentDutyDto = request };
@@ -103,6 +107,7 @@ namespace UI.WebApi.Controllers
         /// - File: string, must be a valid file name (Ex: filename.extension)
         /// </remarks>
         [HttpPut]
+        [Permission("DepartmentDuty.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateDepartmentDutyDto request)
         {
             var command = new UpdateDepartmentDutyRequest { UpdateDepartmentDutyDto = request };
@@ -119,6 +124,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
+        [Permission("DepartmentDuty.Delete")]
         public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<DepartmentDuty> request)
         {
             try

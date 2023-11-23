@@ -1,7 +1,9 @@
 ﻿using Core.Application.DTOs.Group;
 using Core.Application.Features.Groups.Requests.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
@@ -24,6 +26,7 @@ namespace UI.WebApi.Controllers
         /// - facultyId: required
         /// </remarks>
         [HttpGet]
+        [Permission("Group.View")]
         public async Task<ActionResult<List<GroupDto>>> Get([FromQuery] ListGroupRequest request)
         {
             var response = await _mediator.Send(request);
@@ -39,6 +42,7 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
+        [Permission("Group.View")]
         public async Task<ActionResult> Get([FromQuery] DetailGroupRequest request)
         {
             var response = await _mediator.Send(request);

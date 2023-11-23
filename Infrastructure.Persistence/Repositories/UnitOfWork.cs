@@ -55,9 +55,13 @@ namespace Infrastructure.Persistence.Repositories
             }
             else
             {
-
                 return await _dbContext.SaveChangesAsync("");
             }
+        }
+
+        public async Task<int> Save()
+        {
+            return await _dbContext.SaveChangesAsync("SKIP");
         }
 
 

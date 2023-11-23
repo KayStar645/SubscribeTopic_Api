@@ -43,31 +43,9 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
             {
                 var query = _unitOfWork.Repository<Thesis>().GetByIdInclude(request.id);
 
-                if (request.isAllDetail)
+                if (request.isAllDetail == true || request.isGetIssuer == true)
                 {
                     query = _unitOfWork.Repository<Thesis>().AddInclude(query, x => x.LecturerThesis);
-                }
-                else
-                {
-                    if (request.isGetIssuer == true)
-                    {
-                        query = _unitOfWork.Repository<Thesis>().AddInclude(query, x => x.LecturerThesis);
-                    }
-
-                    if (request.isGetThesisInstructions == true)
-                    {
-                        query = query.Include(x => x.ThesisInstructions);
-                    }
-
-                    if (request.isGetThesisReviews == true)
-                    {
-                        query = query.Include(x => x.ThesisReviews);
-                    }
-
-                    if (request.isGetThesisMajors == true)
-                    {
-                        query = query.Include(x => x.ThesisMajors);
-                    }    
                 }
 
                 var findThesis = await query.SingleAsync();

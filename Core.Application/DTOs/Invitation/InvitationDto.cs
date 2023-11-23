@@ -1,15 +1,16 @@
 ﻿using Core.Application.DTOs.Group;
 using Core.Application.DTOs.StudentJoin;
+using KLTN.Core.Application.DTOs.Common;
 
 namespace Core.Application.DTOs.Invitation
 {
-    public class InvitationDto
+    public class InvitationDto : BaseDto
     {
         public string? Message { get; set; }
 
         public DateTime? TimeSent { get; set; }
 
-        public bool? Status { get; set; }
+        public string? Status { get; set; }
 
         public int? GroupId { get; set; }
 

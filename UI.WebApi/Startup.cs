@@ -2,14 +2,17 @@
 using Autofac;
 using Core.Application;
 using Core.Application.Features.Teachers.Requests.Commands;
+using Core.Domain;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Sieve;
 using System.Reflection;
 using System.Text;
+using UI.WebApi.Middleware;
 
 namespace UI.WebApi
 {
@@ -26,7 +29,9 @@ namespace UI.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-        //services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+            //services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -43,14 +48,21 @@ namespace UI.WebApi
                     };
                 });
 
+            services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
+            services.AddAuthorization(options =>
+            {
+                options.AddPermissionPoliciesFromAttributes(Assembly.GetExecutingAssembly());
+            });
 
-            services.AddAuthorization();
+
+
 
 
             services.AddHttpContextAccessor();
             AddSwaggerDoc(services);
 
             services.ConfigureApplicationServices();
+            services.ConfigureDomainServices(_configuration);
             services.ConfigureSieveServices(_configuration);
             services.ConfigurePersistenceServices(_configuration);
 
@@ -82,22 +94,22 @@ namespace UI.WebApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
 
-            app.UseMiddleware<ExceptionMiddleware>();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SubscribeTopic.Api v1"));
+            }
 
             app.UseAuthentication();
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SubscribeTopic.Api v1"));
-
             app.UseHttpsRedirection();
+
+            app.UseCors("CorsPolicy");
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseMiddleware<ExceptionMiddleware>();
 
-            app.UseCors("CorsPolicy");
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -153,6 +165,8 @@ namespace UI.WebApi
                 });
 
             });
+
+            services.AddTransient<ExceptionMiddleware>();
         }
     }
 }

@@ -1,12 +1,17 @@
 ﻿using AutoMapper;
 using Core.Application.Constants;
 using Core.Application.Contracts.Identity;
+using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Faculty;
+using Core.Application.DTOs.Student;
+using Core.Application.DTOs.Teacher;
 using Core.Application.Interfaces.Repositories;
-using Core.Application.Models.Identity;
+using Core.Application.Models.Identity.Auths;
 using Core.Application.Models.Identity.Validators;
+using Core.Application.Models.Identity.ViewModels;
 using Core.Application.Responses;
 using Core.Application.Transform;
+using Core.Domain.Entities;
 using Core.Domain.Entities.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -14,22 +19,53 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 
 namespace Core.Application.Services.Identity
 {
     public class AuthService : IAuthService
     {
         private readonly IUserRepository _userRepo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public AuthService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper)
+        public AuthService(IUserRepository userRepository, IUnitOfWork unitOfWork,
+            IConfiguration configuration, IMapper mapper)
         {
             _userRepo = userRepository;
+            _unitOfWork = unitOfWork;
             _configuration = configuration;
             _mapper = mapper;
-        }    
+        }
+
+        public async Task<Result<List<UserVM>>> GetList()
+        {
+            var users = await _userRepo.Get();
+
+            var mapUsers = _mapper.Map<List<UserVM>>(users);
+
+            foreach(var user in mapUsers)
+            {
+                if(user.Type == User.TYPE_STUDENT)
+                {
+                    var student = await _unitOfWork.Repository<Student>()
+                                        .FirstOrDefaultAsync(x => x.InternalCode == user.UserName);
+                    user.Student = _mapper.Map<StudentDto>(student);
+                }
+                else if(user.Type == User.TYPE_TEACHER)
+                {
+                    var teacher = await _unitOfWork.Repository<Teacher>()
+                                        .FirstOrDefaultAsync(x => x.InternalCode == user.UserName);
+
+                    user.Teacher = _mapper.Map<TeacherDto>(teacher);
+                }
+            }
+
+            return Result<List<UserVM>>.Success(mapUsers, (int)HttpStatusCode.OK);
+        }
 
         public async Task<Result<AuthResponse>> Login(AuthRequest request)
         {
@@ -120,11 +156,19 @@ namespace Core.Application.Services.Identity
             var permissions = await _userRepo.GetPermissionsAsync(user);
             var result = await _userRepo.GetFacultyAsync(user);
             var facultyDto = _mapper.Map<FacultyDto>(result.faculty);
+
+            var customer = await _userRepo.GetCustomerByUserName(user.UserName, result.type);
             string type = "";
             if (result.type == 0)
+            {
                 type = CLAIMS_VALUES.TYPE_STUDENT;
+                customer = _mapper.Map<StudentDto>(customer);
+            }    
             else if (result.type == 1)
+            {
                 type = CLAIMS_VALUES.TYPE_TEACHER;
+                customer = _mapper.Map<TeacherDto>(customer);
+            }
 
             var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role.Name));
             var permissionClaims = permissions.Select(permission => new Claim(CONSTANT_CLAIM_TYPES.Permission, permission.Name));
@@ -134,7 +178,15 @@ namespace Core.Application.Services.Identity
                 new Claim(CONSTANT_CLAIM_TYPES.Uid, user.Id.ToString()),
                 new Claim(CONSTANT_CLAIM_TYPES.UserName, user.UserName),
                 new Claim(CONSTANT_CLAIM_TYPES.Type, type),
-                new Claim(CONSTANT_CLAIM_TYPES.Faculty, JsonSerializer.Serialize(facultyDto))
+                new Claim(CONSTANT_CLAIM_TYPES.FacultyId, facultyDto?.Id?.ToString()),
+                new Claim(CONSTANT_CLAIM_TYPES.Customer, JsonSerializer.Serialize(customer,
+                                    new JsonSerializerOptions {
+                                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+                                    })),
+                new Claim(CONSTANT_CLAIM_TYPES.Faculty, JsonSerializer.Serialize(facultyDto, 
+                                    new JsonSerializerOptions { 
+                                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) 
+                                    })),
             }
             .Union(permissionClaims)
             .Union(roleClaims);

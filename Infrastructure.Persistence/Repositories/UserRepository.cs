@@ -17,12 +17,17 @@ namespace Infrastructure.Persistence.Repositories
             _passwordHasher = passwordHasher;
         }
 
+        public async Task<List<User>> Get()
+        {
+            return await _dbContext.Users.ToListAsync();
+        }
+
         public async Task<bool> CreateAsync(User user)
         {
             var hashedPassword = _passwordHasher.HashPassword(user, user.Password);
             user.Password = hashedPassword;
 
-            _dbContext.Set<User>().Add(user);
+            await _dbContext.Set<User>().AddAsync(user);
 
             try
             {
@@ -66,30 +71,34 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<List<Permission>> GetPermissionsAsync(User user)
         {
-            List<Permission> permissions = new List<Permission>();
-
-            var permissionsWithUser = await _dbContext.Set<UserPermission>()
+            var permissions = await _dbContext.Set<UserPermission>()
                                         .Where(x => x.UserId == user.Id)
                                         .Select(x => x.Permission)
                                         .Distinct()
                                         .ToListAsync();
 
             var userRoles = await _dbContext.Set<UserRole>()
-                                        .Where(ur => ur.Role != null)
+                                        .Where(ur => ur.Role != null && ur.UserId == user.Id)
                                         .ToListAsync();
 
-            var permissionsWithRoles = userRoles.SelectMany(ur => ur.Role.RolePermissions)
-                                        .Select(rp => rp.Permission)
-                                        .Distinct()
-                                        .ToList();
+            foreach (var userRole in userRoles)
+            {
+                var permissionsWithRole = await _dbContext.RolePermissions
+                                            .Include(x => x.Permission)
+                                            .Where(x => x.RoleId == userRole.RoleId)
+                                            .Select(x => x.Permission)
+                                            .ToListAsync();
+                permissions = permissions.Union(permissionsWithRole).ToList();
+            }
 
-            return permissionsWithUser.Concat(permissionsWithRoles).ToList();
+            return permissions;
         }
 
         public async Task<List<Role>> GetRolesAsync(User user)
         {
 #pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
             return await _dbContext.Set<UserRole>()
+                                    .Include(x => x.Role)
                                     .Where(x => x.UserId == user.Id)
                                     .Select(x => x.Role)
                                     .ToListAsync();
@@ -108,6 +117,19 @@ namespace Infrastructure.Persistence.Repositories
             }
 
             return false;
+        }
+
+        public async Task<object> GetCustomerByUserName(string userName, int type)
+        {
+            if(type == 0)
+            {
+                return await _dbContext.Students.Where(x => x.InternalCode == userName).FirstOrDefaultAsync();
+            }   
+            else if(type == 1)
+            {
+                return await _dbContext.Teachers.Where(x => x.InternalCode == userName).FirstOrDefaultAsync();
+            }
+            return null;
         }
     }
 }

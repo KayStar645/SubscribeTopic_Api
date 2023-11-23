@@ -8,5 +8,6 @@ namespace Core.Application.DTOs.RegistrationPeriod
         public DateTime? TimeStart { get; set; }
         public DateTime? TimeEnd { get; set; }
         public int? FacultyId { get; set; }
+        public bool IsActive { get; set; }
     }
 }
