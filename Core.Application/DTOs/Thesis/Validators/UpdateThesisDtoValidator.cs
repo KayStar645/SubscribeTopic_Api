@@ -62,7 +62,7 @@ namespace Core.Application.DTOs.Thesis.Validators
 
                 return true;
             })
-            .WithMessage(ValidatorTransform.Exists("thesisInstructions"));
+            .WithMessage(ValidatorTransform.NotExistsValueInTable("thesisInstructions", "teacher"));
 
             RuleFor(x => x.ThesisReviewsId)
             .MustAsync(async (reviewsId, token) =>
@@ -82,7 +82,7 @@ namespace Core.Application.DTOs.Thesis.Validators
 
                 return true;
             })
-            .WithMessage(ValidatorTransform.Exists("thesisReviews"));
+            .WithMessage(ValidatorTransform.NotExistsValueInTable("thesisReviews", "teacher"));
 
             RuleFor(x => x.ThesisMajorsId)
             .MustAsync(async (majorsId, token) =>
@@ -102,7 +102,7 @@ namespace Core.Application.DTOs.Thesis.Validators
 
                 return true;
             })
-            .WithMessage(ValidatorTransform.Exists("thesisMajors"));
+            .WithMessage(ValidatorTransform.NotExistsValueInTable("thesisMajors", "major"));
         }
     }
 }
