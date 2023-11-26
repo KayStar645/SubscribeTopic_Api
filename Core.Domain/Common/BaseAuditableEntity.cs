@@ -7,14 +7,14 @@ namespace Core.Domain.Common
     public abstract class BaseAuditableEntity : BaseEntity, IAuditableEntity
     {
 
-        [Sieve(CanFilter = false, CanSort = true)]
+        [Sieve(CanFilter = true, CanSort = true)]
         [Column(TypeName = "datetime")]
         public DateTime? DateCreated { get; set; }
 
         public string? CreatedBy { get; set; }
 
 
-        [Sieve(CanFilter = false, CanSort = true)]
+        [Sieve(CanFilter = true, CanSort = true)]
         [Column(TypeName = "datetime")]
         public DateTime? LastModifiedDate { get; set; }
 

@@ -7,6 +7,7 @@ namespace Core.Application.DTOs.Notification
     {
         public int? FacultyId { get; set; }
         public string? Name { get; set; }
+        public DateTime? LastModifiedDate { get; set; }
         public string? Describe { get; set; }
         public string? Content { get; set; }
         public string? Image { get; set; }
