@@ -48,11 +48,11 @@ namespace Core.Application.Features.Feedbacks.Handlers.Queries
             query = query.Where(x => x.ThesisId == request.thesisId);
 
             query = _unitOfWork.Repository<Feedback>().AddInclude(query, x => x.Commenter);
-
-            int totalCount = await query.CountAsync();
             // End Query
 
             query = _sieveProcessor.Apply(sieve, query);
+
+            int totalCount = await query.CountAsync();
 
             var groups = await query.ToListAsync();
 

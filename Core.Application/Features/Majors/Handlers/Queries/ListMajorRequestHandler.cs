@@ -63,9 +63,9 @@ namespace Core.Application.Features.Majors.Handlers.Queries
                 }
             }
 
-            int totalCount = await query.CountAsync();
-
             query = _sieveProcessor.Apply(sieve, query);
+
+            int totalCount = await query.CountAsync();
 
             var majors = await query.ToListAsync();
 

@@ -54,9 +54,9 @@ namespace Core.Application.Features.RegistrationPeriods.Handlers.Queries
                 }
             }
 
-            int totalCount = await query.CountAsync();
-
             query = _sieveProcessor.Apply(sieve, query);
+
+            int totalCount = await query.CountAsync();
 
             var periods = await query.ToListAsync();
 

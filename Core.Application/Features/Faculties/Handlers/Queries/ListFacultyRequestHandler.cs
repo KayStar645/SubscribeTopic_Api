@@ -54,9 +54,9 @@ namespace Core.Application.Features.Faculties.Handlers.Queries
                 }
             }
 
-            int totalCount = await query.CountAsync();
-
             query = _sieveProcessor.Apply(sieve, query);
+
+            int totalCount = await query.CountAsync();
 
             var faculties = await query.ToListAsync();
 

@@ -71,9 +71,10 @@ namespace Core.Application.Features.Departments.Handlers.Queries
                     query = _unitOfWork.Repository<Department>().AddInclude(query, x => x.HeadDepartment_Teacher);
                 }
             }
-            int totalCount = await query.CountAsync();
 
             query = _sieveProcessor.Apply(sieve, query);
+
+            int totalCount = await query.CountAsync();
 
             var departments = await query.ToListAsync();
 

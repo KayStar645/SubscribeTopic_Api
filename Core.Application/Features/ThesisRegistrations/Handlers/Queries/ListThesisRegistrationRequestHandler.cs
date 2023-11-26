@@ -59,9 +59,9 @@ namespace Core.Application.Features.ThesisRegistrationRegistrations.Handlers.Que
                 query = query.Include(x => x.Group);
             }
 
-            int totalCount = await query.CountAsync();
-
             query = _sieveProcessor.Apply(sieve, query);
+
+            int totalCount = await query.CountAsync();
 
             var ThesisRegistrations = await query.ToListAsync();
 

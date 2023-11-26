@@ -61,9 +61,9 @@ namespace Core.Application.Features.Invitations.Handlers.Queries
                 }
             }
 
-            int totalCount = await query.CountAsync();
-
             query = _sieveProcessor.Apply(sieve, query);
+
+            int totalCount = await query.CountAsync();
 
             var invitations = await query.ToListAsync();
 

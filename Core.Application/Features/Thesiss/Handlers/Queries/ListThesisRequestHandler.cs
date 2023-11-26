@@ -57,9 +57,9 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
                 query = _unitOfWork.Repository<Thesis>().AddInclude(query, x => x.LecturerThesis);
             }
 
-            int totalCount = await query.CountAsync();
-
             query = _sieveProcessor.Apply(sieve, query);
+
+            int totalCount = await query.CountAsync();
 
             var thesiss = await query.ToListAsync();
 
