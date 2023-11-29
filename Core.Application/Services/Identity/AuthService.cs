@@ -62,6 +62,12 @@ namespace Core.Application.Services.Identity
 
                     user.Teacher = _mapper.Map<TeacherDto>(teacher);
                 }
+                var mapUser = _mapper.Map<User>(user);
+                var roles = await _userRepo.GetRolesAsync(mapUser);
+                if(roles != null)
+                {
+                    user.Roles = roles.Select(x => x.Name).ToList();
+                }    
             }
 
             return Result<List<UserVM>>.Success(mapUsers, (int)HttpStatusCode.OK);
