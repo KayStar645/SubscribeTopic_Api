@@ -15,5 +15,7 @@ namespace Core.Application.Models.Identity.ViewModels
 
         public StudentDto? Student { get; set; }
 
+        public List<string>? Roles { get; set; }
+
     }
 }
