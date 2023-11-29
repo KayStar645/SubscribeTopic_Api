@@ -14,7 +14,7 @@ namespace Core.Application.Services.GoogleDrive
         private const string _folderId = "1T12wTE6cGjqOBJ2pTGo3vxGfXT3mELdq";
         private const string _path = "https://drive.google.com/uc?id=";
 
-        public async Task<Result<string>> UploadFilesToGoogleDrive(UploadRequest pRequest)
+        public async Task<Result<UploadResponse>> UploadFilesToGoogleDrive(UploadRequest pRequest)
         {
             GoogleCredential credential;
 
@@ -32,11 +32,11 @@ namespace Core.Application.Services.GoogleDrive
                 // Tạo thư mục trước khi lưu tệp tin
                 var folderId = _folderId;
 
-                string[] folders = pRequest.FolderName.Split("/");
-                foreach(string name in folders)
+                string[] folders = pRequest.FileName.Split("/");
+                for (int i = 0; i < folders.Length - 1; i++)
                 {
                     var existingFolderQuery = service.Files.List();
-                    existingFolderQuery.Q = $"name='{name}' and '{folderId}' in parents";
+                    existingFolderQuery.Q = $"name='{folders[i]}' and '{folderId}' in parents";
                     existingFolderQuery.Fields = "files(id, name)";
                     var existingFolders = existingFolderQuery.Execute().Files;
 
@@ -48,7 +48,7 @@ namespace Core.Application.Services.GoogleDrive
                     {
                         var folderMetadata = new Google.Apis.Drive.v3.Data.File()
                         {
-                            Name = name,
+                            Name = folders[i],
                             MimeType = "application/vnd.google-apps.folder",
                             Parents = new List<string> { folderId },
                         };
@@ -69,30 +69,36 @@ namespace Core.Application.Services.GoogleDrive
 
                 if (existingFiles != null && existingFiles.Count > 0)
                 {
-                    return Result<string>.Failure($"File có tên '{pRequest.FileName + fileExtension}' đã tồn tại!",
+                    return Result<UploadResponse>.Failure($"File có tên '{pRequest.FileName + fileExtension}' đã tồn tại!",
                         (int)HttpStatusCode.BadRequest);
                 }
                 else
                 {
                     var fileMetaData = new Google.Apis.Drive.v3.Data.File()
                     {
-                        Name = pRequest.FileName + fileExtension,
+                        Name = folders[folders.Length - 1] + fileExtension,
                         Parents = new List<string> { folderId },
                     };
 
                     using (var stream2 = new MemoryStream(new WebClient().DownloadData(pRequest.FilePath)))
                     {
                         FilesResource.CreateMediaUpload request = service.Files.Create(fileMetaData, stream2, "");
-                        request.Fields = "id";
+                        request.Fields = "id,size";
                         request.Upload();
                         var uploadFile = request.ResponseBody;
 
                         // Xây dựng đường dẫn đầy đủ
                         string fileId = uploadFile.Id;
                         string downloadUrl = $"{_path}{fileId}";
-                        string result = _path + pRequest.FolderName + pRequest.FileName + fileExtension;
 
-                        return Result<string>.Success(downloadUrl, (int)HttpStatusCode.Created);
+                        var result = new UploadResponse
+                        {
+                            Path = downloadUrl,
+                            Type = fileExtension.Substring(1),
+                            SizeInBytes = uploadFile.Size
+                        };
+
+                        return Result<UploadResponse>.Success(result, (int)HttpStatusCode.Created);
                     }
                 }
             }

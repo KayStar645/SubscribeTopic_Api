@@ -5,6 +5,6 @@ namespace Core.Application.Interfaces.Services
 {
     public interface IGoogleDriveService
     {
-        Task<Result<string>> UploadFilesToGoogleDrive(UploadRequest pRequest);
+        Task<Result<UploadResponse>> UploadFilesToGoogleDrive(UploadRequest pRequest);
     }
 }
