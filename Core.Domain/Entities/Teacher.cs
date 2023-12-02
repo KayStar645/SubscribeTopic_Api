@@ -82,6 +82,10 @@ namespace Core.Domain.Entities
         [NotMapped]
         public ICollection<Feedback> Feedbacks { get; set; } = new HashSet<Feedback>();
 
+        // Ra những công việc nào
+        [NotMapped]
+        public ICollection<Job> Jobs { get; set; } = new HashSet<Job>();
+
         #endregion
 
 
