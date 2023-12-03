@@ -18,7 +18,7 @@ namespace UI.WebApi.Controllers
 
         [HttpPost()]
         [Permission("GoogleDrive.Upload")]
-        public async Task<ActionResult> UploadImage1([FromQuery] UploadRequest pRequest)
+        public async Task<ActionResult> UploadFile([FromQuery] UploadRequest pRequest)
         {
             var response = await _googleDriveService.UploadFilesToGoogleDrive(pRequest);
 

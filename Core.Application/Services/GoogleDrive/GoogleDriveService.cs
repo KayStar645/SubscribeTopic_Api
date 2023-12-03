@@ -4,6 +4,7 @@ using Core.Application.Responses;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
+using Microsoft.AspNetCore.Http;
 using System.Net;
 
 namespace Core.Application.Services.GoogleDrive
@@ -13,6 +14,7 @@ namespace Core.Application.Services.GoogleDrive
         private const string _credentialsPath = "../Core.Application/Services/GoogleDrive/client_secret.json";
         private const string _folderId = "1T12wTE6cGjqOBJ2pTGo3vxGfXT3mELdq";
         private const string _path = "https://drive.google.com/uc?id=";
+
 
         public async Task<Result<UploadResponse>> UploadFilesToGoogleDrive(UploadRequest pRequest)
         {
@@ -61,11 +63,12 @@ namespace Core.Application.Services.GoogleDrive
                 }
 
                 // Kiểm tra xem tệp tin đã tồn tại chưa
-                string fileExtension = Path.GetExtension(new Uri(pRequest.FilePath).AbsolutePath);
+                string fileExtension = Path.GetExtension(pRequest.File.FileName);
                 var existingFileQuery = service.Files.List();
                 existingFileQuery.Q = $"name='{pRequest.FileName + fileExtension}' and '{folderId}' in parents";
                 existingFileQuery.Fields = "files(id, name)";
                 var existingFiles = existingFileQuery.Execute().Files;
+
 
                 if (existingFiles != null && existingFiles.Count > 0)
                 {
@@ -80,8 +83,11 @@ namespace Core.Application.Services.GoogleDrive
                         Parents = new List<string> { folderId },
                     };
 
-                    using (var stream2 = new MemoryStream(new WebClient().DownloadData(pRequest.FilePath)))
+                    using (var stream2 = new MemoryStream())
                     {
+                        pRequest.File.OpenReadStream().CopyTo(stream2);
+                        stream2.Position = 0;
+
                         FilesResource.CreateMediaUpload request = service.Files.Create(fileMetaData, stream2, "");
                         request.Fields = "id,size";
                         request.Upload();
@@ -100,6 +106,7 @@ namespace Core.Application.Services.GoogleDrive
 
                         return Result<UploadResponse>.Success(result, (int)HttpStatusCode.Created);
                     }
+
                 }
             }
         }
