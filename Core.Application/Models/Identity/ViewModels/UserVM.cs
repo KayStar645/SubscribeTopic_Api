@@ -1,5 +1,6 @@
 ﻿using Core.Application.DTOs.Student;
 using Core.Application.DTOs.Teacher;
+using Core.Application.Models.Identity.Roles;
 
 namespace Core.Application.Models.Identity.ViewModels
 {
@@ -15,7 +16,7 @@ namespace Core.Application.Models.Identity.ViewModels
 
         public StudentDto? Student { get; set; }
 
-        public List<string>? Roles { get; set; }
+        public List<RoleResult>? Roles { get; set; }
 
     }
 }

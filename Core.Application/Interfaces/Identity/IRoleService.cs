@@ -16,7 +16,7 @@ namespace Core.Application.Interfaces.Identity
 
         Task DeleteAsync(int pId);
 
-        Task<Result<RoleResult>> AssignRoles(AssignRoleRequest pRequest);
+        Task<Result<List<string>>> AssignRoles(AssignRoleRequest pRequest);
 
     }
 }

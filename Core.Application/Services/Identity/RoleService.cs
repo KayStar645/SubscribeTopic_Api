@@ -216,16 +216,46 @@ namespace Core.Application.Services.Identity
             }
         }
 
-        public async Task<Result<RoleResult>> AssignRoles(AssignRoleRequest pRequest)
+        public async Task<Result<List<string>>> AssignRoles(AssignRoleRequest pRequest)
         {
-            var result = await _unitOfWork.Repository<UserRole>().AddAsync(new UserRole
-            {
-                UserId = pRequest.UserId,
-                RoleId = pRequest.RoleId
-            });
-            await _unitOfWork.Save(new CancellationToken());
+            var currentRoles = await _unitOfWork.Repository<UserRole>()
+                                                .Query()
+                                                .Where(x => x.UserId == pRequest.UserId)
+                                                .Select(x => x.RoleId)
+                                                .ToListAsync();
 
-            return await GetDetail((int)result.RoleId);
+            var deleteRole = currentRoles.Cast<int>().Except(pRequest.RolesId).ToList();
+            var addRole = pRequest.RolesId.Except(currentRoles.Cast<int>()).ToList();
+
+            foreach (var role in deleteRole)
+            {
+                var result = await _unitOfWork.Repository<UserRole>()
+                            .FirstOrDefaultAsync(x => x.UserId == pRequest.UserId && x.RoleId == role);
+                await _unitOfWork.Repository<UserRole>().DeleteAsync(result);
+            }
+
+            foreach (var role in addRole)
+            {
+                await _unitOfWork.Repository<UserRole>().AddAsync(new UserRole
+                {
+                    UserId = pRequest.UserId,
+                    RoleId = role
+                });
+            }
+            await _unitOfWork.Save();
+
+            List<string> permission = new List<string>();
+            foreach(var role in pRequest.RolesId)
+            {
+                var per = await _unitOfWork.Repository<RolePermission>()
+                                           .Query()
+                                           .Include(x => x.Permission)
+                                           .Where(x => x.RoleId == role)
+                                           .Select(x => x.Permission.Name)
+                                           .ToListAsync();
+                permission = permission.Union(per).ToList();
+            }
+            return Result<List<string>>.Success(permission, (int)HttpStatusCode.OK);
         }
     }
 }

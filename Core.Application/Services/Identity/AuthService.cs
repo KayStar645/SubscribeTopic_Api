@@ -7,6 +7,7 @@ using Core.Application.DTOs.Student;
 using Core.Application.DTOs.Teacher;
 using Core.Application.Interfaces.Repositories;
 using Core.Application.Models.Identity.Auths;
+using Core.Application.Models.Identity.Roles;
 using Core.Application.Models.Identity.Validators;
 using Core.Application.Models.Identity.ViewModels;
 using Core.Application.Responses;
@@ -66,7 +67,7 @@ namespace Core.Application.Services.Identity
                 var roles = await _userRepo.GetRolesAsync(mapUser);
                 if(roles != null)
                 {
-                    user.Roles = roles.Select(x => x.Name).ToList();
+                    user.Roles = _mapper.Map<List<RoleResult>>(roles);
                 }    
             }
 
