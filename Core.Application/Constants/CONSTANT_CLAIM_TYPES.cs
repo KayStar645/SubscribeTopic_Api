@@ -21,6 +21,8 @@
     {
         public const string TYPE_TEACHER = "teacher";
 
+        public const string TYPE_ADMIN = "admin";
+
         public const string TYPE_STUDENT = "student";
 
     }    
