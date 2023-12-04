@@ -1,4 +1,5 @@
-﻿using Core.Application.DTOs.Faculty;
+﻿using Core.Application.DTOs.Common;
+using Core.Application.DTOs.Faculty;
 using KLTN.Core.Application.DTOs.Common;
 
 namespace Core.Application.DTOs.Notification
@@ -10,7 +11,7 @@ namespace Core.Application.DTOs.Notification
         public DateTime? LastModifiedDate { get; set; }
         public string? Describe { get; set; }
         public string? Content { get; set; }
-        public string? Image { get; set; }
+        public FileDto? Image { get; set; }
         public List<string>? Images { get; set; }
         public FacultyDto? Faculty { get; set; }
     }

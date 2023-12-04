@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Application.DTOs.Common;
 using Core.Application.DTOs.Department;
 using Core.Application.DTOs.DepartmentDuty;
 using Core.Application.DTOs.Faculty;
@@ -16,6 +17,7 @@ using Core.Application.DTOs.Teacher;
 using Core.Application.DTOs.Thesis;
 using Core.Application.DTOs.ThesisRegistration;
 using Core.Application.Features.Base.Requests.Queries;
+using Core.Application.Interfaces.Services;
 using Core.Application.Models.Identity.Roles;
 using Core.Application.Models.Identity.ViewModels;
 using Core.Domain.Entities;
@@ -26,8 +28,11 @@ namespace Core.Application.Profiles
 {
     public class MappingProfile : Profile
     {
-        public MappingProfile() 
+        private readonly IGoogleDriveService _googleDriveService;
+
+        public MappingProfile(IGoogleDriveService googleDriveService) 
         {
+            _googleDriveService = googleDriveService;
 
             CreateMap<string, List<string>>().ConvertUsing<StringToListTypeConverter>();
             CreateMap<List<string>, string>().ConvertUsing<ListToStringTypeConverter>();
@@ -63,9 +68,14 @@ namespace Core.Application.Profiles
             CreateMap<Student, UpdateStudentDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<NotificationDto>>().ReverseMap();
-            CreateMap<Notification, NotificationDto>().ReverseMap();
             CreateMap<Notification, CreateNotificationDto>().ReverseMap();
             CreateMap<Notification, UpdateNotificationDto>().ReverseMap();
+            //CreateMap<Notification, NotificationDto>().ReverseMap(); // Tại đây
+            CreateMap<Notification, NotificationDto>()
+                    .ForMember(dest => dest.Image, opt =>  opt.MapFrom(
+                        src => MapImageToDto(src.Image))
+                    );
+
 
             CreateMap<SieveModel, ListBaseRequest<RegistrationPeriodDto>>().ReverseMap();
             CreateMap<RegistrationPeriod, RegistrationPeriodDto>().ReverseMap();
@@ -142,6 +152,12 @@ namespace Core.Application.Profiles
 
                 return string.Join(",", source);
             }
+        }
+
+        private async Task<FileDto> MapImageToDto(string? imagePath)
+        {
+            var resullt =  await _googleDriveService.GetFileInfoFromGoogleDrive(imagePath);
+            return resullt.Data;
         }
 
 

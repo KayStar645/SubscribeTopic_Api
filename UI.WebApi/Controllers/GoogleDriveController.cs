@@ -16,11 +16,20 @@ namespace UI.WebApi.Controllers
             _googleDriveService = googleDriveService;
         }
 
-        [HttpPost()]
-        [Permission("GoogleDrive.Upload")]
+        [HttpPost]
+        //[Permission("GoogleDrive.Upload")]
         public async Task<ActionResult> UploadFile([FromQuery] UploadRequest pRequest)
         {
             var response = await _googleDriveService.UploadFilesToGoogleDrive(pRequest);
+
+            return StatusCode(response.Code, response);
+        }
+
+        [HttpGet]
+        //[Permission("GoogleDrive.GetFile")]
+        public async Task<ActionResult> GetFileDrive([FromQuery] string pFilePath)
+        {
+            var response = await _googleDriveService.GetFileInfoFromGoogleDrive(pFilePath);
 
             return StatusCode(response.Code, response);
         }
