@@ -41,32 +41,43 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
         {
             try
             {
-                var sieve = _mapper.Map<SieveModel>(request);
-
-                var query = _unitOfWork.Repository<Thesis>().GetAllInclude();                
-
+                var type = _httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Type)?.Value;
+                var userName = _httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.UserName)?.Value;
                 var facultyId = _httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.FacultyId)?.Value;
-                if(facultyId == null)
+
+                if(type != CLAIMS_VALUES.TYPE_STUDENT)
                 {
-                    throw new UnauthorizedAccessException(IdentityTranform.ForbiddenException());
-                }    
-
-
+                    throw new UnauthorizedException((int)HttpStatusCode.Forbidden);
+                }
                 // Lấy đợt đăng ký hiện tại
                 var period = await _unitOfWork.Repository<RegistrationPeriod>()
                                               .Query()
-                                              .Where(x => x.FacultyId == int.Parse(facultyId) && x.IsActive && 
+                                              .Where(x => x.FacultyId == int.Parse(facultyId) && x.IsActive &&
                                                      x.TimeStart <= DateTime.Now && DateTime.Now <= x.TimeEnd)
                                               .FirstOrDefaultAsync();
                 if (period == null)
                 {
-                    throw new UnauthorizedAccessException("Chưa tới thời gian đăng ký đề tài!");
+                    throw new UnauthorizedException((int)HttpStatusCode.Forbidden);
                 }
+
+                var sieve = _mapper.Map<SieveModel>(request);
+                var query = _unitOfWork.Repository<Thesis>().GetAllInclude();                
                 query = query.Where(x => x.Status == Thesis.STATUS_APPROVED);
 
-                // Kiểm tra số lượng thành viên nhóm
+                if(request.isAllDetail != true)
+                {
+                    // Kiểm tra số lượng thành viên nhóm
+                    var countMember = await _unitOfWork.Repository<StudentJoin>()
+                                                       .Query()
+                                                       .Where(x => x.RegistrationPeriodId == period.Id)
+                                                       .Include(x => x.Student)
+                                                       .Where(x => x.Student.InternalCode == userName)
+                                                       .Include(x => x.Group)
+                                                       .Select(x => x.Group.CountMember)
+                                                       .FirstOrDefaultAsync();
 
-                // Kiểm tra chuyên ngành phù hợp
+                    query = query.Where(x => x.MinQuantity <= countMember && countMember <= x.MaxQuantity);
+                }    
 
 
                 if (request.isAllDetail == true || request.isGetIssuer == true)
