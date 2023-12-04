@@ -1,8 +1,10 @@
-﻿using Core.Application.Contracts.Identity;
+﻿using AutoMapper;
+using Core.Application.Contracts.Identity;
 using Core.Application.Features.Base.Handlers.Commands;
 using Core.Application.Interfaces.Identity;
 using Core.Application.Interfaces.Services;
 using Core.Application.Models.Identity.Auths;
+using Core.Application.Profiles;
 using Core.Application.Services.GoogleDrive;
 using Core.Application.Services.Identity;
 using MediatR;
@@ -16,7 +18,19 @@ namespace Core.Application
     {
         public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services)
         {
+            //services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            var serviceProvider = services.BuildServiceProvider();
+            var mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddMaps(Assembly.GetExecutingAssembly());
+                cfg.ConstructServicesUsing(serviceProvider.GetRequiredService);
+            });
+
+            services.AddSingleton(mapperConfiguration.CreateMapper());
+
+
             //services.AddMediatR(Assembly.GetExecutingAssembly());
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));

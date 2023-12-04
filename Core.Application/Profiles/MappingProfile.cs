@@ -28,11 +28,21 @@ namespace Core.Application.Profiles
 {
     public class MappingProfile : Profile
     {
-        private readonly IGoogleDriveService _googleDriveService;
+        private IGoogleDriveService? _googleDriveService;
 
-        public MappingProfile(IGoogleDriveService googleDriveService) 
+        public IGoogleDriveService GoogleDriveService
+        {
+            get => _googleDriveService ?? throw new InvalidOperationException("GoogleDriveService has not been initialized.");
+            private set => _googleDriveService = value;
+        }
+
+        public void Initialize(IGoogleDriveService googleDriveService)
         {
             _googleDriveService = googleDriveService;
+        }
+
+        public MappingProfile() 
+        {
 
             CreateMap<string, List<string>>().ConvertUsing<StringToListTypeConverter>();
             CreateMap<List<string>, string>().ConvertUsing<ListToStringTypeConverter>();
@@ -75,6 +85,10 @@ namespace Core.Application.Profiles
                     .ForMember(dest => dest.Image, opt =>  opt.MapFrom(
                         src => MapImageToDto(src.Image))
                     );
+            CreateMap<Notification, NotificationDto>()
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => MapImageToDto(src.Image)))
+                .ReverseMap()
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => MapDtoToImage(src.Image)));
 
 
             CreateMap<SieveModel, ListBaseRequest<RegistrationPeriodDto>>().ReverseMap();
@@ -158,6 +172,11 @@ namespace Core.Application.Profiles
         {
             var resullt =  await _googleDriveService.GetFileInfoFromGoogleDrive(imagePath);
             return resullt.Data;
+        }
+
+        private string MapDtoToImage(FileDto imageDto)
+        {
+            return imageDto?.Path ?? "";
         }
 
 
