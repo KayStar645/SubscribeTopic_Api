@@ -99,6 +99,7 @@ namespace Core.Application.Services.GoogleDrive
 
                         var result = new UploadResponse
                         {
+                            Name = folders[folders.Length - 1],
                             Path = downloadUrl,
                             Type = fileExtension.Substring(1),
                             SizeInBytes = uploadFile.Size
