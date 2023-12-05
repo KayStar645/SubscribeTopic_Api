@@ -30,19 +30,10 @@ namespace Core.Application.Profiles
     {
         private IGoogleDriveService? _googleDriveService;
 
-        public IGoogleDriveService GoogleDriveService
-        {
-            get => _googleDriveService ?? throw new InvalidOperationException("GoogleDriveService has not been initialized.");
-            private set => _googleDriveService = value;
-        }
-
-        public void Initialize(IGoogleDriveService googleDriveService)
+        public MappingProfile(IGoogleDriveService googleDriveService) 
         {
             _googleDriveService = googleDriveService;
-        }
 
-        public MappingProfile() 
-        {
 
             CreateMap<string, List<string>>().ConvertUsing<StringToListTypeConverter>();
             CreateMap<List<string>, string>().ConvertUsing<ListToStringTypeConverter>();
@@ -82,13 +73,20 @@ namespace Core.Application.Profiles
             CreateMap<Notification, UpdateNotificationDto>().ReverseMap();
             //CreateMap<Notification, NotificationDto>().ReverseMap(); // Tại đây
             CreateMap<Notification, NotificationDto>()
-                    .ForMember(dest => dest.Image, opt =>  opt.MapFrom(
-                        src => MapImageToDto(src.Image))
-                    );
-            CreateMap<Notification, NotificationDto>()
-                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => MapImageToDto(src.Image)))
-                .ReverseMap()
-                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => MapDtoToImage(src.Image)));
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(
+                    src => MapImageStringToDto(src.Image))
+                )
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(
+                    src => MapImagesStringToList(src.Images))
+                );
+
+            CreateMap<NotificationDto, Notification>()
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(
+                    src => MapImageDtoToString(src.Image))
+                )
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(
+                    src => MapImagesListToString(src.Images))
+                );
 
 
             CreateMap<SieveModel, ListBaseRequest<RegistrationPeriodDto>>().ReverseMap();
@@ -168,15 +166,52 @@ namespace Core.Application.Profiles
             }
         }
 
-        private async Task<FileDto> MapImageToDto(string? imagePath)
+        private List<FileDto> MapImagesStringToList(string? imagesString)
         {
-            var resullt =  await _googleDriveService.GetFileInfoFromGoogleDrive(imagePath);
-            return resullt.Data;
+            if (string.IsNullOrEmpty(imagesString))
+            {
+                return new List<FileDto>();
+            }
+
+            var imagePaths = imagesString.Split(',');
+            var fileDtos = new List<FileDto>();
+
+            foreach (var imagePath in imagePaths)
+            {
+                var result = _googleDriveService.GetFileInfoFromGoogleDrive(imagePath).Result;
+                if (result.Data != null)
+                {
+                    fileDtos.Add(result.Data);
+                }
+            }
+
+            return fileDtos;
         }
 
-        private string MapDtoToImage(FileDto imageDto)
+        private string MapImagesListToString(List<FileDto>? imagesList)
         {
-            return imageDto?.Path ?? "";
+            if (imagesList == null || imagesList.Count == 0)
+            {
+                return null;
+            }
+
+            var imagePaths = imagesList.Select(fileDto => fileDto.Path);
+            return string.Join(",", imagePaths);
+        }
+
+        private FileDto MapImageStringToDto(string? imagePath)
+        {
+            if (string.IsNullOrEmpty(imagePath))
+            {
+                return new FileDto();
+            }
+            var result = _googleDriveService.GetFileInfoFromGoogleDrive(imagePath).Result;
+            return result.Data ?? new FileDto();
+        }
+
+        private string MapImageDtoToString(FileDto? imageDto)
+        {
+            return imageDto?.Path ?? string.Empty;
         }
 
 

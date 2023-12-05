@@ -12,7 +12,7 @@ namespace Core.Application.DTOs.Notification
         public string? Describe { get; set; }
         public string? Content { get; set; }
         public FileDto? Image { get; set; }
-        public List<string>? Images { get; set; }
+        public List<FileDto>? Images { get; set; }
         public FacultyDto? Faculty { get; set; }
     }
 }

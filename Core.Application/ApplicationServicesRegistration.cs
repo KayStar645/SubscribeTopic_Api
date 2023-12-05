@@ -19,16 +19,10 @@ namespace Core.Application
         public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services)
         {
             //services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
-            var serviceProvider = services.BuildServiceProvider();
-            var mapperConfiguration = new MapperConfiguration(cfg =>
+            services.AddSingleton(provider => new MapperConfiguration(cfg =>
             {
-                cfg.AddMaps(Assembly.GetExecutingAssembly());
-                cfg.ConstructServicesUsing(serviceProvider.GetRequiredService);
-            });
-
-            services.AddSingleton(mapperConfiguration.CreateMapper());
+                cfg.AddProfile(new MappingProfile(provider.GetService<IGoogleDriveService>()));
+            }).CreateMapper());
 
 
             //services.AddMediatR(Assembly.GetExecutingAssembly());
