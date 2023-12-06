@@ -44,5 +44,6 @@ namespace Infrastructure.Persistence
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<ThesisRegistration> ThesisRegistrations { get; set; }
         public DbSet<Job> Jobs { get; set; }
+        public DbSet<JobResults> JobResults { get; set; }
     }
 }

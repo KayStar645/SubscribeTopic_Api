@@ -44,7 +44,8 @@ namespace Core.Domain.Entities
 
 
         #region ICOLECTION
-
+        // Các kết quả công việc của công việc này
+        public ICollection<JobResults> JobResults = new HashSet<JobResults>();
         #endregion
 
 

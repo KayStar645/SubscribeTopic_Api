@@ -57,8 +57,10 @@ namespace Core.Domain.Entities
         #region ICOLECTION
 
         // Các đợt mà sinh viên tham gia
-        [NotMapped]
         public ICollection<StudentJoin> StudentJoins = new HashSet<StudentJoin>();
+
+        // Các kết quả công việc mà sinh viên nộp
+        public ICollection<JobResults> JobResults = new HashSet<JobResults>();
 
         #endregion
 

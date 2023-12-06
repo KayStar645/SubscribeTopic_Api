@@ -34,7 +34,6 @@ namespace Core.Domain.Entities
         #region ICOLECTION
 
         // Dành sách chuyên ngành trong ngành
-        [NotMapped]
         public ICollection<Major>? Majors { get; set; } = new HashSet<Major>();
 
         #endregion

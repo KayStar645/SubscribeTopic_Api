@@ -1,9 +1,10 @@
-﻿using Sieve.Attributes;
+﻿using Core.Domain.Common;
+using Sieve.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Domain.Entities
 {
-    internal class @struct
+    internal class @struct : BaseAuditableEntity
     {
         #region CONST
 

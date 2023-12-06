@@ -75,15 +75,12 @@ namespace Core.Domain.Entities
         #region ICOLECTION
 
         // Danh sách nhiệm vụ giảng viên nhận từ bộ môn
-        [NotMapped]
         public ICollection<DepartmentDuty> Departments { get; } = new HashSet<DepartmentDuty>();
 
         // Nhận xét và góp ý
-        [NotMapped]
         public ICollection<Feedback> Feedbacks { get; set; } = new HashSet<Feedback>();
 
         // Ra những công việc nào
-        [NotMapped]
         public ICollection<Job> Jobs { get; set; } = new HashSet<Job>();
 
         #endregion

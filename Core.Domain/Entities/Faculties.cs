@@ -43,23 +43,18 @@ namespace Core.Domain.Entities
         #region ICOLECTION
 
         // Bộ môn của khoa
-        [NotMapped]
         public ICollection<Department>? Departments { get; } = new HashSet<Department>();
 
         // Ngành của khoa
-        [NotMapped]
         public ICollection<Industry>? Industries { get; } = new HashSet<Industry>();
 
         // Thông báo của khoa
-        [NotMapped]
         public ICollection<Notification>? Notifications { get; } = new HashSet<Notification>();
 
         // Đợt đăng ký của khoa
-        [NotMapped]
         public ICollection<RegistrationPeriod>? RegistrationPeriods { get; } = new HashSet<RegistrationPeriod>();
 
         // Khoa giao nhiệm vụ
-        [NotMapped]
         public ICollection<FacultyDuty>? FacultyDuties { get; } = new HashSet<FacultyDuty>();
 
         #endregion
