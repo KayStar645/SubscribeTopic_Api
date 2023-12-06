@@ -93,23 +93,18 @@ namespace Core.Domain.Entities
         #endregion
 
         // Giảng viên hướng dẫn
-        [NotMapped]
         public ICollection<ThesisInstruction>? ThesisInstructions { get; set; } = new HashSet<ThesisInstruction>();
 
         // Giảng viên phản biện
-        [NotMapped]
         public ICollection<ThesisReview>? ThesisReviews { get; set; } = new HashSet<ThesisReview>();
 
         // Chuyên ngành
-        [NotMapped]
         public ICollection<ThesisMajor> ThesisMajors { get; set; } = new HashSet<ThesisMajor>();
 
         // Nhận xét và góp ý
-        [NotMapped]
         public ICollection<Feedback> Feedbacks { get; set; } = new HashSet<Feedback>();
 
         // Có những công việc nào
-        [NotMapped]
         public ICollection<Job> Jobs { get; set; } = new HashSet<Job>();
 
 

@@ -36,7 +36,6 @@ namespace Core.Domain.Entities
         #region ICOLECTION
 
         // Danh sách sinh viên trong chuyên ngành
-        [NotMapped]
         public ICollection<Student> Students { get; } = new HashSet<Student>();
 
         #endregion

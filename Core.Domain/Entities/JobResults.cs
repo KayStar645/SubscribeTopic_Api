@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Domain.Entities
 {
-    public class StudentJoin : BaseAuditableEntity
+    public class JobResults : BaseAuditableEntity
     {
         #region CONST
 
@@ -12,38 +12,30 @@ namespace Core.Domain.Entities
 
 
         #region PROPERTIES
+        public string? Files { get; set; }
 
-        [Sieve(CanFilter = true, CanSort = true)]
-        public double? Score { get; set; }
 
         #endregion
 
 
         #region FOREIGN KEY
-
-        // Sinh viên nào
+        // Ai là người nộp
         [Sieve(CanFilter = true, CanSort = true)]
         public int? StudentId { get; set; }
         [ForeignKey("StudentId")]
-        public Student? Student { get; set; }
-
-        // Đợt nào
         [Sieve(CanFilter = true, CanSort = true)]
-        public int? RegistrationPeriodId { get; set; }
-        [ForeignKey("RegistrationPeriodId")]
-        public RegistrationPeriod? RegistrationPeriod { get; set; }
+        public Student? StudentBy { get; set; }
 
-        // Nhóm nào
+        // Nộp kết quả cho công việc nào
         [Sieve(CanFilter = true, CanSort = true)]
-        public int? GroupId { get; set; }
-        public Group? Group { get; set; }
-
+        public int? JobId { get; set; }
+        [ForeignKey("JobId")]
+        [Sieve(CanFilter = true, CanSort = true)]
+        public Job? ForJob { get; set; }
         #endregion
 
 
         #region ICOLECTION
-
-        public ICollection<Invitation> Invitations = new HashSet<Invitation>();
 
         #endregion
 
