@@ -1,6 +1,4 @@
-﻿using Sieve.Attributes;
-
-namespace Core.Application.DTOs.Notification
+﻿namespace Core.Application.DTOs.Notification
 {
     public class CreateNotificationDto : INotificationDto
     {

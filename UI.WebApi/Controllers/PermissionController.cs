@@ -27,7 +27,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost]
-        [Permission("Permission.Create")]
+        //[Permission("Permission.Create")]
         public async Task<ActionResult<List<string>>> Post()
         {
             var permission = await _permissionService.GetList(Assembly.GetExecutingAssembly());

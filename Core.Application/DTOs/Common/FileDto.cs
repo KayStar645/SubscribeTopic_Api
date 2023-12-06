@@ -1,8 +1,9 @@
-﻿namespace Core.Application.Models.GoogleDrive
+﻿namespace Core.Application.DTOs.Common
 {
-    public class UploadResponse
+    public class FileDto
     {
         public string? Name { get; set; }
+
         public string? Path { get; set; }
 
         public string? Type { get; set; }

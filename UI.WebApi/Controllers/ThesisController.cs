@@ -147,5 +147,22 @@ namespace UI.WebApi.Controllers
 
             return StatusCode(response.Code, response);
         }
+
+        /// <summary>
+        /// Sinh viên lấy danh sách đề tài
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// -
+        /// 
+        /// </remarks>
+        [HttpGet("ListThesisRegistration")]
+        //[Permission("Thesis.Student.View")]
+        public async Task<ActionResult<List<ThesisDto>>> Get([FromQuery] ListThesisRegistrationRequest request)
+        {
+            var response = await _mediator.Send(request);
+
+            return StatusCode(response.Code, response);
+        }
     }
 }

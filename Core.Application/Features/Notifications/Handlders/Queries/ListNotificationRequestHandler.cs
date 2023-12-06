@@ -41,14 +41,7 @@ namespace Core.Application.Features.Notifications.Handlders.Queries
 
             var query = _unitOfWork.Repository<Notification>().GetAllInclude();
 
-            if(request.facultyId != null)
-            {
-                query = query.Where(x => x.FacultyId == request.facultyId);
-            }   
-            else
-            {
-                query = query.Where(x => x.FacultyId == null);
-            }
+            query = query.Where(x => x.FacultyId == request.facultyId);
 
             if (request.isAllDetail)
             {

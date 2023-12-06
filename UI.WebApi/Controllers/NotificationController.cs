@@ -6,7 +6,6 @@ using Core.Application.Features.Notifications.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using UI.WebApi.Middleware;
@@ -24,7 +23,7 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Lấy danh sách thông báo theo khoa hoặc không
+        /// Lấy danh sách thông báo theo khoa
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
