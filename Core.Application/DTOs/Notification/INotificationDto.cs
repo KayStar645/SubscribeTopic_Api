@@ -2,7 +2,6 @@
 {
     public interface INotificationDto
     {
-        public int? FacultyId { get; set; }
         public string? Name { get; set; }
         public string? Describe { get; set; }
         public string? Content { get; set; }

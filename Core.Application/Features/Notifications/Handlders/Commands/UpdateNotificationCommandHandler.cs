@@ -47,6 +47,8 @@ namespace Core.Application.Features.Notifications.Handlers.Commands
                 }
 
                 var notification = _mapper.Map<Notification>(request.updateNotificationDto);
+                notification.Faculty = findNotification.Faculty;
+                notification.FacultyId = findNotification.FacultyId;
                 findNotification.CopyPropertiesFrom(notification);
 
                 var newNotification = await _unitOfWork.Repository<Notification>().UpdateAsync(findNotification);

@@ -1,7 +1,6 @@
 ﻿using Core.Application.Contracts.Persistence;
 using Core.Application.Transform;
 using FluentValidation;
-using FacultyEntity = Core.Domain.Entities.Faculties;
 
 namespace Core.Application.DTOs.Notification.Validators
 {
@@ -12,14 +11,6 @@ namespace Core.Application.DTOs.Notification.Validators
         public NotificationDtoValidator(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-
-            RuleFor(x => x.FacultyId)
-                .MustAsync(async (id, token) =>
-                {
-                    var facultyEntityExists = await _unitOfWork.Repository<FacultyEntity>().GetByIdAsync(id);
-                    return facultyEntityExists != null || id == null;
-                })
-                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("dacultyId", "faculty"));
 
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage(ValidatorTransform.Required("name"))

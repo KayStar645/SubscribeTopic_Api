@@ -30,7 +30,7 @@ namespace Core.Application.Features.Notifications.Requests.Queries
                 {
                     var exists = await _unitOfWork.Repository<FacultyEntity>()
                         .FirstOrDefaultAsync(x => x.Id == facultyId);
-                    return exists != null || facultyId == null;
+                    return exists != null;
                 })
                 .WithMessage(id => ValidatorTransform.MustIn("facultyId"));
         }
