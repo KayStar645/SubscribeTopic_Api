@@ -74,7 +74,7 @@ namespace Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasFilter("[HeadDepartment_TeacherId] IS NOT NULL");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.DepartmentDuty", b =>
@@ -131,7 +131,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("DepartmentDuties");
+                    b.ToTable("DepartmentDuties", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Faculties", b =>
@@ -181,7 +181,7 @@ namespace Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasFilter("[Dean_TeacherId] IS NOT NULL");
 
-                    b.ToTable("Faculties");
+                    b.ToTable("Faculties", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.FacultyDuty", b =>
@@ -240,7 +240,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("FacultyId");
 
-                    b.ToTable("FacultyDuties");
+                    b.ToTable("FacultyDuties", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Feedback", b =>
@@ -281,7 +281,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ThesisId");
 
-                    b.ToTable("Feedbacks");
+                    b.ToTable("Feedbacks", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Group", b =>
@@ -322,7 +322,7 @@ namespace Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasFilter("[LeaderId] IS NOT NULL");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Identity.Permission", b =>
@@ -353,7 +353,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Permissions");
+                    b.ToTable("Permissions", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Identity.Role", b =>
@@ -387,7 +387,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Identity.RolePermission", b =>
@@ -425,7 +425,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RolePermissions");
+                    b.ToTable("RolePermissions", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Identity.User", b =>
@@ -462,7 +462,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Identity.UserPermission", b =>
@@ -500,7 +500,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserPermissions");
+                    b.ToTable("UserPermissions", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Identity.UserRole", b =>
@@ -538,7 +538,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Industry", b =>
@@ -577,7 +577,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("FacultyId");
 
-                    b.ToTable("Industries");
+                    b.ToTable("Industries", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Invitation", b =>
@@ -624,7 +624,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("StudentJoinId");
 
-                    b.ToTable("Invitations");
+                    b.ToTable("Invitations", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Job", b =>
@@ -674,7 +674,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ThesisId");
 
-                    b.ToTable("Jobs");
+                    b.ToTable("Jobs", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.JobResults", b =>
@@ -715,7 +715,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("JobResults");
+                    b.ToTable("JobResults", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Major", b =>
@@ -754,7 +754,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("IndustryId");
 
-                    b.ToTable("Majors");
+                    b.ToTable("Majors", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Notification", b =>
@@ -802,7 +802,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("FacultyId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.RegistrationPeriod", b =>
@@ -859,7 +859,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("SchoolYear", "Semester", "Phase", "FacultyId")
                         .HasDatabaseName("IX_SchoolYear_Semester_Phase_FacultyId");
 
-                    b.ToTable("RegistrationPeriods");
+                    b.ToTable("RegistrationPeriods", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Student", b =>
@@ -920,7 +920,7 @@ namespace Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.StudentJoin", b =>
@@ -966,7 +966,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("StudentJoins");
+                    b.ToTable("StudentJoins", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Teacher", b =>
@@ -1035,7 +1035,7 @@ namespace Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("Teachers");
+                    b.ToTable("Teachers", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Thesis", b =>
@@ -1094,7 +1094,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ProposedStudentId");
 
-                    b.ToTable("Thesiss");
+                    b.ToTable("Thesiss", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.ThesisInstruction", b =>
@@ -1132,7 +1132,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ThesisId");
 
-                    b.ToTable("ThesisInstructions");
+                    b.ToTable("ThesisInstructions", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.ThesisMajor", b =>
@@ -1170,7 +1170,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ThesisId");
 
-                    b.ToTable("ThesisMajors");
+                    b.ToTable("ThesisMajors", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.ThesisRegistration", b =>
@@ -1212,7 +1212,7 @@ namespace Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasFilter("[ThesisId] IS NOT NULL");
 
-                    b.ToTable("ThesisRegistrations");
+                    b.ToTable("ThesisRegistrations", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.ThesisReview", b =>
@@ -1250,7 +1250,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ThesisId");
 
-                    b.ToTable("ThesisReviews");
+                    b.ToTable("ThesisReviews", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Department", b =>
