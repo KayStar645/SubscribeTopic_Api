@@ -45,7 +45,8 @@ namespace Core.Application.Features.Jobs.Handlers.Commands
                     );
                 }
 
-                findJob.CopyPropertiesFrom(request.updateJobDto);
+                var job = _mapper.Map<Job>(request.updateJobDto);
+                findJob.CopyPropertiesFrom(job);
 
                 var newJob = await _unitOfWork.Repository<Job>().UpdateAsync(findJob);
                 await _unitOfWork.Save(cancellationToken);
