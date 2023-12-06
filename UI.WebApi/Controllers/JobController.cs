@@ -24,7 +24,7 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Lấy danh sách chuyên ngành theo ngành/khoa
+        /// Lấy danh sách công việc theo đề tài
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
@@ -41,7 +41,7 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Lấy thông tin chuyên ngành theo mã
+        /// Lấy thông tin công việc
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
@@ -57,7 +57,7 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Thêm chuyên ngành
+        /// GV thêm công việc cho đề tài
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
@@ -78,7 +78,7 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Sửa chuyên ngành
+        /// Sửa công việc
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
