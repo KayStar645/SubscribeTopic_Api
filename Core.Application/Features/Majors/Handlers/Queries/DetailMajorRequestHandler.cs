@@ -13,12 +13,12 @@ using System.Net;
 
 namespace Core.Application.Features.Majors.Handlers.Queries
 {
-    public class DetailMarjorRequestHandler : IRequestHandler<DetailMajorRequest, Result<MajorDto>>
+    public class DetailMajorRequestHandler : IRequestHandler<DetailMajorRequest, Result<MajorDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DetailMarjorRequestHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public DetailMajorRequestHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;

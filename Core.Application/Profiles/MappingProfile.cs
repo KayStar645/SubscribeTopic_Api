@@ -8,6 +8,7 @@ using Core.Application.DTOs.Feedback;
 using Core.Application.DTOs.Group;
 using Core.Application.DTOs.Industry;
 using Core.Application.DTOs.Invitation;
+using Core.Application.DTOs.Job;
 using Core.Application.DTOs.Major;
 using Core.Application.DTOs.Notification;
 using Core.Application.DTOs.RegistrationPeriod;
@@ -136,6 +137,19 @@ namespace Core.Application.Profiles
             CreateMap<SieveModel, ListBaseRequest<ThesisRegistrationDto>>().ReverseMap();
             CreateMap<ThesisRegistration, ThesisRegistrationDto>().ReverseMap();
             CreateMap<ThesisRegistration, CreateThesisRegistrationDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<JobDto>>().ReverseMap();
+            CreateMap<Job, JobDto>()
+                .ForMember(dest => dest.Files, opt => opt.MapFrom(
+                    src => MapImagesStringToList(src.Files))
+                );
+
+            CreateMap<JobDto, Job>()
+                .ForMember(dest => dest.Files, opt => opt.MapFrom(
+                    src => MapImagesListToString(src.Files))
+                );
+            CreateMap<Job, CreateJobDto>().ReverseMap();
+            CreateMap<Job, UpdateJobDto>().ReverseMap();
 
 
         }

@@ -1,8 +1,8 @@
-﻿using Core.Application.DTOs.Major;
+﻿using Core.Application.DTOs.Job;
 using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
-using Core.Application.Features.Majors.Requests.Commands;
-using Core.Application.Features.Majors.Requests.Queries;
+using Core.Application.Features.Jobs.Requests.Commands;
+using Core.Application.Features.Jobs.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
@@ -12,13 +12,13 @@ using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
 {
-    [Route("api/major")]
+    [Route("api/job")]
     [ApiController]
-    public class MajorController : ControllerBase
+    public class JobController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public MajorController(IMediator mediator)
+        public JobController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -28,12 +28,12 @@ namespace UI.WebApi.Controllers
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
-        /// facultyId/industryId: required
+        /// thesisId: required
         /// 
         /// </remarks>
         [HttpGet]
-        [Permission("Major.View")]
-        public async Task<ActionResult<List<MajorDto>>> Get([FromQuery] ListMajorRequest request)
+        [Permission("Job.View")]
+        public async Task<ActionResult> Get([FromQuery] ListJobRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -48,8 +48,8 @@ namespace UI.WebApi.Controllers
         /// - Id: int, required
         /// </remarks>
         [HttpGet("detail")]
-        [Permission("Major.View")]
-        public async Task<ActionResult<MajorDto>> Get([FromQuery] DetailMajorRequest request)
+        [Permission("Job.View")]
+        public async Task<ActionResult> Get([FromQuery] DetailJobRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -62,12 +62,16 @@ namespace UI.WebApi.Controllers
         /// <remarks>
         /// Ràng buộc: 
         /// - Name: string, required, max(190)
+        /// - Instructions: string, ckeditor
+        /// - Due: Thời gian phải lớn hơn hiện tại
+        /// - Files: Danh sách file kèm theo (nếu có)
+        /// - ThesisId: Id của đề tài
         /// </remarks>
         [HttpPost]
-        [Permission("Major.Create")]
-        public async Task<ActionResult<MajorDto>> Post([FromBody] CreateMajorDto majorRequest)
+        [Permission("Job.Create")]
+        public async Task<ActionResult> Post([FromBody] CreateJobDto request)
         {
-            var command = new CreateMajorRequest { createMajorDto = majorRequest };
+            var command = new CreateJobRequest { createJobDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
@@ -80,27 +84,31 @@ namespace UI.WebApi.Controllers
         /// Ràng buộc: 
         /// - Id: int, required
         /// - Name: string, required, max(190)
+        /// - Instructions: string, ckeditor
+        /// - Due: Thời gian phải lớn hơn hiện tại
+        /// - Files: Danh sách file kèm theo (nếu có)
+        /// - ThesisId: Id của đề tài
         /// </remarks>
         [HttpPut]
-        [Permission("Major.Update")]
-        public async Task<ActionResult> Put([FromBody] UpdateMajorDto majorRequest)
+        [Permission("Job.Update")]
+        public async Task<ActionResult> Put([FromBody] UpdateJobDto request)
         {
-            var command = new UpdateMajorRequest { updateMajorDto = majorRequest };
+            var command = new UpdateJobRequest { updateJobDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
         }
 
         /// <summary>
-        /// Xóa chuyên ngành
+        /// Xóa Công việc
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
         /// - Id: int, required
         /// </remarks>
         [HttpDelete]
-        [Permission("Major.Delete")]
-        public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Major> request)
+        [Permission("Job.Delete")]
+        public async Task<ActionResult> Delete([FromQuery] DeleteBaseRequest<Job> request)
         {
             try
             {
@@ -109,17 +117,17 @@ namespace UI.WebApi.Controllers
             }
             catch (NotFoundException ex)
             {
-                var responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.NotFound);
+                var responses = Result<JobDto>.Failure(ex.Message, (int)HttpStatusCode.NotFound);
                 return StatusCode(responses.Code, responses);
             }
             catch (BadRequestException ex)
             {
-                var responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.BadRequest);
+                var responses = Result<JobDto>.Failure(ex.Message, (int)HttpStatusCode.BadRequest);
                 return StatusCode(responses.Code, responses);
             }
             catch (Exception ex)
             {
-                var responses = Result<MajorDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
+                var responses = Result<JobDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
                 return StatusCode(responses.Code, responses);
             }
         }
