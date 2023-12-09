@@ -9,6 +9,7 @@ using Core.Application.DTOs.Group;
 using Core.Application.DTOs.Industry;
 using Core.Application.DTOs.Invitation;
 using Core.Application.DTOs.Job;
+using Core.Application.DTOs.JobResults;
 using Core.Application.DTOs.Major;
 using Core.Application.DTOs.Notification;
 using Core.Application.DTOs.RegistrationPeriod;
@@ -29,15 +30,21 @@ namespace Core.Application.Profiles
 {
     public class MappingProfile : Profile
     {
-        private IGoogleDriveService? _googleDriveService;
+        protected static IGoogleDriveService? _googleDriveService;
 
-        public MappingProfile(IGoogleDriveService googleDriveService) 
+        public MappingProfile(IGoogleDriveService googleDriveService)
         {
             _googleDriveService = googleDriveService;
 
 
             CreateMap<string, List<string>>().ConvertUsing<StringToListTypeConverter>();
             CreateMap<List<string>, string>().ConvertUsing<ListToStringTypeConverter>();
+
+            CreateMap<string, FileDto>().ConvertUsing<StringToFileDtoConverter>();
+            CreateMap<FileDto, string>().ConvertUsing<FileDtoToStringConvert>();
+
+            CreateMap<string, List<FileDto>>().ConvertUsing<StringToFileDtoListConverter>();
+            CreateMap<List<FileDto>, string>().ConvertUsing<FileDtoListToStringConvert>();
 
             CreateMap<SieveModel, ListBaseRequest<TeacherDto>>().ReverseMap();
             CreateMap<Teacher, TeacherDto>().ReverseMap();
@@ -72,23 +79,7 @@ namespace Core.Application.Profiles
             CreateMap<SieveModel, ListBaseRequest<NotificationDto>>().ReverseMap();
             CreateMap<Notification, CreateNotificationDto>().ReverseMap();
             CreateMap<Notification, UpdateNotificationDto>().ReverseMap();
-            //CreateMap<Notification, NotificationDto>().ReverseMap(); // Tại đây
-            CreateMap<Notification, NotificationDto>()
-                .ForMember(dest => dest.Image, opt => opt.MapFrom(
-                    src => MapImageStringToDto(src.Image))
-                )
-                .ForMember(dest => dest.Images, opt => opt.MapFrom(
-                    src => MapImagesStringToList(src.Images))
-                );
-
-            CreateMap<NotificationDto, Notification>()
-                .ForMember(dest => dest.Image, opt => opt.MapFrom(
-                    src => MapImageDtoToString(src.Image))
-                )
-                .ForMember(dest => dest.Images, opt => opt.MapFrom(
-                    src => MapImagesListToString(src.Images))
-                );
-
+            CreateMap<Notification, NotificationDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<RegistrationPeriodDto>>().ReverseMap();
             CreateMap<RegistrationPeriod, RegistrationPeriodDto>().ReverseMap();
@@ -139,17 +130,12 @@ namespace Core.Application.Profiles
             CreateMap<ThesisRegistration, CreateThesisRegistrationDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<JobDto>>().ReverseMap();
-            CreateMap<Job, JobDto>()
-                .ForMember(dest => dest.Files, opt => opt.MapFrom(
-                    src => MapImagesStringToList(src.Files))
-                );
-
-            CreateMap<JobDto, Job>()
-                .ForMember(dest => dest.Files, opt => opt.MapFrom(
-                    src => MapImagesListToString(src.Files))
-                );
+            CreateMap<Job, JobDto>().ReverseMap();
             CreateMap<Job, CreateJobDto>().ReverseMap();
             CreateMap<Job, UpdateJobDto>().ReverseMap();
+
+            CreateMap<JobResults, JobResultsDto>().ReverseMap();
+            CreateMap<JobResults, SubmitJobResultsDto>().ReverseMap();
 
 
         }
@@ -180,75 +166,65 @@ namespace Core.Application.Profiles
             }
         }
 
-        private List<FileDto> MapImagesStringToList(string? imagesString)
+        public class StringToFileDtoConverter : ITypeConverter<string, FileDto>
         {
-            if (string.IsNullOrEmpty(imagesString))
+            public FileDto Convert(string source, FileDto destination, ResolutionContext context)
             {
-                return new List<FileDto>();
-            }
-
-            var imagePaths = imagesString.Split(',');
-            var fileDtos = new List<FileDto>();
-
-            foreach (var imagePath in imagePaths)
-            {
-                var result = _googleDriveService.GetFileInfoFromGoogleDrive(imagePath).Result;
-                if (result.Data != null)
+                if (string.IsNullOrEmpty(source))
                 {
-                    fileDtos.Add(result.Data);
+                    return new FileDto();
                 }
-            }
 
-            return fileDtos;
+                var result = _googleDriveService.GetFileInfoFromGoogleDrive(source).Result;
+                return result.Data ?? new FileDto();
+            }
         }
 
-        private string MapImagesListToString(List<FileDto>? imagesList)
+        public class FileDtoToStringConvert : ITypeConverter<FileDto, string>
         {
-            if (imagesList == null || imagesList.Count == 0)
+            public string Convert(FileDto source, string destination, ResolutionContext context)
             {
-                return null;
+                return source?.Path ?? string.Empty;
             }
-
-            var imagePaths = imagesList.Select(fileDto => fileDto.Path);
-            return string.Join(",", imagePaths);
         }
 
-        private FileDto MapImageStringToDto(string? imagePath)
+        public class StringToFileDtoListConverter : ITypeConverter<string, List<FileDto>>
         {
-            if (string.IsNullOrEmpty(imagePath))
+            public List<FileDto> Convert(string source, List<FileDto> destination, ResolutionContext context)
             {
-                return new FileDto();
+                if (string.IsNullOrEmpty(source))
+                {
+                    return new List<FileDto>();
+                }
+
+                var imagePaths = source.Split(',');
+                var fileDtos = new List<FileDto>();
+
+                foreach (var imagePath in imagePaths)
+                {
+                    var result = _googleDriveService.GetFileInfoFromGoogleDrive(imagePath).Result;
+                    if (result.Data != null)
+                    {
+                        fileDtos.Add(result.Data);
+                    }
+                }
+
+                return fileDtos;
             }
-            var result = _googleDriveService.GetFileInfoFromGoogleDrive(imagePath).Result;
-            return result.Data ?? new FileDto();
         }
 
-        private string MapImageDtoToString(FileDto? imageDto)
+        public class FileDtoListToStringConvert : ITypeConverter<List<FileDto>, string>
         {
-            return imageDto?.Path ?? string.Empty;
-        }
-
-
-
-        public void ConfigureIgnoreFields<TEntity, TDto>(IMappingExpression<TEntity, TDto> mapping)
-        {
-            //mapping.ForMember(dest => dest.DateCreated, opt => opt.Ignore())
-            //       .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-            //       .ForMember(dest => dest.LastModifiedDate, opt => opt.Ignore())
-            //       .ForMember(dest => dest.LastModifiedBy, opt => opt.Ignore())
-            //       .ForMember(dest => dest.IsDeleted, opt => opt.Ignore());
-        }
-
-        /*
-            var teacherDtos = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => t.Name.EndsWith("TeacherDto"))
-                .ToList();
-            foreach (var dto in teacherDtos)
+            public string Convert(List<FileDto> source, string destination, ResolutionContext context)
             {
-                CreateMap(typeof(Teacher), dto).ReverseMap();
-            }
-        
+                if (source == null || source.Count == 0)
+                {
+                    return null;
+                }
 
-         */
+                var paths = source.Select(fileDto => fileDto.Path);
+                return string.Join(",", paths);
+            }
+        }
     }
 }
