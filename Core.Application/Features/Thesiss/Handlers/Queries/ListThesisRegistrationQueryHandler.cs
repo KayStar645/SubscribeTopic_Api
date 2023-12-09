@@ -17,14 +17,14 @@ using System.Net;
 
 namespace Core.Application.Features.Thesiss.Handlers.Queries
 {
-    public class ListThesisRegistrationRequestHandler : IRequestHandler<ListThesisRegistrationRequest, PaginatedResult<List<ThesisDto>>>
+    public class ListThesisRegistrationQueryHandler : IRequestHandler<ListThesisRegistrationRequest, PaginatedResult<List<ThesisDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
         public IHttpContextAccessor _httpContextAccessor;
 
-        public ListThesisRegistrationRequestHandler(IUnitOfWork unitOfWork, IMapper mapper,
+        public ListThesisRegistrationQueryHandler(IUnitOfWork unitOfWork, IMapper mapper,
             ISieveProcessor sieveProcessor, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;

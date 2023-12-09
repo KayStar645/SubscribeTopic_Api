@@ -14,13 +14,13 @@ using System.Net;
 
 namespace Core.Application.Features.Thesiss.Handlers.Queries
 {
-    public class ListThesisRequestHandler : IRequestHandler<ListThesisRequest, PaginatedResult<List<ThesisDto>>>
+    public class ListThesisQueryHandler : IRequestHandler<ListThesisRequest, PaginatedResult<List<ThesisDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
 
-        public ListThesisRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
+        public ListThesisQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

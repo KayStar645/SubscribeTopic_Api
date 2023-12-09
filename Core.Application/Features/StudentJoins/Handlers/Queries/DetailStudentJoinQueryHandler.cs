@@ -13,12 +13,12 @@ using System.Net;
 
 namespace Core.Application.Features.StudentJoins.Handlers.Queries
 {
-    public class DetailStudentJoinRequestHandler : IRequestHandler<DetailStudentJoinRequest, Result<StudentJoinDto>>
+    public class DetailStudentJoinQueryHandler : IRequestHandler<DetailStudentJoinRequest, Result<StudentJoinDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DetailStudentJoinRequestHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public DetailStudentJoinQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;

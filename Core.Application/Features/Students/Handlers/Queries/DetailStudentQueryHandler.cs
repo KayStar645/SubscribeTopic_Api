@@ -13,12 +13,12 @@ using System.Net;
 
 namespace Core.Application.Features.Students.Handlers.Queries
 {
-    public class DetailStudentRequestHandler : IRequestHandler<DetailStudentRequest, Result<StudentDto>>
+    public class DetailStudentQueryHandler : IRequestHandler<DetailStudentRequest, Result<StudentDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DetailStudentRequestHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public DetailStudentQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;

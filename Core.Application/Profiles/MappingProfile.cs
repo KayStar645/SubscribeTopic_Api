@@ -46,6 +46,7 @@ namespace Core.Application.Profiles
             CreateMap<string, List<FileDto>>().ConvertUsing<StringToFileDtoListConverter>();
             CreateMap<List<FileDto>, string>().ConvertUsing<FileDtoListToStringConvert>();
 
+
             CreateMap<SieveModel, ListBaseRequest<TeacherDto>>().ReverseMap();
             CreateMap<Teacher, TeacherDto>().ReverseMap();
             CreateMap<Teacher, CreateTeacherDto>().ReverseMap();
@@ -72,7 +73,9 @@ namespace Core.Application.Profiles
             CreateMap<Industry, UpdateIndustryDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<StudentDto>>().ReverseMap();
+            CreateMap<SieveModel, ListBaseRequest<FriendDto>>().ReverseMap();
             CreateMap<Student, StudentDto>().ReverseMap();
+            CreateMap<Student, FriendDto>().ReverseMap();
             CreateMap<Student, CreateStudentDto>().ReverseMap();
             CreateMap<Student, UpdateStudentDto>().ReverseMap();
 
@@ -91,7 +94,6 @@ namespace Core.Application.Profiles
             CreateMap<StudentJoin, CreateStudentJoinDto>().ReverseMap();
             CreateMap<StudentJoin, UpdateStudentJoinDto>().ReverseMap();
 
-
             CreateMap<SieveModel, ListBaseRequest<DepartmentDutyDto>>().ReverseMap();
             CreateMap<DepartmentDuty, DepartmentDutyDto>().ReverseMap();
             CreateMap<DepartmentDuty, CreateDepartmentDutyDto>().ReverseMap();
@@ -101,7 +103,6 @@ namespace Core.Application.Profiles
             CreateMap<FacultyDuty, FacultyDutyDto>().ReverseMap();
             CreateMap<FacultyDuty, CreateFacultyDutyDto>().ReverseMap();
             CreateMap<FacultyDuty, UpdateFacultyDutyDto>().ReverseMap();
-
 
             CreateMap<SieveModel, ListBaseRequest<GroupDto>>().ReverseMap();
             CreateMap<GroupDto, Group>().ReverseMap();
