@@ -6,7 +6,6 @@ using Core.Application.Features.StudentJoins.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using UI.WebApi.Middleware;

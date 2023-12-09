@@ -133,5 +133,20 @@ namespace UI.WebApi.Controllers
                 return StatusCode(responses.Code, responses);
             }
         }
+
+        /// <summary>
+        /// Lấy danh sách sinh viên trong đợt hiện tại để gửi lời mời
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// </remarks>
+        [HttpGet("ListStudentOfPeriodCurrent")]
+        [Permission("Student.StudentOfPeriodCurrent.View")]
+        public async Task<ActionResult> Get([FromQuery] ListStudentOfPeriodCurrentRequest request)
+        {
+            var response = await _mediator.Send(request);
+
+            return StatusCode(response.Code, response);
+        }
     }
 }

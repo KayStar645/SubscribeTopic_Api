@@ -12,12 +12,12 @@ using System.Net;
 
 namespace Core.Application.Features.Students.Handlers.Queries
 {
-    public class ListStudentRequestHandler : IRequestHandler<ListStudentRequest, PaginatedResult<List<StudentDto>>>
+    public class ListStudentQueryHandler : IRequestHandler<ListStudentRequest, PaginatedResult<List<StudentDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
-        public ListStudentRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
+        public ListStudentQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

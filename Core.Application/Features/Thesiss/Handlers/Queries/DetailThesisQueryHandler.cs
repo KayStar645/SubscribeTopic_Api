@@ -17,12 +17,12 @@ using System.Security.Cryptography;
 
 namespace Core.Application.Features.Thesiss.Handlers.Queries
 {
-    public class DetailThesisRequestHandler : IRequestHandler<DetailThesisRequest, Result<ThesisDto>>
+    public class DetailThesisQueryHandler : IRequestHandler<DetailThesisRequest, Result<ThesisDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DetailThesisRequestHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public DetailThesisQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
