@@ -12,6 +12,8 @@ namespace Core.Application.Features.Groups.Requests.Queries
     {
         public bool? isGetLeader { get; set; }
 
+        public bool? isGetGroupMe { get; set; }
+
         public int? facultyId { get; set; }
     }
 
@@ -19,20 +21,23 @@ namespace Core.Application.Features.Groups.Requests.Queries
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public ListGroupDtoValidator(IUnitOfWork unitOfWork)
+        public ListGroupDtoValidator(IUnitOfWork unitOfWork, bool? isGetGroupMe)
         {
             _unitOfWork = unitOfWork;
 
             Include(new ListBaseRequestValidator<GroupDto>());
 
-            RuleFor(x => x.facultyId)
-                .MustAsync(async (facultyId, token) =>
-                {
-                    var exists = await _unitOfWork.Repository<FacultyEntity>()
-                        .FirstOrDefaultAsync(x => x.Id == facultyId);
-                    return exists != null;
-                })
-                .WithMessage(id => ValidatorTransform.MustIn("facultyId"));
+            if(isGetGroupMe != true)
+            {
+                RuleFor(x => x.facultyId)
+                    .MustAsync(async (facultyId, token) =>
+                    {
+                        var exists = await _unitOfWork.Repository<FacultyEntity>()
+                            .FirstOrDefaultAsync(x => x.Id == facultyId);
+                        return exists != null;
+                    })
+                    .WithMessage(id => ValidatorTransform.MustIn("facultyId"));
+            }  
         }
     }
 }

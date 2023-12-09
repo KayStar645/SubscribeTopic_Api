@@ -47,7 +47,6 @@ namespace Core.Application.Features.Students.Handlers.Queries
 
             var query = _unitOfWork.Repository<Student>().GetAllInclude();
 
-            // Chỉ lấy đề tài mà giảng viên đang truy cập hướng dẫn
             var userId = _httpContext.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;
             var userType = _httpContext.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Type)?.Value;
 
