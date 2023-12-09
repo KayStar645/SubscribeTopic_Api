@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Invitation;
-using Core.Application.Features.Invitations.Request.Queries;
+using Core.Application.Features.Invitations.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;

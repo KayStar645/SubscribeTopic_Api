@@ -6,7 +6,7 @@ using Core.Application.Transform;
 using FluentValidation;
 using GroupEntity = Core.Domain.Entities.Group;
 
-namespace Core.Application.Features.Invitations.Request.Queries
+namespace Core.Application.Features.Invitations.Requests.Queries
 {
     public class ListInvitationRequest : ListBaseRequest<InvitationDto>
     {

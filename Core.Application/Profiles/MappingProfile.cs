@@ -134,6 +134,7 @@ namespace Core.Application.Profiles
             CreateMap<Job, CreateJobDto>().ReverseMap();
             CreateMap<Job, UpdateJobDto>().ReverseMap();
 
+            CreateMap<SieveModel, ListBaseRequest<JobResultsDto>>().ReverseMap();
             CreateMap<JobResults, JobResultsDto>().ReverseMap();
             CreateMap<JobResults, SubmitJobResultsDto>().ReverseMap();
 

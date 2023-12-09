@@ -4,7 +4,7 @@ using Core.Application.DTOs.Invitation;
 using Core.Application.DTOs.Invitation.Validators;
 using Core.Application.Exceptions;
 using Core.Application.Features.Invitations.Events;
-using Core.Application.Features.Invitations.Request.Commands;
+using Core.Application.Features.Invitations.Requests.Commands;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;

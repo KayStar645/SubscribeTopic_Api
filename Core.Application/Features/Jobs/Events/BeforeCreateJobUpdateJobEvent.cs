@@ -35,6 +35,8 @@ namespace Core.Application.Features.Jobs.Events
             {
                 throw new UnauthorizedException(StatusCodes.Status403Forbidden);
             }
+            // Phải là đề tài của mình hướng dẫn
+
             // Từ id của người dùng lấy ra id của giáo viên
             var teacher = await pEvent._unitOfWork.Repository<Teacher>()
                 .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));

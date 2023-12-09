@@ -43,11 +43,11 @@ namespace Core.Application.Features.Jobs.Handlers.Queries
             query = query.Where(x => x.ThesisId == request.thesisId);
 
 
-            if (request.isAllDetail || request.isGetTeacher)
+            if (request.isAllDetail || request.isGetTeacher == true)
             {
                 query = _unitOfWork.Repository<Job>().AddInclude(query, x => x.TeacherBy);
             }
-            if (request.isAllDetail || request.isGetThesis)
+            if (request.isAllDetail || request.isGetThesis == true)
             {
                 query = _unitOfWork.Repository<Job>().AddInclude(query, x => x.ForThesis);
             }
