@@ -2,7 +2,7 @@
 using Core.Application.Responses;
 using MediatR;
 
-namespace Core.Application.Features.Invitations.Request.Commands
+namespace Core.Application.Features.Invitations.Requests.Commands
 {
     public class ChangeStatusInvitationRequest : IRequest<Result<InvitationDto>>
     {

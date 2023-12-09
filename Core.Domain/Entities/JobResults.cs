@@ -14,7 +14,6 @@ namespace Core.Domain.Entities
         #region PROPERTIES
         public string? Files { get; set; }
 
-
         #endregion
 
 

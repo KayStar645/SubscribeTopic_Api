@@ -1,10 +1,6 @@
-﻿using Core.Application.DTOs.Industry;
-using Core.Application.DTOs.Invitation;
-using Core.Application.DTOs.Thesis;
-using Core.Application.Features.Industries.Requests.Queries;
-using Core.Application.Features.Invitations.Request.Commands;
-using Core.Application.Features.Invitations.Request.Queries;
-using Core.Application.Features.Thesiss.Requests.Commands;
+﻿using Core.Application.DTOs.Invitation;
+using Core.Application.Features.Invitations.Requests.Commands;
+using Core.Application.Features.Invitations.Requests.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UI.WebApi.Middleware;

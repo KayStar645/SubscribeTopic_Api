@@ -10,18 +10,18 @@ namespace Core.Application.Features.Jobs.Requests.Queries
 {
     public class ListJobRequest : ListBaseRequest<JobDto>
     {
-        public bool isGetTeacher { get; set; }
+        public bool? isGetTeacher { get; set; }
 
-        public bool isGetThesis { get; set; }
+        public bool? isGetThesis { get; set; }
 
-        public int thesisId { get; set; }
+        public int? thesisId { get; set; }
     }
 
     public class ListJobDtoValidator : AbstractValidator<ListJobRequest>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public ListJobDtoValidator(IUnitOfWork unitOfWork, int thesisId)
+        public ListJobDtoValidator(IUnitOfWork unitOfWork, int? thesisId)
         {
             _unitOfWork = unitOfWork;
 
@@ -30,9 +30,13 @@ namespace Core.Application.Features.Jobs.Requests.Queries
             RuleFor(x => x.thesisId)
                 .MustAsync(async (thesisId, token) =>
                 {
-                    var exists = await _unitOfWork.Repository<ThesisEntity>()
+                    if(thesisId != null)
+                    {
+                        var exists = await _unitOfWork.Repository<ThesisEntity>()
                         .FirstOrDefaultAsync(x => x.Id == thesisId);
-                    return exists != null;
+                        return exists != null;
+                    }    
+                    return false;
                 })
                 .WithMessage(id => ValidatorTransform.MustIn("thesisId"));
         }
