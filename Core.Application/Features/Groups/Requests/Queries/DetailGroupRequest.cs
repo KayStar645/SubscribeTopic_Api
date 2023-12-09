@@ -13,6 +13,7 @@ namespace Core.Application.Features.Groups.Requests.Queries
     {
         public bool? isGetLeader { get; set; }
         public bool? isGetGroupMeCurrent { get; set; }
+        public bool? isGetThesis { get; set; }
         public bool? isGetMember { get; set; }
     }
 
