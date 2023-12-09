@@ -1,15 +1,11 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Job;
 using Core.Application.DTOs.JobResults;
 using Core.Application.DTOs.JobResults.Validators;
 using Core.Application.Exceptions;
 using Core.Application.Features.JobResults.Events;
 using Core.Application.Features.JobResults.Requests.Commands;
-using Core.Application.Features.Jobs.Events;
 using Core.Application.Responses;
-using Core.Application.Services;
-using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;

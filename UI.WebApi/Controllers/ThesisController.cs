@@ -6,7 +6,6 @@ using Core.Application.Features.Thesiss.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using UI.WebApi.Middleware;
@@ -154,11 +153,26 @@ namespace UI.WebApi.Controllers
         /// <remarks>
         /// Ràng buộc: 
         /// -
-        /// 
         /// </remarks>
         [HttpGet("ListThesisRegistration")]
-        //[Permission("Thesis.Student.View")]
+        [Permission("Thesis.Student.View")]
         public async Task<ActionResult<List<ThesisDto>>> Get([FromQuery] ListThesisRegistrationRequest request)
+        {
+            var response = await _mediator.Send(request);
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// Giảng viên lấy ds đề tài mình hướng dẫn
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// -
+        /// </remarks>
+        [HttpGet("ListThesisInstructorOfTeacher")]
+        [Permission("Thesis.InstructorOfTeacher.View")]
+        public async Task<ActionResult> Get([FromQuery] ListThesisInstructorOfTeacherRequest request)
         {
             var response = await _mediator.Send(request);
 
