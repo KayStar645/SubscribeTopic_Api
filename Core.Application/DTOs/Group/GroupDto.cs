@@ -1,4 +1,5 @@
 ﻿using Core.Application.DTOs.StudentJoin;
+using Core.Application.DTOs.Thesis;
 using KLTN.Core.Application.DTOs.Common;
 
 namespace Core.Application.DTOs.Group
@@ -14,5 +15,7 @@ namespace Core.Application.DTOs.Group
         public StudentJoinDto? Leader { get; set; }
 
         public List<StudentJoinDto>? Members { get; set; }
+
+        public ThesisDto? ThesisDto { get; set; }
     }
 }

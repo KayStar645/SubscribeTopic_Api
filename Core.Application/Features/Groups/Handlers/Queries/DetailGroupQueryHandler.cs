@@ -5,6 +5,7 @@ using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.Group;
 using Core.Application.DTOs.Student;
 using Core.Application.DTOs.StudentJoin;
+using Core.Application.DTOs.Thesis;
 using Core.Application.Exceptions;
 using Core.Application.Features.Groups.Requests.Queries;
 using Core.Application.Responses;
@@ -82,16 +83,9 @@ namespace Core.Application.Features.Groups.Handlers.Queries
                                      .Select(joined => joined.Group);
                 }
 
-                if (request.isAllDetail)
+                if (request.isAllDetail || request.isGetLeader == true)
                 {
                     query = _unitOfWork.Repository<Group>().AddInclude(query, x => x.Leader.Student);
-                }
-                else
-                {
-                    if (request.isGetLeader == true)
-                    {
-                        query = _unitOfWork.Repository<Group>().AddInclude(query, x => x.Leader.Student);
-                    }
                 }
 
                 var findGroup = await query.SingleAsync();
@@ -105,6 +99,16 @@ namespace Core.Application.Features.Groups.Handlers.Queries
                 }
 
                 var groupDto = _mapper.Map<GroupDto>(findGroup);
+
+                if (request.isAllDetail || request.isGetThesis == true)
+                {
+                    var thesis = await _unitOfWork.Repository<ThesisRegistration>().Query()
+                                                  .Where(x => x.GroupId == groupDto.Id)
+                                                  .Include(x => x.Thesis)
+                                                  .Select(x => x.Thesis)
+                                                  .FirstOrDefaultAsync();
+                    groupDto.ThesisDto = _mapper.Map<ThesisDto>(thesis);
+                }
 
                 if (request.isGetMember == true || request.isAllDetail == true)
                 {
