@@ -2,6 +2,7 @@
 using Core.Application.DTOs.Common;
 using Core.Application.DTOs.Department;
 using Core.Application.DTOs.DepartmentDuty;
+using Core.Application.DTOs.Exchanges;
 using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.FacultyDuty;
 using Core.Application.DTOs.Feedback;
@@ -138,6 +139,10 @@ namespace Core.Application.Profiles
             CreateMap<SieveModel, ListBaseRequest<JobResultsDto>>().ReverseMap();
             CreateMap<JobResults, JobResultsDto>().ReverseMap();
             CreateMap<JobResults, SubmitJobResultsDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<ExchangeDto>>().ReverseMap();
+            CreateMap<Exchange, ExchangeDto>().ReverseMap();
+            CreateMap<Exchange, CreateExchangeDto>().ReverseMap();
 
 
         }

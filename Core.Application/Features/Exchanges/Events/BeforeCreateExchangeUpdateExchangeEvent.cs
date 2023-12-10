@@ -4,29 +4,30 @@ using Core.Application.Exceptions;
 using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using ExchangeEntity = Core.Domain.Entities.Exchange;
 
-namespace Core.Application.Features.Feedbacks.Events
+namespace Core.Application.Features.Exchanges.Events
 {
-    public class BeforeCreateFeedbackUpdateFeedbackEvent : INotification
+    public class BeforeCreateExchangeUpdateExchangeEvent : INotification
     {
-        public Feedback _feedback { get; set; }
+        public ExchangeEntity _exchange { get; set; }
 
         public IHttpContextAccessor _httpContextAccessor;
 
         public IUnitOfWork _unitOfWork;
 
-        public BeforeCreateFeedbackUpdateFeedbackEvent(Feedback feedback,
+        public BeforeCreateExchangeUpdateExchangeEvent(ExchangeEntity exchange,
             IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork)
         {
-            _feedback = feedback;
+            _exchange = exchange;
             _httpContextAccessor = httpContextAccessor;
             _unitOfWork = unitOfWork;
         }
     }
 
-    public class BeforeCreateFeedbackUpdateFeedbackHandler : INotificationHandler<BeforeCreateFeedbackUpdateFeedbackEvent>
+    public class BeforeCreateExchangeUpdateExchangeHandler : INotificationHandler<BeforeCreateExchangeUpdateExchangeEvent>
     {
-        public async Task Handle(BeforeCreateFeedbackUpdateFeedbackEvent pEvent, CancellationToken cancellationToken)
+        public async Task Handle(BeforeCreateExchangeUpdateExchangeEvent pEvent, CancellationToken cancellationToken)
         {
             try
             {
@@ -40,8 +41,16 @@ namespace Core.Application.Features.Feedbacks.Events
                     var teacher = await pEvent._unitOfWork.Repository<Teacher>()
                         .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
 
-                    pEvent._feedback.CommenterId = teacher.Id;
+                    pEvent._exchange.TeacherId = teacher.Id;
                 }
+                else if (userType == CLAIMS_VALUES.TYPE_STUDENT)
+                {
+                    // Từ id của người dùng lấy ra id của sinh viên
+                    var student = await pEvent._unitOfWork.Repository<Student>()
+                        .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
+
+                    pEvent._exchange.StudentId = student.Id;
+                }    
                 else
                 {
                     throw new UnauthorizedException(StatusCodes.Status403Forbidden);

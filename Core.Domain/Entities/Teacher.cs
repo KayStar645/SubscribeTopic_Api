@@ -83,6 +83,9 @@ namespace Core.Domain.Entities
         // Ra những công việc nào
         public ICollection<Job> Jobs { get; set; } = new HashSet<Job>();
 
+        // Có những trao đổi trong công việc
+        public ICollection<Exchange> Exchanges { get; set; } = new HashSet<Exchange>();
+
         #endregion
 
 

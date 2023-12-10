@@ -2,7 +2,6 @@
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Feedback;
 using Core.Application.DTOs.Feedback.Validator;
-using Core.Application.DTOs.Thesis;
 using Core.Application.Exceptions;
 using Core.Application.Features.Feedbacks.Events;
 using Core.Application.Features.Feedbacks.Requests.Commands;
@@ -12,7 +11,6 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
-using System.Runtime.InteropServices;
 
 namespace Core.Application.Features.Feedbacks.Handlers.Commands
 {

@@ -45,5 +45,6 @@ namespace Infrastructure.Persistence
         public DbSet<ThesisRegistration> ThesisRegistrations { get; set; }
         public DbSet<Job> Jobs { get; set; }
         public DbSet<JobResults> JobResults { get; set; }
+        public DbSet<Exchange> Exchanges { get; set; }
     }
 }
