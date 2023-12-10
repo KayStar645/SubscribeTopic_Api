@@ -15,5 +15,7 @@ namespace Core.Application.Features.Thesiss.Requests.Queries
 
         public bool? isGetThesisMajors { get; set; }
 
+        public bool? isGetGroupDto { get; set; }
+
     }
 }
