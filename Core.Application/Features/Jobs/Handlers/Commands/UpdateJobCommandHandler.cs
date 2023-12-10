@@ -46,6 +46,10 @@ namespace Core.Application.Features.Jobs.Handlers.Commands
                 }
 
                 var job = _mapper.Map<Job>(request.updateJobDto);
+                job.TeacherId = findJob.TeacherId;
+                job.TeacherBy = findJob.TeacherBy;
+                job.ThesisId = findJob.ThesisId;
+                job.ForThesis = findJob.ForThesis;
                 findJob.CopyPropertiesFrom(job);
 
                 var newJob = await _unitOfWork.Repository<Job>().UpdateAsync(findJob);

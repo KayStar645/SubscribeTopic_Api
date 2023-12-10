@@ -2,8 +2,6 @@
 {
     public interface IJobDto
     {
-        public int? ThesisId { get; set; }
-
         public string? Name { get; set; }
 
         public string? Instructions { get; set; }
