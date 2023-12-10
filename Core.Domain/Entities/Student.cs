@@ -62,6 +62,9 @@ namespace Core.Domain.Entities
         // Các kết quả công việc mà sinh viên nộp
         public ICollection<JobResults> JobResults = new HashSet<JobResults>();
 
+        // Có những trao đổi trong công việc
+        public ICollection<Exchange> Exchanges { get; set; } = new HashSet<Exchange>();
+
         #endregion
 
 

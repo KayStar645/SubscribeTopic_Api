@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubscribeTopicDbContext))]
-    partial class SubscribeTopicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231210125315_create_table_exchanges")]
+    partial class create_table_exchanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,9 +157,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("JobId")
-                        .HasColumnType("int");
-
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -170,8 +170,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("JobId");
 
                     b.HasIndex("StudentId");
 
@@ -1331,10 +1329,6 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Core.Domain.Entities.Exchanges", b =>
                 {
-                    b.HasOne("Core.Domain.Entities.Job", "Job")
-                        .WithMany("Exchanges")
-                        .HasForeignKey("JobId");
-
                     b.HasOne("Core.Domain.Entities.Student", "Student")
                         .WithMany("Exchanges")
                         .HasForeignKey("StudentId");
@@ -1342,8 +1336,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Core.Domain.Entities.Teacher", "Teacher")
                         .WithMany("Exchanges")
                         .HasForeignKey("TeacherId");
-
-                    b.Navigation("Job");
 
                     b.Navigation("Student");
 
@@ -1685,11 +1677,6 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Core.Domain.Entities.Industry", b =>
                 {
                     b.Navigation("Majors");
-                });
-
-            modelBuilder.Entity("Core.Domain.Entities.Job", b =>
-                {
-                    b.Navigation("Exchanges");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Major", b =>

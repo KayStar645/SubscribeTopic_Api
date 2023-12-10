@@ -15,13 +15,13 @@ using System.Net;
 
 namespace Core.Application.Features.Feedbacks.Handlers.Queries
 {
-    public class ListFeedbackRequestHandler : IRequestHandler<ListFeedbackRequest, PaginatedResult<List<FeedbackDto>>>
+    public class ListFeedbackQueryHandler : IRequestHandler<ListFeedbackRequest, PaginatedResult<List<FeedbackDto>>>
     {
         readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
 
-        public ListFeedbackRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
+        public ListFeedbackQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
