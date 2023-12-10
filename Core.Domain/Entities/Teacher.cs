@@ -86,6 +86,9 @@ namespace Core.Domain.Entities
         // Có những trao đổi trong công việc
         public ICollection<Exchange> Exchanges { get; set; } = new HashSet<Exchange>();
 
+        // Lịch hướng dẫn của giảng viên này
+        public ICollection<ReportSchedule> ReportSchedules { get; set; } = new HashSet<ReportSchedule>();
+
         #endregion
 
 
