@@ -20,6 +20,6 @@ namespace Core.Application.DTOs.Student
         public int? MajorId { get; set; }
         public MajorDto? Major { get; set; }
         public string? Status { get; set; }
-        public int StudentJoinId { get; set; }
+        public int? StudentJoinId { get; set; }
     }
 }

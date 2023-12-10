@@ -107,6 +107,9 @@ namespace Core.Domain.Entities
         // Có những công việc nào
         public ICollection<Job> Jobs { get; set; } = new HashSet<Job>();
 
+        // Lịch báo cáo của đề tài này
+        public ICollection<ReportSchedule> ReportSchedules { get; set; } = new HashSet<ReportSchedule>();
+
 
         #region FUNCTION
         public static string[] GetType()

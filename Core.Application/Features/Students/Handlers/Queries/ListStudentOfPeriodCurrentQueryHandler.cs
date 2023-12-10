@@ -2,7 +2,6 @@
 using Core.Application.Constants;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Student;
-using Core.Application.DTOs.Thesis;
 using Core.Application.Exceptions;
 using Core.Application.Features.Students.Requests.Queries;
 using Core.Application.Responses;
@@ -138,12 +137,13 @@ namespace Core.Application.Features.Students.Handlers.Queries
                                                         .Include(x => x.StudentJoin)
                                                         .ToListAsync();
 
+                var studentJoins = await _unitOfWork.Repository<StudentJoin>().GetAllAsync();
                 var mapStudents = students.Select(s =>
                 {
                     var friendDto = _mapper.Map<FriendDto>(s);
 
                     friendDto.Status = DetermineStatus(s, myGroup);
-                    var studentJoin = myGroup.Members.FirstOrDefault(m => m.StudentId == s.Id);
+                    var studentJoin = studentJoins.FirstOrDefault(m => m.StudentId == s.Id);
 
                     if (studentJoin != null)
                     {
@@ -151,7 +151,9 @@ namespace Core.Application.Features.Students.Handlers.Queries
                     }
 
                     return friendDto;
-                }).ToList();
+                })
+                .Where(friendDto => friendDto.StudentJoinId != null)
+                .ToList();
 
 
                 return PaginatedResult<List<FriendDto>>.Success(mapStudents, totalCount, request.page, request.pageSize);
