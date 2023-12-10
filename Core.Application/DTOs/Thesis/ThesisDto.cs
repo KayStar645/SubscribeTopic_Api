@@ -1,4 +1,5 @@
-﻿using Core.Application.DTOs.Major;
+﻿using Core.Application.DTOs.Group;
+using Core.Application.DTOs.Major;
 using Core.Application.DTOs.Student;
 using Core.Application.DTOs.Teacher;
 using KLTN.Core.Application.DTOs.Common;
@@ -39,5 +40,8 @@ namespace Core.Application.DTOs.Thesis
 
         // Chuyên ngành phù hợp
         public List<MajorDto>? ThesisMajors { get; set; }
+
+        // Nhóm nào đăng ký đề tài này
+        public GroupDto? GroupDto { get; set; }
     }
 }

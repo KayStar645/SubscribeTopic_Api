@@ -3,7 +3,6 @@ using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.Group;
 using Core.Application.DTOs.Major;
-using Core.Application.DTOs.StudentJoin;
 using Core.Application.DTOs.Teacher;
 using Core.Application.DTOs.Thesis;
 using Core.Application.Features.Thesiss.Requests.Queries;
@@ -13,7 +12,6 @@ using Core.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
-using System.Security.Cryptography;
 
 namespace Core.Application.Features.Thesiss.Handlers.Queries
 {
@@ -59,6 +57,29 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
                 }
 
                 var thesisDto = _mapper.Map<ThesisDto>(findThesis);
+
+                if (request.isAllDetail == true || request.isGetGroupDto == true)
+                {
+                    var group = await _unitOfWork.Repository<Group>()
+                                        .Query()
+                                        .Where(x => x.ThesisRegistration.ThesisId == thesisDto.Id)
+                                        .Include(x => x.Leader)
+                                            .ThenInclude(x => x.Student)
+                                        .FirstOrDefaultAsync();
+
+                    // Nếu group không null và có Leader, thì tiếp tục Include Members
+                    if (group != null && group.Leader != null)
+                    {
+                        group.Members = await _unitOfWork.Repository<StudentJoin>()
+                                                    .Query()
+                                                    .Where(m => m.GroupId == group.Id)
+                                                    .Include(m => m.Student)
+                                                    .ToListAsync();
+                    }
+
+
+                    thesisDto.GroupDto = _mapper.Map<GroupDto>(group);
+                }
 
                 if (request.isAllDetail == true || request.isGetThesisInstructions == true)
                 {
