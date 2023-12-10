@@ -2,7 +2,6 @@
 using Core.Application.Services;
 using Core.Application.Transform;
 using FluentValidation;
-using ThesisEntity = Core.Domain.Entities.Thesis;
 
 namespace Core.Application.DTOs.Job.Validators
 {
@@ -12,14 +11,6 @@ namespace Core.Application.DTOs.Job.Validators
         public JobDtoValidator(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-
-            RuleFor(x => x.ThesisId)
-            .MustAsync(async (id, token) =>
-            {
-                var exists = await _unitOfWork.Repository<ThesisEntity>().GetByIdAsync(id);
-                return exists != null;
-            })
-                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("thesisId", "thesis"));
 
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage(ValidatorTransform.Required("name"))

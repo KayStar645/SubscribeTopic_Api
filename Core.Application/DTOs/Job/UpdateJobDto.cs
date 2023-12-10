@@ -4,8 +4,6 @@ namespace Core.Application.DTOs.Job
 {
     public class UpdateJobDto : BaseDto, IJobDto
     {
-        public int? ThesisId { get; set; }
-
         public string? Name { get; set; }
 
         public string? Instructions { get; set; }
