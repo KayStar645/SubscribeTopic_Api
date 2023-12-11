@@ -2,7 +2,6 @@
 using Core.Application.Constants;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.ReportSchedule;
-using Core.Application.DTOs.Thesis;
 using Core.Application.Exceptions;
 using Core.Application.Features.ReportSchedule.Requests.Queries;
 using Core.Application.Responses;
@@ -13,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services.Interface;
 using System.Net;
-using System.Net.WebSockets;
 using ReportScheduleEntity = Core.Domain.Entities.ReportSchedule;
 
 namespace Core.Application.Features.ReportSchedule.Handlers.Queries
@@ -60,24 +58,33 @@ namespace Core.Application.Features.ReportSchedule.Handlers.Queries
                     // Lấy danh sách lịch của giảng viên
                     var teacher = await _unitOfWork.Repository<Teacher>()
                         .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
-                    var reportSchedule = await _unitOfWork.Repository<ReportScheduleEntity>()
-                                                .Query()
-                                                .Where(x => x.Thesis.ThesisInstructions
-                                                    .Any(x => x.TeacherId == teacher.Id) ||
-                                                            x.Thesis.ThesisReviews
-                                                     .Any(x => x.TeacherId == teacher.Id))
-                                                .ToListAsync();
+                    var thesisInsId = await _unitOfWork.Repository<ThesisInstruction>()
+                                                    .Query()
+                                                    .Where(x => x.Teacher.UserId == int.Parse(userId))
+                                                    .Select(x => x.ThesisId)
+                                                    .ToListAsync();
+                    var thesisRevId = await _unitOfWork.Repository<ThesisReview>()
+                                                    .Query()
+                                                    .Where(x => x.Teacher.UserId == int.Parse(userId))
+                                                    .Select(x => x.ThesisId)
+                                                    .ToListAsync();
+                    var thesisId = thesisInsId.Union(thesisRevId).ToList();
+                    query = query.Where(x => thesisId.Contains(x.Thesis.ThesisRegistration.ThesisId));
+                    query = query.Where(x => (thesisRevId.Contains(x.Thesis.ThesisRegistration.ThesisId) && 
+                                             x.Type == ReportScheduleEntity.TYPE_WEEKLY) == false);
                 }
                 else if (userType == CLAIMS_VALUES.TYPE_STUDENT)
                 {
                     // Lấy danh sách lịch của sinh viên
                     var student = await _unitOfWork.Repository<Student>()
                                 .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
-                    var reportSchedule = await _unitOfWork.Repository<ReportScheduleEntity>()
-                                                .Query()
-                                                .Where(x => x.Thesis.ThesisRegistration.Group.Members
-                                                    .Any(x => x.Student.UserId == int.Parse(userId)))
-                                                .ToListAsync();
+
+                    var groupsId = await _unitOfWork.Repository<StudentJoin>()
+                                                 .Query()
+                                                 .Where(x => x.Student.UserId == int.Parse(userId))
+                                                 .Select(x => x.GroupId)
+                                                 .ToListAsync();
+                    query = query.Where(x => groupsId.Contains(x.Thesis.ThesisRegistration.GroupId));
                 }
                 else
                 {
