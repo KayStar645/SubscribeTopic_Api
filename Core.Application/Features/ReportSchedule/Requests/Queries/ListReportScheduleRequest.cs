@@ -12,11 +12,11 @@ namespace Core.Application.Features.ReportSchedule.Requests.Queries
         public bool isGetTeacher { get; set; }
     }
 
-    public class ReportScheduleDtoValidator : AbstractValidator<ListReportScheduleRequest>
+    public class ListReportScheduleDtoValidator : AbstractValidator<ListReportScheduleRequest>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public ReportScheduleDtoValidator(IUnitOfWork unitOfWork)
+        public ListReportScheduleDtoValidator(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
 

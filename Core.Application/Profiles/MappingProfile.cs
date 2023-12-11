@@ -14,6 +14,7 @@ using Core.Application.DTOs.JobResults;
 using Core.Application.DTOs.Major;
 using Core.Application.DTOs.Notification;
 using Core.Application.DTOs.RegistrationPeriod;
+using Core.Application.DTOs.ReportSchedule;
 using Core.Application.DTOs.Student;
 using Core.Application.DTOs.StudentJoin;
 using Core.Application.DTOs.Teacher;
@@ -143,6 +144,11 @@ namespace Core.Application.Profiles
             CreateMap<SieveModel, ListBaseRequest<ExchangeDto>>().ReverseMap();
             CreateMap<Exchange, ExchangeDto>().ReverseMap();
             CreateMap<Exchange, CreateExchangeDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<ReportScheduleDto>>().ReverseMap();
+            CreateMap<ReportSchedule, ReportScheduleDto>().ReverseMap();
+            CreateMap<ReportSchedule, CreateReportScheduleDto>().ReverseMap();
+            CreateMap<ReportSchedule, UpdateReportScheduleDto>().ReverseMap();
 
 
         }
