@@ -5,6 +5,7 @@ using Core.Application.DTOs.Group;
 using Core.Application.Exceptions;
 using Core.Application.Features.Groups.Requests.Queries;
 using Core.Application.Responses;
+using Core.Application.Transform;
 using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -55,21 +56,34 @@ namespace Core.Application.Features.Groups.Handlers.Queries
                 {
                     throw new UnauthorizedException(StatusCodes.Status403Forbidden);
                 }
+                // Khoa của tôi
+                var facultyId = await _unitOfWork.Repository<Student>()
+                                               .Query()
+                                               .Where(x => x.UserId == int.Parse(userId))
+                                               .Include(x => x.Major)
+                                               .ThenInclude(x => x.Industry)
+                                               .Select(x => x.Major.Industry.FacultyId)
+                                               .FirstOrDefaultAsync();
+
+                var periodId = await _unitOfWork.Repository<RegistrationPeriod>()
+                                        .Query()
+                                        .Where(x => x.FacultyId == facultyId && x.IsActive == true)
+                                        .Select(x => x.Id)
+                                        .FirstOrDefaultAsync();
+                if (periodId == null)
+                {
+                    throw new UnauthorizedException(StatusCodes.Status403Forbidden);
+                }
                 query = _unitOfWork.Repository<Group>().Query()
-                        .Join(
-                            _unitOfWork.Repository<StudentJoin>().Query(),
-                            g => EF.Property<int?>(g, "LeaderId"),
-                            sj => EF.Property<int?>(sj, "Id"),
-                            (g, sj) => new { Group = g, StudentJoin = sj }
-                        )
-                        .Join(
-                            _unitOfWork.Repository<Student>().Query(),
-                            joined => EF.Property<int?>(joined.StudentJoin, "StudentId"),
-                            s => EF.Property<int?>(s, "Id"),
-                            (joined, s) => new { joined.Group, joined.StudentJoin, Student = s }
-                        )
-                        .Where(joined => joined.Student.UserId == int.Parse(userId))
-                        .Select(joined => joined.Group);
+                                 .Join(
+                                     _unitOfWork.Repository<StudentJoin>().Query(),
+                                     g => g.Id,
+                                     sj => sj.GroupId,
+                                     (g, sj) => new { Group = g, StudentJoin = sj }
+                                 )
+                                 .Where(joined => joined.StudentJoin.Student.UserId == int.Parse(userId) &&
+                                                  joined.StudentJoin.RegistrationPeriodId == periodId)
+                                 .Select(joined => joined.Group);
             }
             else
             {
