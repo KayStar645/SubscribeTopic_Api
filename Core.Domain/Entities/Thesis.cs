@@ -87,6 +87,12 @@ namespace Core.Domain.Entities
         [ForeignKey(nameof(ProposedStudentId))]
         public Student? ProposedStudent { get; set; }
 
+        // Đề tài này của nhiệm vụ nào
+        [Sieve(CanFilter = true, CanSort = true)]
+        public int? DutyId { get; set; }
+        [ForeignKey(nameof(DutyId))]
+        public Duty? Duty { get; set; }
+
         // Nhóm nào đăng ký đề tài này
         public ThesisRegistration? ThesisRegistration { get; set; }
 

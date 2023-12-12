@@ -1,6 +1,5 @@
 ﻿using Core.Domain.Common;
 using Sieve.Attributes;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Domain.Entities
 {
@@ -55,7 +54,7 @@ namespace Core.Domain.Entities
         public ICollection<RegistrationPeriod>? RegistrationPeriods { get; } = new HashSet<RegistrationPeriod>();
 
         // Khoa giao nhiệm vụ
-        public ICollection<FacultyDuty>? FacultyDuties { get; } = new HashSet<FacultyDuty>();
+        public ICollection<Duty>? Duties { get; } = new HashSet<Duty>();
 
         #endregion
 

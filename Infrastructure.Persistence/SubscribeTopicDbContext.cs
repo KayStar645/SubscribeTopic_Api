@@ -33,8 +33,6 @@ namespace Infrastructure.Persistence
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<RegistrationPeriod> RegistrationPeriods { get; set; }
         public DbSet<StudentJoin> StudentJoins { get; set; }
-        public DbSet<DepartmentDuty> DepartmentDuties { get; set; }
-        public DbSet<FacultyDuty> FacultyDuties { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
         public DbSet<Thesis> Thesiss { get; set; }
@@ -47,5 +45,6 @@ namespace Infrastructure.Persistence
         public DbSet<JobResults> JobResults { get; set; }
         public DbSet<Exchange> Exchanges { get; set; }
         public DbSet<ReportSchedule> ReportSchedules { get; set; }
+        public DbSet<Duty> Duties { get; set; }
     }
 }

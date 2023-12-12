@@ -75,7 +75,7 @@ namespace Core.Domain.Entities
         #region ICOLECTION
 
         // Danh sách nhiệm vụ giảng viên nhận từ bộ môn
-        public ICollection<DepartmentDuty> Departments { get; } = new HashSet<DepartmentDuty>();
+        public ICollection<Duty> Duties { get; } = new HashSet<Duty>();
 
         // Nhận xét và góp ý
         public ICollection<Feedback> Feedbacks { get; set; } = new HashSet<Feedback>();

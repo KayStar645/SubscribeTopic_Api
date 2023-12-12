@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubscribeTopicDbContext))]
-    partial class SubscribeTopicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231212152833_create_table_new_duty")]
+    partial class create_table_new_duty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,9 +88,6 @@ namespace Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -118,9 +118,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<int?>("NumberOfThesis")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PeriodId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("TeacherId")
                         .HasColumnType("int");
 
@@ -135,8 +132,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("FacultyId");
-
-                    b.HasIndex("PeriodId");
 
                     b.ToTable("Duties");
                 });
@@ -1328,15 +1323,9 @@ namespace Infrastructure.Persistence.Migrations
                         .WithMany("Duties")
                         .HasForeignKey("FacultyId");
 
-                    b.HasOne("Core.Domain.Entities.RegistrationPeriod", "RegistrationPeriod")
-                        .WithMany()
-                        .HasForeignKey("PeriodId");
-
                     b.Navigation("Department");
 
                     b.Navigation("Faculty");
-
-                    b.Navigation("RegistrationPeriod");
 
                     b.Navigation("Teacher");
                 });

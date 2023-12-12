@@ -51,11 +51,8 @@ namespace Core.Domain.Entities
         // Danh sách giảng viên trong bộ môn
         public ICollection<Teacher>? Teachers { get; } = new HashSet<Teacher>();
 
-        // Danh sách nhiệm vụ khoa giao cho bộ môn
-        public ICollection<FacultyDuty>? FacultyDuties { get; } = new HashSet<FacultyDuty>();
-
-        // Danh sách nhiệm vụ bộ môn giao cho giảng viên
-        public ICollection<DepartmentDuty>? DepartmentDuties { get; } = new HashSet<DepartmentDuty>();
+        // Danh sách nhiệm vụ khoa giao cho bộ môn/Danh sách nhiệm vụ bộ môn giao cho giảng viên
+        public ICollection<Duty>? Duties { get; } = new HashSet<Duty>();
 
 
         #endregion
