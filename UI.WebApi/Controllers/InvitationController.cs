@@ -19,11 +19,10 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Lấy danh sách lời mời theo GroupId
+        /// Lấy danh sách lời mời của sinh viên ở đợt hiện tại
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
-        /// GroupId: phải tồn tại trong bảng Group
         /// </remarks>
         [HttpGet]
         [Permission("Invitation.View")]
