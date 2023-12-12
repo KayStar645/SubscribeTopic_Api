@@ -66,9 +66,8 @@ namespace UI.WebApi.Controllers
         /// - Content: string, max(6000), ckeditor
         /// - Files:
         /// - TimeEnd: > hiện tại
-        /// - PeriodId: Đợt đăng ký
         /// - Type: F/D
-        /// + Nếu F: Bắt buộc DepartmentId, PeriodId: Bắt buộc Đợt đăng ký
+        /// + Nếu F: Bắt buộc DepartmentId
         /// + Nếu D: Bắt buộc TeacherId
         /// </remarks>
         [HttpPost]
