@@ -27,8 +27,7 @@ namespace Core.Application.DTOs.Student.Validators
                 .MaximumLength(190).WithMessage(ValidatorTransform.MaximumLength("name", 190));
 
             RuleFor(x => x.Gender)
-                .Must(gender => string.IsNullOrEmpty(gender) || gender == CommonTranform.male 
-                            || gender == CommonTranform.female || gender == CommonTranform.other)
+                .Must(gender => string.IsNullOrEmpty(gender) || CommonTranform.GetGender().Contains(gender))
                 .WithMessage(ValidatorTransform.Must("gender", CommonTranform.GetGender()));
 
             RuleFor(x => x.DateOfBirth)
