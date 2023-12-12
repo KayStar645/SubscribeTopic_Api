@@ -152,7 +152,7 @@ namespace Core.Application.Features.Students.Handlers.Queries
 
                     return friendDto;
                 })
-                .Where(friendDto => friendDto.StudentJoinId != null)
+                .Where(friendDto => friendDto.StudentJoinId != null && friendDto.Status != FriendDto.STATUS_APPROVE)
                 .ToList();
 
 
