@@ -29,7 +29,13 @@ namespace Core.Application.Features.Duties.Events
     {
         public async Task Handle(BeforeCreateDutyUpdateDutyEvent pEvent, CancellationToken cancellationToken)
         {
+            var userType = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Type)?.Value;
             var userId = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;
+
+            if (userType != CLAIMS_VALUES.TYPE_TEACHER)
+            {
+                throw new UnauthorizedException(StatusCodes.Status403Forbidden);
+            }    
 
             if (pEvent._duty.Type == Duty.TYPE_FACULTY)
             {
@@ -41,6 +47,14 @@ namespace Core.Application.Features.Duties.Events
                                         .Select(x => x.Department.FacultyId)
                                         .FirstAsync();
                 pEvent._duty.FacultyId = facultyId;
+
+                // Lấy đợt đăng ký hiện tại của khoa
+                var periodCurrentId = await pEvent._unitOfWork.Repository<RegistrationPeriod>()
+                                            .Query()
+                                            .Where(x => x.FacultyId == facultyId && x.IsActive == true)
+                                            .Select(x => x.Id)
+                                            .FirstOrDefaultAsync();
+                pEvent._duty.PeriodId = periodCurrentId;
             }
             else if (pEvent._duty.Type == Duty.TYPE_DEPARTMENT)
             {

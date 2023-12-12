@@ -30,14 +30,6 @@ namespace Core.Application.DTOs.Duty.Validators
                      return exists != null;
                  })
                  .WithMessage(id => ValidatorTransform.NotExistsValueInTable("departmentId", "department"));
-
-                RuleFor(x => x.PeriodId)
-                    .MustAsync(async (id, token) =>
-                    {
-                        var exists = await _unitOfWork.Repository<PeriodEnity>().GetByIdAsync(id);
-                        return exists != null;
-                    })
-                    .WithMessage(id => ValidatorTransform.NotExistsValueInTable("PeriodId", "RegistrationPeriod"));
             }
             else if(pType == DutyEntity.TYPE_DEPARTMENT)
             {

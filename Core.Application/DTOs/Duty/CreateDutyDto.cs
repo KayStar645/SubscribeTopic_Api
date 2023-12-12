@@ -10,8 +10,6 @@
 
         public DateTime? TimeEnd { get; set; }
 
-        public int? PeriodId { get; set; }
-
         public List<string>? Files { get; set; }
 
         public string? Type { get; set; }
