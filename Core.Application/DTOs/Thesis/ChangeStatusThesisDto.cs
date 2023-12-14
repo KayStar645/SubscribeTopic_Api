@@ -6,5 +6,7 @@ namespace Core.Application.DTOs.Thesis
     {
         public string? Status { get; set; }
 
+        public int? DutyId { get; set; }
+
     }
 }

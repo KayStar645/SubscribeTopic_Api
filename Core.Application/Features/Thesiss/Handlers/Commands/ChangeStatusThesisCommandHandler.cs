@@ -25,7 +25,7 @@ namespace Core.Application.Features.Thesiss.Handlers.Commands
 
         public async Task<Result<ThesisDto>> Handle(ChangeStatusThesisRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ChangeStatusThesisDtoValidator(_unitOfWork, (int)request.changeStatusThesis.Id);
+            var validator = new ChangeStatusThesisDtoValidator(_unitOfWork, (int)request.changeStatusThesis.Id, request.changeStatusThesis.Status);
             var validationResult = await validator.ValidateAsync(request.changeStatusThesis);
 
             if (validationResult.IsValid == false)
@@ -45,8 +45,11 @@ namespace Core.Application.Features.Thesiss.Handlers.Commands
                         (int)HttpStatusCode.NotFound
                     );
                 }
-
-                findThesis.CopyPropertiesFrom(request.changeStatusThesis);
+                findThesis.Status = request.changeStatusThesis.Status;
+                if(findThesis.Status == Thesis.STATUS_APPROVE_REQUEST)
+                {
+                    findThesis.DutyId = request.changeStatusThesis.DutyId;
+                }    
 
                 var newThesis = await _unitOfWork.Repository<Thesis>().UpdateAsync(findThesis);
                 await _unitOfWork.Save(cancellationToken);
