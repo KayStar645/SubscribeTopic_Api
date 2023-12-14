@@ -17,7 +17,7 @@ using System.Net;
 
 namespace Core.Application.Features.Thesiss.Handlers.Queries
 {
-    public class ListThesisRegistrationQueryHandler : IRequestHandler<ListThesisRegistrationRequest, PaginatedResult<List<ThesisDto>>>
+    public class ListThesisRegistrationQueryHandler : IRequestHandler<ListThesisRegistrationRequest, PaginatedResult<List<ThesisRegisteredDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -36,7 +36,7 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
         // Hiển thị 2 dạng
         // + Tất cả đề tài trong đợt đăng ký
         // + Những đề tài mà nhóm có thể đăng ký
-        public async Task<PaginatedResult<List<ThesisDto>>> Handle(ListThesisRegistrationRequest request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<ThesisRegisteredDto>>> Handle(ListThesisRegistrationRequest request, CancellationToken cancellationToken)
         {
             try
             {
@@ -63,26 +63,31 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
                 var query = _unitOfWork.Repository<Thesis>().GetAllInclude();                
                 query = query.Where(x => x.Status == Thesis.STATUS_APPROVED);
 
-                if(request.isAllDetail != true)
-                {
-                    // Kiểm tra số lượng thành viên nhóm
-                    var countMember = await _unitOfWork.Repository<StudentJoin>()
-                                                       .Query()
-                                                       .Where(x => x.RegistrationPeriodId == period.Id)
-                                                       .Include(x => x.Student)
-                                                       .Where(x => x.Student.InternalCode == userName)
-                                                       .Include(x => x.Group)
-                                                       .Select(x => x.Group.CountMember)
-                                                       .FirstOrDefaultAsync();
+                // Lấy tất cả đề tài trong đợt hiện tại đã được duyệt (phải có trong nhiệm vụ của khoa)
 
-                    query = query.Where(x => x.MinQuantity <= countMember && countMember <= x.MaxQuantity);
-                }    
+                /* Nên có Trạng thái đề tài đăng ký (đk được hay không) + Message thông báo lỗi
+                    + Đề tài có thể đăng ký được
+                    + Đề tài không thể đăng ký do số lượng thành viên không hợp lệ
+                    + Đề tài không thể đăng ký do nhóm khác đăng ký rồi
+                    + Đề tài không đăng ký được do không phù hợp chuyên ngành
+                    + 
 
+                 */
 
-                if (request.isAllDetail == true || request.isGetIssuer == true)
-                {
-                    query = _unitOfWork.Repository<Thesis>().AddInclude(query, x => x.LecturerThesis);
-                }
+                //if(request.isAllDetail != true)
+                //{
+                //    // Kiểm tra số lượng thành viên nhóm
+                //    var countMember = await _unitOfWork.Repository<StudentJoin>()
+                //                                       .Query()
+                //                                       .Where(x => x.RegistrationPeriodId == period.Id)
+                //                                       .Include(x => x.Student)
+                //                                       .Where(x => x.Student.InternalCode == userName)
+                //                                       .Include(x => x.Group)
+                //                                       .Select(x => x.Group.CountMember)
+                //                                       .FirstOrDefaultAsync();
+
+                //    query = query.Where(x => x.MinQuantity <= countMember && countMember <= x.MaxQuantity);
+                //}
 
                 query = _sieveProcessor.Apply(sieve, query);
 
@@ -90,67 +95,28 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
 
                 var thesiss = await query.ToListAsync();
 
-                var mapThesiss = _mapper.Map<List<ThesisDto>>(thesiss);
+                var mapThesiss = _mapper.Map<List<ThesisRegisteredDto>>(thesiss);
 
-                foreach (var thesis in mapThesiss)
-                {
-                    if (request.isAllDetail == true || request.isGetThesisInstructions == true)
-                    {
-                        var thesisInstructions = await _unitOfWork.Repository<ThesisInstruction>()
-                                                    .Query()
-                                                    .Where(x => x.ThesisId == thesis.Id)
-                                                    .Include(x => x.Teacher)
-                                                    .Select(x => x.Teacher)
-                                                    .ToListAsync();
-
-                        thesis.ThesisInstructions = _mapper.Map<List<TeacherDto>>(thesisInstructions);
-                    }
-
-                    if (request.isAllDetail == true || request.isGetThesisReviews == true)
-                    {
-                        var thesisReviews = await _unitOfWork.Repository<ThesisReview>()
-                                                    .Query()
-                                                    .Where(x => x.ThesisId == thesis.Id)
-                                                    .Include(x => x.Teacher)
-                                                    .Select(x => x.Teacher)
-                                                    .ToListAsync();
-
-                        thesis.ThesisReviews = _mapper.Map<List<TeacherDto>>(thesisReviews);
-                    }
-
-                    if (request.isAllDetail == true || request.isGetThesisMajors == true)
-                    {
-                        var thesisMajors = await _unitOfWork.Repository<ThesisMajor>()
-                                                    .Query()
-                                                    .Where(x => x.ThesisId == thesis.Id)
-                                                    .Include(x => x.Major)
-                                                    .Select(x => x.Major)
-                                                    .ToListAsync();
-
-                        thesis.ThesisMajors = _mapper.Map<List<MajorDto>>(thesisMajors);
-                    }
-                }
-
-                return PaginatedResult<List<ThesisDto>>.Success(
+                return PaginatedResult<List<ThesisRegisteredDto>>.Success(
                     mapThesiss, totalCount, request.page,
                     request.pageSize);
             }
 
             catch (NotFoundException ex)
             {
-                return PaginatedResult<List<ThesisDto>>.Failure((int)HttpStatusCode.NotFound, new List<string> { ex.Message });
+                return PaginatedResult<List<ThesisRegisteredDto>>.Failure((int)HttpStatusCode.NotFound, new List<string> { ex.Message });
             }
             catch (BadRequestException ex)
             {
-                return PaginatedResult<List<ThesisDto>>.Failure((int)HttpStatusCode.BadRequest, new List<string> { ex.Message });
+                return PaginatedResult<List<ThesisRegisteredDto>>.Failure((int)HttpStatusCode.BadRequest, new List<string> { ex.Message });
             }
             catch (UnauthorizedException ex)
             {
-                return PaginatedResult<List<ThesisDto>>.Failure(ex.ErrorCode, new List<string> { ex.Message });
+                return PaginatedResult<List<ThesisRegisteredDto>>.Failure(ex.ErrorCode, new List<string> { ex.Message });
             }
             catch (Exception ex)
             {
-                return PaginatedResult<List<ThesisDto>>.Failure((int)HttpStatusCode.InternalServerError, new List<string> { ex.Message });
+                return PaginatedResult<List<ThesisRegisteredDto>>.Failure((int)HttpStatusCode.InternalServerError, new List<string> { ex.Message });
             }
         }
     }
