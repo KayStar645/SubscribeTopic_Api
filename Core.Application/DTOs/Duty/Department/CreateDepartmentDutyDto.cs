@@ -1,6 +1,6 @@
-﻿namespace Core.Application.DTOs.Duty
+﻿namespace Core.Application.DTOs.Duty.Faculty
 {
-    public class CreateDutyDto : IDutyDto
+    public class CreateDepartmentDutyDto : IDutyDto
     {
         public string? Name { get; set; }
 
@@ -12,10 +12,8 @@
 
         public List<string>? Files { get; set; }
 
-        public string? Type { get; set; }
-
-        public int? DepartmentId { get; set; }
-
         public int? TeacherId { get; set; }
+
+        public int? DutyId { get; set; }
     }
 }

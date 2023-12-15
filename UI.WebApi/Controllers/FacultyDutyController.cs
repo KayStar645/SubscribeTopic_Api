@@ -1,4 +1,5 @@
 ﻿using Core.Application.DTOs.Duty;
+using Core.Application.DTOs.Duty.Faculty;
 using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Features.Duties.Requests.Commands;
@@ -14,27 +15,26 @@ namespace UI.WebApi.Controllers
 {
     [Route("api/duty")]
     [ApiController]
-    public class DutyController : ControllerBase
+    public class FacultyDutyController : ControllerBase
     {
 
         private readonly IMediator _mediator;
 
-        public DutyController(IMediator mediator)
+        public FacultyDutyController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         /// <summary>
-        /// Lấy danh sách nhiệm vụ của khoa/của bộ môn
+        /// Lấy danh sách nhiệm vụ của khoa
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
-        /// facultyId/industryId: required
         /// 
         /// </remarks>
         [HttpGet]
         [Permission("Duty.View")]
-        public async Task<ActionResult<List<DutyDto>>> Get([FromQuery] ListDutyRequest request)
+        public async Task<ActionResult> Get([FromQuery] ListFacultyDutyRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -50,7 +50,7 @@ namespace UI.WebApi.Controllers
         /// </remarks>
         [HttpGet("detail")]
         [Permission("Duty.View")]
-        public async Task<ActionResult<DutyDto>> Get([FromQuery] DetailDutyRequest request)
+        public async Task<ActionResult> Get([FromQuery] DetailFacultyDutyRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -66,15 +66,12 @@ namespace UI.WebApi.Controllers
         /// - Content: string, max(6000), ckeditor
         /// - Files:
         /// - TimeEnd: > hiện tại
-        /// - Type: F/D
-        /// + Nếu F: Bắt buộc DepartmentId
-        /// + Nếu D: Bắt buộc TeacherId
         /// </remarks>
         [HttpPost]
         [Permission("Duty.Create")]
-        public async Task<ActionResult<DutyDto>> Post([FromBody] CreateDutyDto DutyRequest)
+        public async Task<ActionResult> Post([FromBody] CreateFacultyDutyDto DutyRequest)
         {
-            var command = new CreateDutyRequest { createDutyDto = DutyRequest };
+            var command = new CreateFacultyDutyRequest { createFacultyDutyDto = DutyRequest };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
@@ -95,7 +92,7 @@ namespace UI.WebApi.Controllers
         [Permission("Duty.Update")]
         public async Task<ActionResult> Put([FromBody] UpdateDutyDto DutyRequest)
         {
-            var command = new UpdateDutyRequest { updateDutyDto = DutyRequest };
+            var command = new UpdateFacultyDutyRequest { updateDutyDto = DutyRequest };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
@@ -119,17 +116,17 @@ namespace UI.WebApi.Controllers
             }
             catch (NotFoundException ex)
             {
-                var responses = Result<DutyDto>.Failure(ex.Message, (int)HttpStatusCode.NotFound);
+                var responses = Result<FacultyDutyDto>.Failure(ex.Message, (int)HttpStatusCode.NotFound);
                 return StatusCode(responses.Code, responses);
             }
             catch (BadRequestException ex)
             {
-                var responses = Result<DutyDto>.Failure(ex.Message, (int)HttpStatusCode.BadRequest);
+                var responses = Result<FacultyDutyDto>.Failure(ex.Message, (int)HttpStatusCode.BadRequest);
                 return StatusCode(responses.Code, responses);
             }
             catch (Exception ex)
             {
-                var responses = Result<DutyDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
+                var responses = Result<FacultyDutyDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
                 return StatusCode(responses.Code, responses);
             }
         }

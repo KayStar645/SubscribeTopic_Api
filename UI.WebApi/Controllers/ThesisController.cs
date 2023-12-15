@@ -33,7 +33,7 @@ namespace UI.WebApi.Controllers
         /// </remarks>
         [HttpGet]
         [Permission("Thesis.View")]
-        public async Task<ActionResult<List<ThesisDto>>> Get([FromQuery] ListThesisRequest request)
+        public async Task<ActionResult> Get([FromQuery] ListThesisRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -49,7 +49,7 @@ namespace UI.WebApi.Controllers
         /// </remarks>
         [HttpGet("detail")]
         [Permission("Thesis.View")]
-        public async Task<ActionResult<ThesisDto>> Get([FromQuery] DetailThesisRequest request)
+        public async Task<ActionResult> Get([FromQuery] DetailThesisRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -66,7 +66,7 @@ namespace UI.WebApi.Controllers
         /// </remarks>
         [HttpPost]
         [Permission("Thesis.Create")]
-        public async Task<ActionResult<ThesisDto>> Post([FromBody] CreateThesisDto request)
+        public async Task<ActionResult> Post([FromBody] CreateThesisDto request)
         {
             var command = new CreateThesisRequest { createThesisDto = request };
             var response = await _mediator.Send(command);
@@ -156,7 +156,7 @@ namespace UI.WebApi.Controllers
         /// </remarks>
         [HttpGet("ListThesisRegistration")]
         [Permission("Thesis.Student.View")]
-        public async Task<ActionResult<List<ThesisDto>>> Get([FromQuery] ListThesisRegistrationRequest request)
+        public async Task<ActionResult> Get([FromQuery] ListThesisRegistrationRequest request)
         {
             var response = await _mediator.Send(request);
 

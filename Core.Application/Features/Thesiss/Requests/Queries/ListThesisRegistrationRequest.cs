@@ -1,18 +1,25 @@
-﻿using Core.Application.DTOs.Thesis;
+﻿using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Thesis;
 using Core.Application.Features.Base.Requests.Queries;
+using FluentValidation;
 
 namespace Core.Application.Features.Thesiss.Requests.Queries
 {
-    public class ListThesisRegistrationRequest : ListBaseRequest<ThesisDto>
+    public class ListThesisRegistrationRequest : ListBaseRequest<ThesisRegisteredDto>
     {
-        public bool? isGetIssuer { get; set; }
-
-        public bool? isGetThesisInstructions { get; set; }
-
-        public bool? isGetThesisReviews { get; set; }
-
-        public bool? isGetThesisMajors { get; set; }
-
         public bool? isGetAll { get; set; }
+    }
+
+    public class ListThesisRegistrationValidator : AbstractValidator<ListThesisRegistrationRequest>
+    {
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ListThesisRegistrationValidator(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+
+            Include(new ListBaseRequestValidator<ThesisRegisteredDto>());
+        }
     }
 }

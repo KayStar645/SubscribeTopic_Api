@@ -1,12 +1,10 @@
 ﻿using Core.Application.DTOs.Common;
 using Core.Application.DTOs.Department;
-using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.Teacher;
-using KLTN.Core.Application.DTOs.Common;
 
-namespace Core.Application.DTOs.Duty
+namespace Core.Application.DTOs.Duty.Faculty
 {
-    public class DutyDto : BaseDto
+    public class DepartmentDutyDto
     {
         public string? Name { get; set; }
 
@@ -18,12 +16,6 @@ namespace Core.Application.DTOs.Duty
 
         public List<FileDto>? Files { get; set; }
 
-        public string? Type { get; set; }
-
-        public int? FacultyId { get; set; }
-
-        public FacultyDto? Faculty { get; set; }
-
         public int? DepartmentId { get; set; }
 
         public DepartmentDto? Department { get; set; }
@@ -31,5 +23,9 @@ namespace Core.Application.DTOs.Duty
         public int? TeacherId { get; set; }
 
         public TeacherDto? Teacher { get; set; }
+
+        public int? DutyId { get; set; }
+
+        public FacultyDutyDto? ForDuty { get; set; }
     }
 }

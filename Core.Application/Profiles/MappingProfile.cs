@@ -2,6 +2,7 @@
 using Core.Application.DTOs.Common;
 using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Duty;
+using Core.Application.DTOs.Duty.Faculty;
 using Core.Application.DTOs.Exchanges;
 using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.Feedback;
@@ -103,7 +104,10 @@ namespace Core.Application.Profiles
             CreateMap<Invitation, SendInvitationDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<ThesisDto>>().ReverseMap();
+            CreateMap<SieveModel, ListBaseRequest<ThesisRegisteredDto>>().ReverseMap();
+            CreateMap<Thesis, ThesisRegisteredDto>().ReverseMap();
             CreateMap<Thesis, ThesisDto>().ReverseMap();
+            CreateMap<Thesis, ThesisRegisteredDto>().ReverseMap();
             CreateMap<Thesis, CreateThesisDto>().ReverseMap();
             CreateMap<Thesis, UpdateThesisDto>().ReverseMap();
             CreateMap<ThesisDto, CreateThesisDto>().ReverseMap();
@@ -139,10 +143,13 @@ namespace Core.Application.Profiles
             CreateMap<ReportSchedule, CreateReportScheduleDto>().ReverseMap();
             CreateMap<ReportSchedule, UpdateReportScheduleDto>().ReverseMap();
 
-            CreateMap<SieveModel, ListBaseRequest<DutyDto>>().ReverseMap();
-            CreateMap<Duty, DutyDto>().ReverseMap();
-            CreateMap<Duty, CreateDutyDto>().ReverseMap();
+            CreateMap<SieveModel, ListBaseRequest<FacultyDutyDto>>().ReverseMap();
+            CreateMap<Duty, FacultyDutyDto>().ReverseMap();
+            CreateMap<Duty, CreateFacultyDutyDto>().ReverseMap();
             CreateMap<Duty, UpdateDutyDto>().ReverseMap();
+            CreateMap<SieveModel, ListBaseRequest<DepartmentDutyDto>>().ReverseMap();
+            CreateMap<Duty, DepartmentDutyDto>().ReverseMap();
+            CreateMap<Duty, CreateDepartmentDutyDto>().ReverseMap();
 
 
         }

@@ -1,8 +1,6 @@
-﻿using KLTN.Core.Application.DTOs.Common;
-
-namespace Core.Application.DTOs.Duty
+﻿namespace Core.Application.DTOs.Duty.Faculty
 {
-    public class UpdateDutyDto : BaseDto, IDutyDto
+    public class CreateFacultyDutyDto : IDutyDto
     {
         public string? Name { get; set; }
 
@@ -13,5 +11,7 @@ namespace Core.Application.DTOs.Duty
         public DateTime? TimeEnd { get; set; }
 
         public List<string>? Files { get; set; }
+
+        public int? DepartmentId { get; set; }
     }
 }

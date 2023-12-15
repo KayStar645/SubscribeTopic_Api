@@ -2,7 +2,6 @@
 using Core.Application.Services;
 using Core.Application.Transform;
 using FluentValidation;
-using DutyEntity = Core.Domain.Entities.Duty;
 
 namespace Core.Application.DTOs.Duty.Validators
 {
@@ -12,16 +11,6 @@ namespace Core.Application.DTOs.Duty.Validators
         public DutyDtoValidator(IUnitOfWork unitOfWork) 
         {
             _unitOfWork = unitOfWork;
-
-            RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidatorTransform.Required("name"))
-                .MaximumLength(190).WithMessage(ValidatorTransform.MaximumLength("name", 190))
-            .MustAsync(async (name, token) =>
-                {
-                    var exists = await _unitOfWork.Repository<DutyEntity>()
-                                        .FirstOrDefaultAsync(x => x.Name == name);
-                    return exists == null;
-                }).WithMessage(ValidatorTransform.Exists("name"));
 
             RuleFor(x => x.Content)
                 .MaximumLength(190).WithMessage(ValidatorTransform.MaximumLength("name", 6000));
