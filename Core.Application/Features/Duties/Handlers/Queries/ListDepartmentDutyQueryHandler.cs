@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Duty;
+using Core.Application.DTOs.Duty.Faculty;
 using Core.Application.Features.Duties.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
@@ -12,27 +12,27 @@ using System.Net;
 
 namespace Core.Application.Features.Duties.Handlers.Queries
 {
-    public class ListDutyQueryHandler : IRequestHandler<ListDutyRequest, PaginatedResult<List<DutyDto>>>
+    public class ListDepartmentDutyQueryHandler : IRequestHandler<ListDepartmentDutyRequest, PaginatedResult<List<DepartmentDutyDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
-        public ListDutyQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
+        public ListDepartmentDutyQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
         }
 
-        public async Task<PaginatedResult<List<DutyDto>>> Handle(ListDutyRequest request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<DepartmentDutyDto>>> Handle(ListDepartmentDutyRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListDutyValidator(_unitOfWork);
+            var validator = new ListDepartmentDutyValidator(_unitOfWork);
             var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {
                 var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
-                return PaginatedResult<List<DutyDto>>
+                return PaginatedResult<List<DepartmentDutyDto>>
                     .Failure((int)HttpStatusCode.BadRequest, errorMessages);
             }
 
@@ -40,12 +40,8 @@ namespace Core.Application.Features.Duties.Handlers.Queries
 
             var query = _unitOfWork.Repository<Duty>().GetAllInclude();
 
-            query = query.Where(x => x.Type == request.type);
+            query = query.Where(x => x.Type == Duty.TYPE_DEPARTMENT);
 
-            if (request.isAllDetail || request.isGetFaculty == true)
-            {
-                query = query.Include(x => x.Faculty);
-            }
             if (request.isAllDetail || request.isGetDepartment == true)
             {
                 query = query.Include(x => x.Department);
@@ -54,6 +50,10 @@ namespace Core.Application.Features.Duties.Handlers.Queries
             {
                 query = query.Include(x => x.Teacher);
             }
+            if (request.isAllDetail || request.isGetForDuty == true)
+            {
+                query = query.Include(x => x.ForDuty);
+            }
 
             query = _sieveProcessor.Apply(sieve, query);
 
@@ -61,9 +61,9 @@ namespace Core.Application.Features.Duties.Handlers.Queries
 
             var duties = await query.ToListAsync();
 
-            var mapDuties = _mapper.Map<List<DutyDto>>(duties);
+            var mapDuties = _mapper.Map<List<DepartmentDutyDto>>(duties);
 
-            return PaginatedResult<List<DutyDto>>.Success(
+            return PaginatedResult<List<DepartmentDutyDto>>.Success(
                 mapDuties, totalCount, request.page,
                 request.pageSize);
         }

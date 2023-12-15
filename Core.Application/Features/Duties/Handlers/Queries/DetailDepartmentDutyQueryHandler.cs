@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Duty;
+using Core.Application.DTOs.Duty.Faculty;
 using Core.Application.Features.Duties.Requests.Queries;
 using Core.Application.Responses;
 using Core.Application.Transform;
@@ -12,18 +12,18 @@ using System.Net;
 
 namespace Core.Application.Features.Duties.Handlers.Queries
 {
-    public class DetailDutyQueryHandler : IRequestHandler<DetailDutyRequest, Result<DutyDto>>
+    public class DetailDepartmentDutyQueryHandler : IRequestHandler<DetailDepartmentDutyRequest, Result<DepartmentDutyDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DetailDutyQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public DetailDepartmentDutyQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<DutyDto>> Handle(DetailDutyRequest request, CancellationToken cancellationToken)
+        public async Task<Result<DepartmentDutyDto>> Handle(DetailDepartmentDutyRequest request, CancellationToken cancellationToken)
         {
             var validator = new DetailBaseRequestValidator();
             var result = await validator.ValidateAsync(request);
@@ -31,17 +31,14 @@ namespace Core.Application.Features.Duties.Handlers.Queries
             if (result.IsValid == false)
             {
                 var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
-                return Result<DutyDto>.Failure(string.Join(", ", errorMessages), (int)HttpStatusCode.BadRequest);
+                return Result<DepartmentDutyDto>.Failure(string.Join(", ", errorMessages), (int)HttpStatusCode.BadRequest);
             }
 
             try
             {
-                var query = _unitOfWork.Repository<Duty>().GetByIdInclude(request.id);
+                var query = _unitOfWork.Repository<Duty>().GetByIdInclude(request.id)
+                                        .Where(x => x.Type == Duty.TYPE_DEPARTMENT);
 
-                if (request.isAllDetail || request.isGetFaculty == true)
-                {
-                    query = query.Include(x => x.Faculty);
-                }
                 if (request.isAllDetail || request.isGetDepartment == true)
                 {
                     query = query.Include(x => x.Department);
@@ -50,24 +47,28 @@ namespace Core.Application.Features.Duties.Handlers.Queries
                 {
                     query = query.Include(x => x.Teacher);
                 }
+                if (request.isAllDetail || request.isGetForDuty == true)
+                {
+                    query = query.Include(x => x.ForDuty);
+                }
 
-                var findDuty = await query.SingleAsync();
+                var findDuty = await query.SingleOrDefaultAsync();
 
                 if (findDuty is null)
                 {
-                    return Result<DutyDto>.Failure(
+                    return Result<DepartmentDutyDto>.Failure(
                         ValidatorTransform.NotExistsValue("Id", request.id.ToString()),
                         (int)HttpStatusCode.NotFound
                     );
                 }
 
-                var dutyDto = _mapper.Map<DutyDto>(findDuty);
+                var DepartmentDutyDto = _mapper.Map<DepartmentDutyDto>(findDuty);
 
-                return Result<DutyDto>.Success(dutyDto, (int)HttpStatusCode.OK);
+                return Result<DepartmentDutyDto>.Success(DepartmentDutyDto, (int)HttpStatusCode.OK);
             }
             catch (Exception ex)
             {
-                return Result<DutyDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
+                return Result<DepartmentDutyDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

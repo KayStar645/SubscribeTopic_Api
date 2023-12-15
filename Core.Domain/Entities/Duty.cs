@@ -59,6 +59,12 @@ namespace Core.Domain.Entities
         [ForeignKey("PeriodId")]
         public RegistrationPeriod? RegistrationPeriod { get; set; }
 
+        // Nhiệm vụ này của nhiệm vụ nào (Nếu là nhiệm vụ khoa)
+        [Sieve(CanFilter = true, CanSort = true)]
+        public int? DutyId { get; set; }
+        [ForeignKey("DutyId")]
+        public Duty? ForDuty { get; set; }
+
         #endregion
 
 

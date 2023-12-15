@@ -60,8 +60,10 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
                 }
 
                 var sieve = _mapper.Map<SieveModel>(request);
-                var query = _unitOfWork.Repository<Thesis>().GetAllInclude();                
-                query = query.Where(x => x.Status == Thesis.STATUS_APPROVED);
+                // Tất cả đề tài được duyệt
+                var query = _unitOfWork.Repository<Thesis>().Query().Where(x => x.Status == Thesis.STATUS_APPROVED);
+                // Đề tài của khoa mình
+                query = query.Where(x => x.Duty.Department.FacultyId == int.Parse(facultyId));
 
                 // Lấy tất cả đề tài trong đợt hiện tại đã được duyệt (phải có trong nhiệm vụ của khoa)
 

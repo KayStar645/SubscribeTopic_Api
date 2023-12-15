@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Duty;
+using Core.Application.DTOs.Duty.Faculty;
 using Core.Application.DTOs.Duty.Validators;
 using Core.Application.Features.Duties.Events;
 using Core.Application.Features.Duties.Requests.Commands;
@@ -13,33 +13,34 @@ using System.Net;
 
 namespace Core.Application.Features.Duties.Handlers.Commands
 {
-    public class CreateDutyCommandHandler : IRequestHandler<CreateDutyRequest, Result<DutyDto>>
+    public class CreateFacultyDutyCommandHandler : IRequestHandler<CreateFacultyDutyRequest, Result<FacultyDutyDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IServiceProvider _serviceProvider;
 
-        public CreateDutyCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IServiceProvider serviceProvider)
+        public CreateFacultyDutyCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IServiceProvider serviceProvider)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<Result<DutyDto>> Handle(CreateDutyRequest request, CancellationToken cancellationToken)
+        public async Task<Result<FacultyDutyDto>> Handle(CreateFacultyDutyRequest request, CancellationToken cancellationToken)
         {
-            var validator = new CreateDutyDtoValidator(_unitOfWork, request?.createDutyDto?.Type);
-            var validationResult = await validator.ValidateAsync(request.createDutyDto);
+            var validator = new CreateFacultyDutyDtoValidator(_unitOfWork);
+            var validationResult = await validator.ValidateAsync(request.createFacultyDutyDto);
 
             if (validationResult.IsValid == false)
             {
                 var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
-                return Result<DutyDto>.Failure(errorMessages, (int)HttpStatusCode.BadRequest);
+                return Result<FacultyDutyDto>.Failure(errorMessages, (int)HttpStatusCode.BadRequest);
             }
 
             try
             {
-                var duty = _mapper.Map<Duty>(request.createDutyDto);
+                var duty = _mapper.Map<Duty>(request.createFacultyDutyDto);
+                duty.Type = Duty.TYPE_FACULTY;
 
                 await Task.Run(async () =>
                 {
@@ -49,7 +50,7 @@ namespace Core.Application.Features.Duties.Handlers.Commands
                         var httpContextAccessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
                         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-                        await mediator.Publish(new BeforeCreateDutyUpdateDutyEvent(duty, httpContextAccessor, unitOfWork));
+                        await mediator.Publish(new BeforeCreateFacultyDutyUpdateDutyEvent(duty, httpContextAccessor, unitOfWork));
 
                     }
                 });
@@ -57,13 +58,13 @@ namespace Core.Application.Features.Duties.Handlers.Commands
                 var newDuty = await _unitOfWork.Repository<Duty>().AddAsync(duty);
                 await _unitOfWork.Save(cancellationToken);
 
-                var dutyDto = _mapper.Map<DutyDto>(newDuty);
+                var FacultyDutyDto = _mapper.Map<FacultyDutyDto>(newDuty);
 
-                return Result<DutyDto>.Success(dutyDto, (int)HttpStatusCode.Created);
+                return Result<FacultyDutyDto>.Success(FacultyDutyDto, (int)HttpStatusCode.Created);
             }
             catch (Exception ex)
             {
-                return Result<DutyDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
+                return Result<FacultyDutyDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
     }
