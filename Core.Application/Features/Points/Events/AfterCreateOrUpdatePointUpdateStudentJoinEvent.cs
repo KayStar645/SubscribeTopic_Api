@@ -42,8 +42,9 @@ namespace Core.Application.Features.Points.Events
 
             var studentJoin = await pEvent._unitOfWork.Repository<StudentJoin>()
                                 .FirstOrDefaultAsync(x => x.Id == pEvent._point.StudentJoinId);
-            studentJoin.Score = (pointInstruction + pointReview) / 2;
+            studentJoin.Score = (pointInstruction ?? 0 + pointReview ?? 0) / 2;
             await pEvent._unitOfWork.Repository<StudentJoin>().UpdateAsync(studentJoin);
+            await pEvent._unitOfWork.Save();
         }
 
     }

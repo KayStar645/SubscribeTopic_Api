@@ -15,13 +15,13 @@ using System.Net;
 
 namespace Core.Application.Features.Teachers.Handlers.Queries
 {
-    public class ListTeacherRequestHandler : IRequestHandler<ListTeacherRequest, PaginatedResult<List<TeacherDto>>>
+    public class ListTeacherQueryHandler : IRequestHandler<ListTeacherRequest, PaginatedResult<List<TeacherDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
 
-        public ListTeacherRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
+        public ListTeacherQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
