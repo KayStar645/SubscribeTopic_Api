@@ -54,6 +54,20 @@ namespace Core.Application.Features.ThesisRegistrations.Handlers.Commands
             await _unitOfWork.Repository<ThesisRegistration>().DeleteAsync(entity);
             await _unitOfWork.Save();
 
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            Task.Run(async () =>
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                    var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+                    await mediator.Publish(new AfterDeleteThesisRegistrationDeletePointEvent(entity, unitOfWork));
+
+                }
+            });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
             return Unit.Value;
         }
     }

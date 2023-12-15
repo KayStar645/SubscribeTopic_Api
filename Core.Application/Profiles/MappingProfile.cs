@@ -13,6 +13,7 @@ using Core.Application.DTOs.Job;
 using Core.Application.DTOs.JobResults;
 using Core.Application.DTOs.Major;
 using Core.Application.DTOs.Notification;
+using Core.Application.DTOs.Point;
 using Core.Application.DTOs.RegistrationPeriod;
 using Core.Application.DTOs.ReportSchedule;
 using Core.Application.DTOs.Student;
@@ -150,6 +151,10 @@ namespace Core.Application.Profiles
             CreateMap<SieveModel, ListBaseRequest<DepartmentDutyDto>>().ReverseMap();
             CreateMap<Duty, DepartmentDutyDto>().ReverseMap();
             CreateMap<Duty, CreateDepartmentDutyDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<PointDto>>().ReverseMap();
+            CreateMap<Point, CreateOrUpdatePointDto>().ReverseMap();
+            CreateMap<Point, PointDto>().ReverseMap();
 
 
         }

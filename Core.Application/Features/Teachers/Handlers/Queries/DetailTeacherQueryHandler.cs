@@ -13,12 +13,12 @@ using Core.Application.DTOs.Faculty;
 
 namespace Core.Application.Features.Teachers.Handlers.Queries
 {
-    public class DetailTeacherRequestHandler : IRequestHandler<DetailTeacherRequest, Result<TeacherDto>>
+    public class DetailTeacherQueryHandler : IRequestHandler<DetailTeacherRequest, Result<TeacherDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DetailTeacherRequestHandler(IUnitOfWork unitOfWork, IMapper mapper) 
+        public DetailTeacherQueryHandler(IUnitOfWork unitOfWork, IMapper mapper) 
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;

@@ -68,6 +68,7 @@ namespace Core.Application.Features.Thesiss.Handlers.Commands
                         await mediator.Publish(new AfterUpdateThesisCreateOrUpdateThesisInstructionsEvent(request.updateThesisDto, thesisDto, unitOfWork));
                         await mediator.Publish(new AfterUpdateThesisCreateOrUpdateThesisReviewsEvent(request.updateThesisDto, thesisDto, unitOfWork));
                         await mediator.Publish(new AfterUpdateThesisCreateOrUpdateThesisMajorsEvent(request.updateThesisDto, thesisDto, unitOfWork));
+                        await mediator.Publish(new AfterUpdateThesisCreateOrUpdatePointEvent(newThesis, unitOfWork));
 
                     }
                 });
