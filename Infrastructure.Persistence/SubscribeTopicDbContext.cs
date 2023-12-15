@@ -46,5 +46,6 @@ namespace Infrastructure.Persistence
         public DbSet<Exchange> Exchanges { get; set; }
         public DbSet<ReportSchedule> ReportSchedules { get; set; }
         public DbSet<Duty> Duties { get; set; }
+        public DbSet<Point> Point { get; set; }
     }
 }

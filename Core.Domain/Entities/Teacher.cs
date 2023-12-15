@@ -89,6 +89,9 @@ namespace Core.Domain.Entities
         // Lịch hướng dẫn của giảng viên này
         public ICollection<ReportSchedule> ReportSchedules { get; set; } = new HashSet<ReportSchedule>();
 
+        // Danh sách điểm số giảng viên chấm
+        public ICollection<Point> Points = new HashSet<Point>();
+
         #endregion
 
 

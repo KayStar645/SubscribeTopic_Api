@@ -32,4 +32,9 @@
     <ProjectReference Include="..\Sieve\Sieve.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Points\Handlers\Queries\" />
+    <Folder Include="Features\Points\Requests\Queries\" />
+  </ItemGroup>
+
 </Project>
