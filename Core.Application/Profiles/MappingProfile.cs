@@ -104,6 +104,8 @@ namespace Core.Application.Profiles
             CreateMap<Invitation, SendInvitationDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<ThesisDto>>().ReverseMap();
+            CreateMap<SieveModel, ListBaseRequest<ThesisRegisteredDto>>().ReverseMap();
+            CreateMap<Thesis, ThesisRegisteredDto>().ReverseMap();
             CreateMap<Thesis, ThesisDto>().ReverseMap();
             CreateMap<Thesis, ThesisRegisteredDto>().ReverseMap();
             CreateMap<Thesis, CreateThesisDto>().ReverseMap();
