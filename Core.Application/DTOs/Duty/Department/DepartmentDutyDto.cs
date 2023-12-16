@@ -1,10 +1,11 @@
 ﻿using Core.Application.DTOs.Common;
 using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Teacher;
+using KLTN.Core.Application.DTOs.Common;
 
 namespace Core.Application.DTOs.Duty.Faculty
 {
-    public class DepartmentDutyDto
+    public class DepartmentDutyDto : BaseDto
     {
         public string? Name { get; set; }
 

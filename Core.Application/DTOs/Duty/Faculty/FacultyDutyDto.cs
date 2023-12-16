@@ -2,10 +2,11 @@
 using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Faculty;
 using Core.Application.DTOs.RegistrationPeriod;
+using KLTN.Core.Application.DTOs.Common;
 
 namespace Core.Application.DTOs.Duty.Faculty
 {
-    public class FacultyDutyDto
+    public class FacultyDutyDto : BaseDto
     {
         public string? Name { get; set; }
 
