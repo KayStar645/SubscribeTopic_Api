@@ -58,9 +58,23 @@ namespace Core.Application.Features.ThesisRegistrations.Handlers.Commands
                 var newThesisRegistration = await _unitOfWork.Repository<ThesisRegistration>().AddAsync(thesisRegistration);
                 await _unitOfWork.Save(cancellationToken);
 
-                var ThesisRegistrationDto = _mapper.Map<ThesisRegistrationDto>(newThesisRegistration);
+                var thesisRegistrationDto = _mapper.Map<ThesisRegistrationDto>(newThesisRegistration);
 
-                return Result<ThesisRegistrationDto>.Success(ThesisRegistrationDto, (int)HttpStatusCode.Created);
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                Task.Run(async () =>
+                {
+                    using (var scope = _serviceProvider.CreateScope())
+                    {
+                        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+                        await mediator.Publish(new AfterCreateThesisRegistrationCreatePointEvent(newThesisRegistration, unitOfWork));
+
+                    }
+                });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
+                return Result<ThesisRegistrationDto>.Success(thesisRegistrationDto, (int)HttpStatusCode.Created);
             }
             catch (NotFoundException ex)
             {

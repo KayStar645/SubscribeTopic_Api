@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Core.Application.Constants;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Group;
+using Core.Application.DTOs.Point;
 using Core.Application.Exceptions;
-using Core.Application.Features.Groups.Requests.Queries;
+using Core.Application.Features.Points.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
@@ -13,16 +13,16 @@ using Sieve.Models;
 using Sieve.Services.Interface;
 using System.Net;
 
-namespace Core.Application.Features.Groups.Handlers.Queries
+namespace Core.Application.Features.Points.Handlers.Queries
 {
-    public class ListGroupQueryHandler : IRequestHandler<ListGroupRequest, PaginatedResult<List<GroupDto>>>
+    public class ListPointOfGroupQueryHandler : IRequestHandler<ListPointOfGroupRequest, PaginatedResult<List<PointDto>>>
     {
-        readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
         private readonly IHttpContextAccessor _httpContext;
 
-        public ListGroupQueryHandler(IUnitOfWork unitOfWork, IMapper mapper,
+        public ListPointOfGroupQueryHandler(IUnitOfWork unitOfWork, IMapper mapper,
             ISieveProcessor sieveProcessor, IHttpContextAccessor httpContext)
         {
             _unitOfWork = unitOfWork;
@@ -30,21 +30,21 @@ namespace Core.Application.Features.Groups.Handlers.Queries
             _sieveProcessor = sieveProcessor;
             _httpContext = httpContext;
         }
-        public async Task<PaginatedResult<List<GroupDto>>> Handle(ListGroupRequest request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<List<PointDto>>> Handle(ListPointOfGroupRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListGroupDtoValidator(_unitOfWork, request.isGetGroupMe);
+            var validator = new ListPointOfGroupValidator(_unitOfWork, request.isGetGroupMe);
             var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
             {
                 var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
-                return PaginatedResult<List<GroupDto>>
+                return PaginatedResult<List<PointDto>>
                     .Failure((int)HttpStatusCode.BadRequest, errorMessages);
             }
 
             var sieve = _mapper.Map<SieveModel>(request);
 
-            var query = _unitOfWork.Repository<Group>().GetAllInclude();
+            var query = _unitOfWork.Repository<Point>().GetAllInclude();
 
             if (request.isGetGroupMe == true)
             {
@@ -73,43 +73,38 @@ namespace Core.Application.Features.Groups.Handlers.Queries
                 {
                     throw new UnauthorizedException(StatusCodes.Status403Forbidden);
                 }
-                query = _unitOfWork.Repository<Group>().Query()
-                                 .Join(
-                                     _unitOfWork.Repository<StudentJoin>().Query(),
-                                     g => g.Id,
-                                     sj => sj.GroupId,
-                                     (g, sj) => new { Group = g, StudentJoin = sj }
-                                 )
-                                 .Where(joined => joined.StudentJoin.Student.UserId == int.Parse(userId) &&
-                                                  joined.StudentJoin.RegistrationPeriodId == periodId)
-                                 .Select(joined => joined.Group);
-            }
-            else
-            {
-                query = query.Where(x => x.Leader.Student.Major.Industry.FacultyId == request.facultyId);
-            }
-
-            if (request.isAllDetail)
-            {
-                query = _unitOfWork.Repository<Group>().AddInclude(query, x => x.Leader.Student);
-            }
-            else
-            {
-                if (request.isGetLeader == true)
+                var groupId = await _unitOfWork.Repository<StudentJoin>()
+                                .Query()
+                                .Where(x => x.Student.UserId == int.Parse(userId) &&
+                                            x.RegistrationPeriodId == periodId)
+                                .Select(x => x.GroupId)
+                                .FirstOrDefaultAsync();
+                if (groupId == null)
                 {
-                    query = _unitOfWork.Repository<Group>().AddInclude(query, x => x.Leader.Student);
+                    throw new UnauthorizedException(StatusCodes.Status403Forbidden);
                 }
-            }
 
-            query = _sieveProcessor.Apply(sieve, query);
+                query = query.Where(x => x.StudentJoin.GroupId == groupId);
+            }
+            else
+            {
+                query = query.Where(x => x.StudentJoin.GroupId == request.groupId);
+            }    
 
             int totalCount = await query.CountAsync();
 
-            var groups = await query.ToListAsync();
+            query = query.Include(x => x.Teacher)
+                         .Include(x => x.StudentJoin)
+                            .ThenInclude(x => x.Student);
 
-            var mapGroups = _mapper.Map<List<GroupDto>>(groups);
-            return PaginatedResult<List<GroupDto>>.Success(
-                mapGroups, totalCount, request.page,
+            query = _sieveProcessor.Apply(sieve, query);
+
+
+            var Points = await query.ToListAsync();
+
+            var mapPoints = _mapper.Map<List<PointDto>>(Points);
+            return PaginatedResult<List<PointDto>>.Success(
+                mapPoints, totalCount, request.page,
                 request.pageSize);
         }
     }

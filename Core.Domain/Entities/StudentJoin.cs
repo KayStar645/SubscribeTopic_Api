@@ -45,6 +45,9 @@ namespace Core.Domain.Entities
 
         public ICollection<Invitation> Invitations = new HashSet<Invitation>();
 
+        // Danh sách điểm số của sinh viên
+        public ICollection<Point> Points = new HashSet<Point>();
+
         #endregion
 
 
