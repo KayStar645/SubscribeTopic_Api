@@ -69,8 +69,8 @@ namespace Core.Application.Features.ReportSchedule.Handlers.Queries
                                                     .Select(x => x.ThesisId)
                                                     .ToListAsync();
                     var thesisId = thesisInsId.Union(thesisRevId).ToList();
-                    query = query.Where(x => thesisId.Contains(x.Thesis.ThesisRegistration.ThesisId));
-                    query = query.Where(x => (thesisRevId.Contains(x.Thesis.ThesisRegistration.ThesisId) && 
+                    query = query.Where(x => x.Thesis.ThesisInstructions.Any(x => thesisInsId.Contains(x.ThesisId)));
+                    query = query.Where(x => (x.Thesis.ThesisReviews.Any(x => thesisRevId.Contains(x.ThesisId)) &&
                                              x.Type == ReportScheduleEntity.TYPE_WEEKLY) == false);
                 }
                 else if (userType == CLAIMS_VALUES.TYPE_STUDENT)
