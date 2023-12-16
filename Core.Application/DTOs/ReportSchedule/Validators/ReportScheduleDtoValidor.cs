@@ -10,13 +10,18 @@ namespace Core.Application.DTOs.ReportSchedule.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public ReportScheduleDtoValidor(IUnitOfWork unitOfWork)
+        public ReportScheduleDtoValidor(IUnitOfWork unitOfWork, DateTime start)
         {
             _unitOfWork = unitOfWork;
 
-            RuleFor(x => x.DateTime)
-                .Must(dateTime => CustomValidator.IsEqualOrAfterDay(dateTime, DateTime.Now))
-                .WithMessage(ValidatorTransform.GreaterThanDay("dateTime", DateTime.Now));
+            RuleFor(x => x.TimeStart)
+                .Must(timeStart => timeStart == null || CustomValidator.IsEqualOrAfterDay(timeStart, DateTime.Now))
+                .WithMessage(ValidatorTransform.GreaterEqualOrThanDay("timestart", DateTime.Now));
+
+            RuleFor(x => x.TimeEnd)
+                .NotEmpty().WithMessage(ValidatorTransform.Required("timeEnd"))
+                .Must(timeEnd => CustomValidator.IsAfterDay(timeEnd, start))
+                .WithMessage(ValidatorTransform.GreaterThanDay("timeEnd", start));
 
             RuleFor(x => x.Location)
                 .NotEmpty().WithMessage(ValidatorTransform.Required("location"))

@@ -6,7 +6,9 @@ namespace Core.Application.DTOs.ReportSchedule
 {
     public class ReportScheduleDto : BaseDto
     {
-        public DateTime? DateTime { get; set; }
+        public DateTime? TimeStart { get; set; }
+
+        public DateTime? TimeEnd { get; set; }
 
         public string? Location { get; set; }
 

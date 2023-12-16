@@ -17,7 +17,11 @@ namespace Core.Domain.Entities
         #region PROPERTIES
         [Sieve(CanFilter = true, CanSort = true)]
         [Column(TypeName = "datetime")]
-        public DateTime? DateTime { get; set; }
+        public DateTime? TimeStart { get; set; }
+
+        [Sieve(CanFilter = true, CanSort = true)]
+        [Column(TypeName = "datetime")]
+        public DateTime? TimeEnd { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
         public string? Location { get; set; }

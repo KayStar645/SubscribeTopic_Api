@@ -29,7 +29,8 @@ namespace Core.Application.Features.ReportSchedule.Handlers.Commands
 
         public async Task<Result<ReportScheduleDto>> Handle(CreateReportScheduleRequest request, CancellationToken cancellationToken)
         {
-            var validator = new CreateReportScheduleDtoValidor(_unitOfWork);
+            var validator = new CreateReportScheduleDtoValidor(_unitOfWork,
+                request.createReportScheduleDto.TimeStart ?? DateTime.Now);
             var validationResult = await validator.ValidateAsync(request.createReportScheduleDto);
 
             if (validationResult.IsValid == false)

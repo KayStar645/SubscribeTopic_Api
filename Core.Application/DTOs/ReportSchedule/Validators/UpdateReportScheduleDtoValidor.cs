@@ -7,11 +7,11 @@ namespace Core.Application.DTOs.ReportSchedule.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateReportScheduleDtoValidor(IUnitOfWork unitOfWork)
+        public UpdateReportScheduleDtoValidor(IUnitOfWork unitOfWork, DateTime start)
         {
             _unitOfWork = unitOfWork;
 
-            Include(new ReportScheduleDtoValidor(_unitOfWork));
+            Include(new ReportScheduleDtoValidor(_unitOfWork, start));
         }
     }
 }

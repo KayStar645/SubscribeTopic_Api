@@ -9,11 +9,11 @@ namespace Core.Application.DTOs.ReportSchedule.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateReportScheduleDtoValidor(IUnitOfWork unitOfWork)
+        public CreateReportScheduleDtoValidor(IUnitOfWork unitOfWork, DateTime start)
         {
             _unitOfWork = unitOfWork;
 
-            Include(new ReportScheduleDtoValidor(_unitOfWork));
+            Include(new ReportScheduleDtoValidor(_unitOfWork, start));
 
             RuleFor(x => x.ThesisId)
                 .MustAsync(async (id, token) =>
