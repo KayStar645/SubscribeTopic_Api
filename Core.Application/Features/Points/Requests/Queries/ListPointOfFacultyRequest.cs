@@ -8,7 +8,7 @@ using FacultyEntity = Core.Domain.Entities.Faculties;
 
 namespace Core.Application.Features.Points.Requests.Queries
 {
-    public class ListPointOfFacultyRequest : ListBaseRequest<PointDto>
+    public class ListPointOfFacultyRequest : ListBaseRequest<ListPointDto>
     {
         public int? facultyId { get; set; }
     }
@@ -21,7 +21,7 @@ namespace Core.Application.Features.Points.Requests.Queries
         {
             _unitOfWork = unitOfWork;
 
-            Include(new ListBaseRequestValidator<PointDto>());
+            Include(new ListBaseRequestValidator<ListPointDto>());
 
             RuleFor(x => x.facultyId)
                .MustAsync(async (facultyId, token) =>
