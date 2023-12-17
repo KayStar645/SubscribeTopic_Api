@@ -49,7 +49,7 @@ namespace Core.Application.Features.Thesiss.Events
                             };
                             await pEvent._unitOfWork.Repository<ThesisMajor>().AddAsync(thesisMajor);
                         }
-                        await pEvent._unitOfWork.Save(cancellationToken);
+                        await pEvent._unitOfWork.Save();
                     }
                 }
                 else
@@ -81,7 +81,7 @@ namespace Core.Application.Features.Thesiss.Events
                             await pEvent._unitOfWork.Repository<ThesisMajor>().AddAsync(thesisMajor);
                         }
 
-                        await pEvent._unitOfWork.Save(cancellationToken);
+                        await pEvent._unitOfWork.Save();
                     }
                     else
                     {
@@ -95,7 +95,7 @@ namespace Core.Application.Features.Thesiss.Events
                             await pEvent._unitOfWork.Repository<ThesisMajor>().DeleteAsync(thesisMajor);
                         }
 
-                        await pEvent._unitOfWork.Save(cancellationToken);
+                        await pEvent._unitOfWork.Save();
                     }    
                 }
             }

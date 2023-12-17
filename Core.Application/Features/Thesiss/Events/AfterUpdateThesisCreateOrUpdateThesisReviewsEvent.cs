@@ -49,7 +49,7 @@ namespace Core.Application.Features.Thesiss.Events
                             };
                             await pEvent._unitOfWork.Repository<ThesisReview>().AddAsync(thesisReview);
                         }
-                        await pEvent._unitOfWork.Save(cancellationToken);
+                        await pEvent._unitOfWork.Save();
                     }
                 }
                 else
@@ -81,7 +81,7 @@ namespace Core.Application.Features.Thesiss.Events
                             await pEvent._unitOfWork.Repository<ThesisReview>().AddAsync(thesisReview);
                         }
 
-                        await pEvent._unitOfWork.Save(cancellationToken);
+                        await pEvent._unitOfWork.Save();
                     }
                     else
                     {
@@ -95,7 +95,7 @@ namespace Core.Application.Features.Thesiss.Events
                             await pEvent._unitOfWork.Repository<ThesisReview>().DeleteAsync(thesisReview);
                         }
 
-                        await pEvent._unitOfWork.Save(cancellationToken);
+                        await pEvent._unitOfWork.Save();
                     }    
                 }
             }
