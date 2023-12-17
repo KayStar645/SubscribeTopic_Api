@@ -36,6 +36,7 @@ namespace Core.Domain.Entities
         // Nhóm nào
         [Sieve(CanFilter = true, CanSort = true)]
         public int? GroupId { get; set; }
+        [ForeignKey("GroupId")]
         public Group? Group { get; set; }
 
         #endregion
