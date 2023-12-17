@@ -50,12 +50,11 @@ namespace Core.Application.Features.Points.Handlers.Queries
 
             query = _sieveProcessor.Apply(sieve, query);
 
-            int totalCount = await query.CountAsync();
-
             var points = await query.ToListAsync();
 
             // Hậu xử xý
             var pointsByStudent = points.GroupBy(x => x.StudentJoin.Id);
+            int totalCount = pointsByStudent.Count();
             var thesisPointDtos = new List<ThesisPointDto>();
             foreach (var studentGroup in pointsByStudent)
             {
