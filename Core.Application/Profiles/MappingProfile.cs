@@ -153,6 +153,8 @@ namespace Core.Application.Profiles
             CreateMap<Duty, CreateDepartmentDutyDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<PointDto>>().ReverseMap();
+            CreateMap<SieveModel, ListBaseRequest<ListPointDto>>().ReverseMap();
+            CreateMap<SieveModel, ListBaseRequest<ThesisPointDto>>().ReverseMap();
             CreateMap<Point, CreateOrUpdatePointDto>().ReverseMap();
             CreateMap<Point, PointDto>().ReverseMap();
 

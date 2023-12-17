@@ -1,5 +1,4 @@
 ﻿using Core.Application.DTOs.Point;
-using Core.Application.Features.Jobs.Requests.Queries;
 using Core.Application.Features.Points.Requests.Commands;
 using Core.Application.Features.Points.Requests.Queries;
 using MediatR;
@@ -48,6 +47,23 @@ namespace UI.WebApi.Controllers
         [HttpGet("Group")]
         [Permission("Point.Group.View")]
         public async Task<ActionResult> Get([FromQuery] ListPointOfGroupRequest request)
+        {
+            var response = await _mediator.Send(request);
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// Lấy danh sách điểm theo đề tài
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// thesisId: required
+        /// 
+        /// </remarks>
+        [HttpGet("Thesis")]
+        [Permission("Point.Thesis.View")]
+        public async Task<ActionResult> Get([FromQuery] ListPointOfThesisRequest request)
         {
             var response = await _mediator.Send(request);
 
