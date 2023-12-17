@@ -29,7 +29,8 @@ namespace Core.Application.Features.Thesiss.Handlers.Commands
 
         public async Task<Result<ThesisDto>> Handle(UpdateThesisRequest request, CancellationToken cancellationToken)
         {
-            var validator = new UpdateThesisDtoValidator(_unitOfWork, request.updateThesisDto.MinQuantity, request.updateThesisDto.Id);
+            var validator = new UpdateThesisDtoValidator(_unitOfWork, request.updateThesisDto.MinQuantity,
+                request.updateThesisDto.Id, request.updateThesisDto.ThesisInstructionsId, request.updateThesisDto.ThesisReviewsId);
             var validationResult = await validator.ValidateAsync(request.updateThesisDto);
 
             if (validationResult.IsValid == false)
