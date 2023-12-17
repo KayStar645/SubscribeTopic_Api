@@ -71,13 +71,14 @@ namespace Core.Application.Features.Points.Handlers.Queries
                         Teacher = _mapper.Map<TeacherDto>(point.Teacher),
                     };
                     teacherPointDtos.Add(teacherPoint);
-                }                   
-
+                }
+                var studentJoin = _mapper.Map<StudentJoinDto>(studentGroup.FirstOrDefault()?.StudentJoin);
                 var thesisPointDto = new ThesisPointDto
                 {
+                    StudentJoinId = studentJoin.Id,
                     Scores = teacherPointDtos,
                     AverageScore = studentGroup.FirstOrDefault()?.StudentJoin?.Score ?? 0,
-                    StudentJoin = _mapper.Map<StudentJoinDto>(studentGroup.FirstOrDefault()?.StudentJoin)
+                    StudentJoin = studentJoin
                 };
                 thesisPointDtos.Add(thesisPointDto);
             }

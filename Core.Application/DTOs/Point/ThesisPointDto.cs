@@ -5,6 +5,7 @@ namespace Core.Application.DTOs.Point
 {
     public class ThesisPointDto : BaseDto
     {
+        public int? StudentJoinId { get; set; }
         public List<TeacherPointDto>? Scores { get; set; }
 
         public double? AverageScore { get; set; }
