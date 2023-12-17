@@ -4,6 +4,7 @@ using FluentValidation;
 using ThesisEntity = Core.Domain.Entities.Thesis;
 using TeacherEntity = Core.Domain.Entities.Teacher;
 using MajorEntity = Core.Domain.Entities.Major;
+using System.Linq;
 
 namespace Core.Application.DTOs.Thesis.Validators
 {
@@ -11,7 +12,7 @@ namespace Core.Application.DTOs.Thesis.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateThesisDtoValidator(IUnitOfWork unitOfWork, int? minQuantity, int? currentId)
+        public UpdateThesisDtoValidator(IUnitOfWork unitOfWork, int? minQuantity, int? currentId, List<int?> pInstructionsId, List<int?> pReviewsId)
         {
             _unitOfWork = unitOfWork;
 
@@ -45,10 +46,21 @@ namespace Core.Application.DTOs.Thesis.Validators
                 .MaximumLength(6000).WithMessage(ValidatorTransform.MaximumLength("summary", 6000));
 
             RuleFor(x => x.ThesisInstructionsId)
-            .MustAsync(async (instructionsId, token) =>
-            {
-                if(instructionsId != null)
+                .MustAsync(async (instructionsId, token) =>
                 {
+                    // Kiểm tra không có phần tử trùng nhau trong mảng
+                    if (instructionsId != null && instructionsId.Distinct().Count() != instructionsId.Count)
+                    {
+                        return false;
+                    }
+
+                    // Kiểm tra không có phần tử trùng nhau giữa 2 mảng
+                    if (pReviewsId != null && instructionsId != null && pReviewsId.Intersect(instructionsId).Any())
+                    {
+                        return false;
+                    }
+
+                    // Kiểm tra điều kiện cũ
                     foreach (var instructionId in instructionsId)
                     {
                         var thesis = await _unitOfWork.Repository<TeacherEntity>()
@@ -58,17 +70,27 @@ namespace Core.Application.DTOs.Thesis.Validators
                             return false;
                         }
                     }
-                } 
 
-                return true;
-            })
-            .WithMessage(ValidatorTransform.NotExistsValueInTable("thesisInstructions", "teacher"));
+                    return true;
+                })
+                .WithMessage("Giảng viên không được đồng thời hướng dẫn và phản biện một đề tài!");
 
             RuleFor(x => x.ThesisReviewsId)
-            .MustAsync(async (reviewsId, token) =>
-            {
-                if (reviewsId != null)
+                .MustAsync(async (reviewsId, token) =>
                 {
+                    // Kiểm tra không có phần tử trùng nhau trong mảng
+                    if (reviewsId != null && reviewsId.Distinct().Count() != reviewsId.Count)
+                    {
+                        return false;
+                    }
+
+                    // Kiểm tra không có phần tử trùng nhau giữa 2 mảng
+                    if (pInstructionsId != null && reviewsId != null && pInstructionsId.Intersect(reviewsId).Any())
+                    {
+                        return false;
+                    }
+
+                    // Kiểm tra điều kiện cũ
                     foreach (var reviewId in reviewsId)
                     {
                         var thesis = await _unitOfWork.Repository<TeacherEntity>()
@@ -78,11 +100,13 @@ namespace Core.Application.DTOs.Thesis.Validators
                             return false;
                         }
                     }
-                }
 
-                return true;
-            })
-            .WithMessage(ValidatorTransform.NotExistsValueInTable("thesisReviews", "teacher"));
+                    return true;
+                })
+                .WithMessage("Giảng viên không được đồng thời hướng dẫn và phản biện một đề tài!");
+
+
+
 
             RuleFor(x => x.ThesisMajorsId)
             .MustAsync(async (majorsId, token) =>

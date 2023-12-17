@@ -178,5 +178,21 @@ namespace UI.WebApi.Controllers
 
             return StatusCode(response.Code, response);
         }
+
+        /// <summary>
+        /// Giảng viên lấy ds đề tài mình phản biện
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// -
+        /// </remarks>
+        [HttpGet("ListThesisReviewOfTeacher")]
+        [Permission("Thesis.InstructorOfTeacher.View")]
+        public async Task<ActionResult> Get([FromQuery] ListThesisReviewOfTeacherRequest request)
+        {
+            var response = await _mediator.Send(request);
+
+            return StatusCode(response.Code, response);
+        }
     }
 }
