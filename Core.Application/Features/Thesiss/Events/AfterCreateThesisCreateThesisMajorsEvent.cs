@@ -40,7 +40,7 @@ namespace Core.Application.Features.Thesiss.Events
                         };
                         await pEvent._unitOfWork.Repository<ThesisMajor>().AddAsync(thesisMajor);
                     }
-                    await pEvent._unitOfWork.Save(cancellationToken);
+                    await pEvent._unitOfWork.Save();
                 }
             }
             catch (Exception ex)

@@ -36,7 +36,7 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
         {
             var sieve = _mapper.Map<SieveModel>(request);
 
-            var query = _unitOfWork.Repository<Thesis>().GetAllInclude();
+            var query = _unitOfWork.Repository<Thesis>().GetAllInclude().Where(x => x.Status == Thesis.STATUS_APPROVED);
 
             // Chỉ lấy đề tài mà giảng viên đang truy cập hướng dẫn
             var userId = _httpContext.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;
@@ -49,7 +49,7 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
             var teacher = await _unitOfWork.Repository<Teacher>()
                 .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
 
-            query = query.Where(x => x.ThesisInstructions.Any(x => x.TeacherId == teacher.Id));
+            query = query.Where(x => x.ThesisInstructions.Any(x => x.TeacherId == teacher.Id && x.IsDeleted == false));
 
 
 
