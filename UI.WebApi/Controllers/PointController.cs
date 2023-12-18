@@ -79,8 +79,8 @@ namespace UI.WebApi.Controllers
         /// - Score: 0 -> 10
         /// </remarks>
         [HttpPut]
-        [Permission("Point.Create")]
-        public async Task<ActionResult> Post([FromBody] UpdatePointDto request)
+        [Permission("Point.Update")]
+        public async Task<ActionResult> Put([FromBody] UpdatePointDto request)
         {
             try
             {
