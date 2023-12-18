@@ -58,7 +58,7 @@ namespace Core.Application.Features.Points.Events
                                     .Query()
                                     .AnyAsync(x => x.Group.ThesisRegistration.Thesis.ThesisReviews
                                                 .Any(x => x.TeacherId == teacher.Id));
-            if (isTeacherInstruct == true)
+            if (isTeacherReview == true)
             {
                 pEvent._point.Type = Point.TYPE_REVIEW;
                 return;
