@@ -78,7 +78,7 @@ namespace UI.WebApi.Controllers
         /// - StudentJoinId: 
         /// - Score: 0 -> 10
         /// </remarks>
-        [HttpPost]
+        [HttpPut]
         [Permission("Point.Create")]
         public async Task<ActionResult> Post([FromBody] UpdatePointDto request)
         {

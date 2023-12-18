@@ -10,7 +10,7 @@ namespace Core.Application.Features.Points.Requests.Queries
 {
     public class ListPointOfThesisRequest : ListBaseRequest<ThesisPointDto>
     {
-        public bool? isGetThesisCurrentMe { get; set; }
+        public bool? isGetPointMe { get; set; }
 
         public int? thesisId { get; set; }
     }
@@ -19,13 +19,13 @@ namespace Core.Application.Features.Points.Requests.Queries
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public ListPointOfThesisValidator(IUnitOfWork unitOfWork, bool? isGetGroupMe)
+        public ListPointOfThesisValidator(IUnitOfWork unitOfWork, bool? isGetPointMe)
         {
             _unitOfWork = unitOfWork;
 
             Include(new ListBaseRequestValidator<ThesisPointDto>());
 
-            if (isGetGroupMe != true)
+            if (isGetPointMe != true)
             {
                 RuleFor(x => x.thesisId)
                    .MustAsync(async (facultyId, token) =>

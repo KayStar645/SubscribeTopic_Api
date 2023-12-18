@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
+using Core.Application.Constants;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Point;
 using Core.Application.DTOs.StudentJoin;
 using Core.Application.DTOs.Teacher;
+using Core.Application.Exceptions;
 using Core.Application.Features.Points.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services.Interface;
@@ -20,15 +23,19 @@ namespace Core.Application.Features.Points.Handlers.Queries
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
 
-        public ListPointOfThesisQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
+        private readonly IHttpContextAccessor _httpContext;
+
+        public ListPointOfThesisQueryHandler(IUnitOfWork unitOfWork, IMapper mapper,
+            ISieveProcessor sieveProcessor, IHttpContextAccessor httpContext)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
+            _httpContext = httpContext;
         }
         public async Task<PaginatedResult<List<ThesisPointDto>>> Handle(ListPointOfThesisRequest request, CancellationToken cancellationToken)
         {
-            var validator = new ListPointOfThesisValidator(_unitOfWork, request.isGetThesisCurrentMe);
+            var validator = new ListPointOfThesisValidator(_unitOfWork, request.isGetPointMe);
             var result = await validator.ValidateAsync(request);
 
             if (result.IsValid == false)
@@ -42,7 +49,22 @@ namespace Core.Application.Features.Points.Handlers.Queries
 
             var query = _unitOfWork.Repository<Point>().GetAllInclude();
 
-            query = query.Where(x => x.StudentJoin.Group.ThesisRegistration.ThesisId == request.thesisId);
+            if(request.isGetPointMe == true)
+            {
+                var userId = _httpContext.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;
+                var userType = _httpContext.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Type)?.Value;
+                if(userType != CLAIMS_VALUES.TYPE_STUDENT)
+                {
+                    throw new UnauthorizedException(StatusCodes.Status403Forbidden);
+                }    
+
+                query = query.Where(x => x.StudentJoin.Student.UserId == int.Parse(userId));
+            }   
+            else
+            {
+                query = query.Where(x => x.StudentJoin.Group.ThesisRegistration.ThesisId == request.thesisId);
+            }    
+
 
             query = query.Include(x => x.Teacher)
                          .Include(x => x.StudentJoin)
