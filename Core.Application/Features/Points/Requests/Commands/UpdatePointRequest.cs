@@ -4,8 +4,8 @@ using MediatR;
 
 namespace Core.Application.Features.Points.Requests.Commands
 {
-    public class CreateOrUpdatePointRequest : IRequest<Result<PointDto>>
+    public class UpdatePointRequest : IRequest<Result<PointDto>>
     {
-        public CreateOrUpdatePointDto? createOrUpdatePointDto { get; set; }
+        public UpdatePointDto? updatePointDto { get; set; }
     }
 }

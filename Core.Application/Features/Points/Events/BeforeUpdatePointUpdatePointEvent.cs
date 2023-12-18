@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Application.Features.Points.Events
 {
-    public class BeforeCreateOrUpdatePointUpdatePointEvent : INotification
+    public class BeforeUpdatePointUpdatePointEvent : INotification
     {
         public Point _point { get; set; }
 
@@ -16,7 +16,7 @@ namespace Core.Application.Features.Points.Events
 
         public IUnitOfWork _unitOfWork;
 
-        public BeforeCreateOrUpdatePointUpdatePointEvent(Point point,
+        public BeforeUpdatePointUpdatePointEvent(Point point,
             IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork)
         {
             _point = point;
@@ -25,9 +25,9 @@ namespace Core.Application.Features.Points.Events
         }
     }
 
-    public class BeforeCreateThesisUpdateThesisHandler : INotificationHandler<BeforeCreateOrUpdatePointUpdatePointEvent>
+    public class BeforeUpdatePointUpdatePointHandler : INotificationHandler<BeforeUpdatePointUpdatePointEvent>
     {
-        public async Task Handle(BeforeCreateOrUpdatePointUpdatePointEvent pEvent, CancellationToken cancellationToken)
+        public async Task Handle(BeforeUpdatePointUpdatePointEvent pEvent, CancellationToken cancellationToken)
         {
             var userId = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;
             var userType = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Type)?.Value;

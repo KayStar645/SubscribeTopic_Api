@@ -5,7 +5,7 @@ using StudentJoinEntity = Core.Domain.Entities.StudentJoin;
 
 namespace Core.Application.DTOs.Point.Validators
 {
-    public class CreateOrUpdatePointDtoValidator : AbstractValidator<CreateOrUpdatePointDto>
+    public class CreateOrUpdatePointDtoValidator : AbstractValidator<UpdatePointDto>
     {
         private readonly IUnitOfWork _unitOfWork;
 

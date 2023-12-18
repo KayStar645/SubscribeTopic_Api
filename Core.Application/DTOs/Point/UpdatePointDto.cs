@@ -1,6 +1,6 @@
 ﻿namespace Core.Application.DTOs.Point
 {
-    public class CreateOrUpdatePointDto
+    public class UpdatePointDto
     {
         public double? Scores { get; set; }
 

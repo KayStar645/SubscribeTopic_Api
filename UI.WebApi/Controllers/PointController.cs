@@ -80,11 +80,11 @@ namespace UI.WebApi.Controllers
         /// </remarks>
         [HttpPost]
         [Permission("Point.Create")]
-        public async Task<ActionResult> Post([FromBody] CreateOrUpdatePointDto request)
+        public async Task<ActionResult> Post([FromBody] UpdatePointDto request)
         {
             try
             {
-                var command = new CreateOrUpdatePointRequest { createOrUpdatePointDto = request };
+                var command = new UpdatePointRequest { updatePointDto = request };
                 var response = await _mediator.Send(command);
 
                 return StatusCode(response.Code, response);
