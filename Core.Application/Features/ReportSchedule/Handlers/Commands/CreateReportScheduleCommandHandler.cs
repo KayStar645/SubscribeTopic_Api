@@ -6,8 +6,10 @@ using Core.Application.Exceptions;
 using Core.Application.Features.ReportSchedule.Events;
 using Core.Application.Features.ReportSchedule.Requests.Commands;
 using Core.Application.Responses;
+using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using ReportScheduleEntity = Core.Domain.Entities.ReportSchedule;
@@ -37,6 +39,50 @@ namespace Core.Application.Features.ReportSchedule.Handlers.Commands
             {
                 var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
                 return Result<ReportScheduleDto>.Failure(errorMessages, (int)HttpStatusCode.BadRequest);
+            }
+            // Lịch loại W: Không được trùng gvhd và sinh viên trong nhóm
+            var teacherIdInstruction = await _unitOfWork.Repository<ThesisInstruction>()
+                                            .Query()
+                                            .Where(x => x.ThesisId == request.createReportScheduleDto.ThesisId)
+                                            .Select(x => x.TeacherId)
+                                            .ToListAsync();
+            var groupId = await _unitOfWork.Repository<ThesisRegistration>()
+                                    .Query()
+                                    .Where(x => x.ThesisId == request.createReportScheduleDto.ThesisId)
+                                    .Select(x => x.GroupId)
+                                    .FirstOrDefaultAsync();
+
+            var check = await _unitOfWork.Repository<ReportScheduleEntity>()
+                                .Query()
+                                .AnyAsync(x => (x.TimeStart <= request.createReportScheduleDto.TimeStart && request.createReportScheduleDto.TimeStart <= x.TimeEnd ||
+                                                x.TimeStart <= request.createReportScheduleDto.TimeEnd && request.createReportScheduleDto.TimeEnd <= x.TimeEnd ||
+                                                request.createReportScheduleDto.TimeStart <= x.TimeStart && x.TimeStart <= request.createReportScheduleDto.TimeEnd) &&
+                                                (x.Thesis.ThesisInstructions.Any(x => teacherIdInstruction.Contains(x.TeacherId)) ||
+                                                 x.Thesis.ThesisRegistration.GroupId == groupId));
+            if (check)
+            {
+                throw new BadRequestException("Thời gian bị trùng với lịch khác!");
+            }
+
+
+            // Lịch loại R: không được trùng gvhd, gvpb và sinh viên trong nhóm
+            if (request.createReportScheduleDto.Type == ReportScheduleEntity.TYPE_REVIEW)
+            {
+                var teacherIdReview = await _unitOfWork.Repository<ThesisReview>()
+                                            .Query()
+                                            .Where(x => x.ThesisId == request.createReportScheduleDto.ThesisId)
+                                            .Select(x => x.TeacherId)
+                                            .ToListAsync();
+                var check2 = await _unitOfWork.Repository<ReportScheduleEntity>()
+                                .Query()
+                                .AnyAsync(x => (x.TimeStart <= request.createReportScheduleDto.TimeStart && request.createReportScheduleDto.TimeStart <= x.TimeEnd ||
+                                                x.TimeStart <= request.createReportScheduleDto.TimeEnd && request.createReportScheduleDto.TimeEnd <= x.TimeEnd ||
+                                                request.createReportScheduleDto.TimeStart <= x.TimeStart && x.TimeStart <= request.createReportScheduleDto.TimeEnd) &&
+                                                x.Thesis.ThesisReviews.Any(x => teacherIdInstruction.Contains(x.TeacherId)));
+                if (check2)
+                {
+                    throw new BadRequestException("Thời gian bị trùng với lịch khác!");
+                }
             }
 
             try
