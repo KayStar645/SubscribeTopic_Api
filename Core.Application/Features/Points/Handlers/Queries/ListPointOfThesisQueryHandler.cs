@@ -81,8 +81,7 @@ namespace Core.Application.Features.Points.Handlers.Queries
             foreach (var studentGroup in pointsByStudent)
             {
                 var teacherPointDtos = new List<TeacherPointDto>();
-
-                foreach(var point in studentGroup)
+                foreach (var point in studentGroup)
                 {
                     var teacherPoint = new TeacherPointDto
                     {
@@ -91,14 +90,15 @@ namespace Core.Application.Features.Points.Handlers.Queries
                         Score = point.Scores,
                         Teacher = _mapper.Map<TeacherDto>(point.Teacher),
                     };
-                    teacherPointDtos.Add(teacherPoint);
+                    teacherPointDtos.Add(teacherPoint);  
                 }
                 var studentJoin = _mapper.Map<StudentJoinDto>(studentGroup.FirstOrDefault()?.StudentJoin);
                 var thesisPointDto = new ThesisPointDto
                 {
                     StudentJoinId = studentJoin.Id,
                     Scores = teacherPointDtos,
-                    AverageScore = studentGroup.FirstOrDefault()?.StudentJoin?.Score ?? 0,
+                    AverageScore = (teacherPointDtos.Where(x => x.Type == Point.TYPE_INSTRUCTION).Average(x => x.Score) +
+                                    teacherPointDtos.Where(x => x.Type == Point.TYPE_REVIEW).Average(x => x.Score)) /2,
                     StudentJoin = studentJoin
                 };
                 thesisPointDtos.Add(thesisPointDto);
