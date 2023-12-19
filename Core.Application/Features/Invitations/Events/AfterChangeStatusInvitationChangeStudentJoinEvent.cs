@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Application.Features.Invitations.Events
 {
-    public class AfterChangeStatusInvitationChangeStudentJoinEnvent : INotification
+    public class AfterChangeStatusInvitationChangeStudentJoinEvent : INotification
     {
         public InvitationDto _invitationDto { get; set; }
         public IUnitOfWork _unitOfWork { get; set; }
         public IMapper _mapper { get; set; }
 
-        public AfterChangeStatusInvitationChangeStudentJoinEnvent(InvitationDto invitationDto,
+        public AfterChangeStatusInvitationChangeStudentJoinEvent(InvitationDto invitationDto,
                     IUnitOfWork unitOfWork, IMapper mapper)
         {
             _invitationDto = invitationDto;
@@ -22,9 +22,9 @@ namespace Core.Application.Features.Invitations.Events
         }
     }
 
-    public class AfterChangeStatusInvitationChangeStudentJoinHandler : INotificationHandler<AfterChangeStatusInvitationChangeStudentJoinEnvent>
+    public class AfterChangeStatusInvitationChangeStudentJoinHandler : INotificationHandler<AfterChangeStatusInvitationChangeStudentJoinEvent>
     {
-        public async Task Handle(AfterChangeStatusInvitationChangeStudentJoinEnvent pEvent, CancellationToken cancellationToken)
+        public async Task Handle(AfterChangeStatusInvitationChangeStudentJoinEvent pEvent, CancellationToken cancellationToken)
         {
             await Task.Yield();
 

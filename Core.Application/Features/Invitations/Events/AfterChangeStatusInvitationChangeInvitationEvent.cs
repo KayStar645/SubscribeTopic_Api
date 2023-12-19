@@ -6,13 +6,13 @@ using MediatR;
 
 namespace Core.Application.Features.Invitations.Events
 {
-    public class AfterChangeStatusInvitationChangeInvitationEnvent : INotification
+    public class AfterChangeStatusInvitationChangeInvitationEvent : INotification
     {
         public InvitationDto _invitationDto { get; set; }
         public IUnitOfWork _unitOfWork { get; set; }
         public IMapper _mapper { get; set; }
 
-        public AfterChangeStatusInvitationChangeInvitationEnvent(InvitationDto invitationDto, 
+        public AfterChangeStatusInvitationChangeInvitationEvent(InvitationDto invitationDto, 
                     IUnitOfWork unitOfWork, IMapper mapper)
         {
             _invitationDto = invitationDto;
@@ -21,9 +21,9 @@ namespace Core.Application.Features.Invitations.Events
         }
     }
 
-    public class AfterChangeStatusInvitationChangeInvitationHandler : INotificationHandler<AfterChangeStatusInvitationChangeInvitationEnvent>
+    public class AfterChangeStatusInvitationChangeInvitationHandler : INotificationHandler<AfterChangeStatusInvitationChangeInvitationEvent>
     {
-        public async Task Handle(AfterChangeStatusInvitationChangeInvitationEnvent pEvent, CancellationToken cancellationToken)
+        public async Task Handle(AfterChangeStatusInvitationChangeInvitationEvent pEvent, CancellationToken cancellationToken)
         {
             await Task.Yield();
 

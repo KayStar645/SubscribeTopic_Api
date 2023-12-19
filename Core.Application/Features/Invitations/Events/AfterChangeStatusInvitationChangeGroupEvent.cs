@@ -7,24 +7,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Application.Features.Invitations.Events
 {
-    public class AfterChangeStatusInvitationChangeGroupEnvent : INotification
+    public class AfterChangeStatusInvitationChangeGroupEvent : INotification
     {
+        public Group _group { get; set; }
         public InvitationDto _invitationDto { get; set; }
         public IUnitOfWork _unitOfWork { get; set; }
         public IMapper _mapper { get; set; }
 
-        public AfterChangeStatusInvitationChangeGroupEnvent(InvitationDto invitationDto,
+        public AfterChangeStatusInvitationChangeGroupEvent(Group group, InvitationDto invitationDto,
                     IUnitOfWork unitOfWork, IMapper mapper)
         {
+            _group = group;
             _invitationDto = invitationDto;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
     }
 
-    public class AfterChangeStatusInvitationChangeGroupHandler : INotificationHandler<AfterChangeStatusInvitationChangeGroupEnvent>
+    public class AfterChangeStatusInvitationChangeGroupHandler : INotificationHandler<AfterChangeStatusInvitationChangeGroupEvent>
     {
-        public async Task Handle(AfterChangeStatusInvitationChangeGroupEnvent pEvent, CancellationToken cancellationToken)
+        public async Task Handle(AfterChangeStatusInvitationChangeGroupEvent pEvent, CancellationToken cancellationToken)
         {
             await Task.Yield();
 
@@ -33,15 +35,11 @@ namespace Core.Application.Features.Invitations.Events
                 /* Kiểm tra nhóm cũ: */
                 do
                 {
-                    var oldGroup = await pEvent._unitOfWork.Repository<StudentJoin>()
-                                        .FindByCondition(x => x.Id == pEvent._invitationDto.StudentJoinId)
-                                        .Include(x => x.Group)
-                                        .Select(x => x.Group)
-                                        .FirstOrDefaultAsync();
+                    var oldGroup = pEvent._group;
                     // 1 thành viên: Xóa Group cũ
                     if (oldGroup.CountMember == 1)
                     {
-                        await pEvent._unitOfWork.Repository<Group>().DeleteAsync(oldGroup);
+                        await pEvent._unitOfWork.Repository<Group>().DeleteAsync(pEvent._group);
                         await pEvent._unitOfWork.Save();
                         break;
                     }
