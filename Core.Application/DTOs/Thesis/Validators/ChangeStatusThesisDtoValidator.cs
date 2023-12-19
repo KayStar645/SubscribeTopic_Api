@@ -42,7 +42,7 @@ namespace Core.Application.DTOs.Thesis.Validators
                     }
                     if(oldStatus == ThesisEntity.STATUS_APPROVE_REQUEST)
                     {
-                        return ThesisEntity.GetSatus().Contains(status);
+                        return status == ThesisEntity.STATUS_DRAFT;
                     }
 
                     return false;
