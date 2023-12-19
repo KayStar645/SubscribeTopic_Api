@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
+using Core.Application.Constants;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Major;
 using Core.Application.DTOs.Teacher;
 using Core.Application.DTOs.Thesis;
+using Core.Application.Exceptions;
 using Core.Application.Features.Thesiss.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services.Interface;
@@ -19,12 +22,15 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
+        private readonly IHttpContextAccessor _httpContext;
 
-        public ListThesisQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
+        public ListThesisQueryHandler(IUnitOfWork unitOfWork, IMapper mapper,
+            ISieveProcessor sieveProcessor, IHttpContextAccessor httpContext)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
+            _httpContext = httpContext;
         }
 
         public async Task<PaginatedResult<List<ThesisDto>>> Handle(ListThesisRequest request, CancellationToken cancellationToken)
@@ -43,12 +49,50 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
 
             var query = _unitOfWork.Repository<Thesis>().GetAllInclude();
 
+            // Chỉ lấy đề tài mà giảng viên đang truy cập hướng dẫn
+            var userId = _httpContext.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;
+            var userType = _httpContext.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Type)?.Value;
+
+            if (userType != CLAIMS_VALUES.TYPE_TEACHER)
+            {
+                throw new UnauthorizedException(StatusCodes.Status403Forbidden);
+            }
+            var teacher = await _unitOfWork.Repository<Teacher>()
+                .Query().Include(x => x.HeadDepartment_Department)
+                        .Include(x => x.Dean_Faculty)
+                .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
+
+            if(teacher.Dean_Faculty != null)
+            {
+                query = query.Where(x => x.LecturerThesis.UserId == int.Parse(userId) ||
+                            x.ThesisInstructions.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
+                            x.ThesisReviews.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
+                            (x.Duty.ForDuty.FacultyId == teacher.Dean_Faculty.Id && x.Status == Thesis.STATUS_APPROVED));
+            }
+            else if(teacher.HeadDepartment_Department != null)
+            {
+                query = query.Where(x => x.LecturerThesis.UserId == int.Parse(userId) ||
+                            x.ThesisInstructions.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
+                            x.ThesisReviews.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
+                            (x.Duty.DepartmentId == teacher.HeadDepartment_Department.Id &&
+                            x.Status == Thesis.STATUS_APPROVED || x.Status == Thesis.STATUS_APPROVE_REQUEST));
+            }
+            else
+            {
+                // Đề tài mình ra/hd/pb
+                query = query.Where(x => x.LecturerThesis.UserId == int.Parse(userId) ||
+                                    x.ThesisInstructions.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
+                                    x.ThesisReviews.Any(x => x.Teacher.UserId == int.Parse(userId)));
+            }
+
             if (request.departmentId != null)
             {
+                //query = query.Where(x => x.Duty.DepartmentId == request.departmentId);
                 query = query.Where(x => x.LecturerThesis.DepartmentId == request.departmentId);
             }
             else if (request.facultyId != null)
             {
+                //query = query.Where(x => x.Duty.ForDuty.FacultyId == request.facultyId);
                 query = query.Where(x => x.LecturerThesis.Department.FacultyId == request.facultyId);
             }
 

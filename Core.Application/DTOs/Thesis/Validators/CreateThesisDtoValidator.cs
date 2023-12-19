@@ -41,26 +41,6 @@ namespace Core.Application.DTOs.Thesis.Validators
                 .NotEmpty().WithMessage(ValidatorTransform.Required("summary"))
                 .MaximumLength(6000).WithMessage(ValidatorTransform.MaximumLength("summary", 6000));
 
-            RuleFor(x => x.ThesisInstructionsId)
-            .MustAsync(async (instructionsId, token) =>
-            {
-                if(instructionsId != null)
-                {
-                    foreach (var instructionId in instructionsId)
-                    {
-                        var thesis = await _unitOfWork.Repository<TeacherEntity>()
-                            .FirstOrDefaultAsync(x => x.Id == instructionId);
-                        if (thesis == null)
-                        {
-                            return false;
-                        }
-                    }
-                }    
-
-                return true;
-            })
-            .WithMessage(ValidatorTransform.NotExistsValueInTable("thesisInstructions", "teacher"));
-
             RuleFor(x => x.ThesisMajorsId)
             .MustAsync(async (majorsId, token) =>
             {

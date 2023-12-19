@@ -8,11 +8,13 @@ using Core.Application.Exceptions;
 using Core.Application.Features.Thesiss.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services.Interface;
+using System.Net;
 
 namespace Core.Application.Features.Thesiss.Handlers.Queries
 {
@@ -34,9 +36,21 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
 
         public async Task<PaginatedResult<List<ThesisDto>>> Handle(ListThesisReviewOfTeacherRequest request, CancellationToken cancellationToken)
         {
+            var validator = new ListThesisReviewOfTeacherValidator(_unitOfWork);
+            var result = await validator.ValidateAsync(request);
+
+            if (result.IsValid == false)
+            {
+                var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
+                return PaginatedResult<List<ThesisDto>>
+                    .Failure((int)HttpStatusCode.BadRequest, errorMessages);
+            }
+
             var sieve = _mapper.Map<SieveModel>(request);
 
-            var query = _unitOfWork.Repository<Thesis>().GetAllInclude().Where(x => x.Status == Thesis.STATUS_APPROVED);
+            var query = _unitOfWork.Repository<Thesis>().GetAllInclude()
+                .Where(x => x.Status == Thesis.STATUS_APPROVED)
+                .Where(x => x.Duty.ForDuty.RegistrationPeriod.Id == request.periodId);
 
             // Chỉ lấy đề tài mà giảng viên đang truy cập hướng dẫn
             var userId = _httpContext.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;

@@ -12,9 +12,6 @@
 
         public int? MaxQuantity { get; set; }
 
-        // Giảng viên hướng dẫn
-        public List<int?>? ThesisInstructionsId { get; set; }
-
         // Chuyên ngành phù hợp
         public List<int?>? ThesisMajorsId { get; set; }
     }

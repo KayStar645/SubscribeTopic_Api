@@ -1,7 +1,10 @@
-﻿using Core.Application.Contracts.Persistence;
+﻿using Core.Application.Constants;
+using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Thesis;
+using Core.Application.Exceptions;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Application.Features.Thesiss.Events
@@ -14,11 +17,15 @@ namespace Core.Application.Features.Thesiss.Events
 
         public IUnitOfWork _unitOfWork { get; set; }
 
-        public AfterUpdateThesisCreateOrUpdateThesisReviewsEvent(UpdateThesisDto updateThesisDto, ThesisDto thesisDto, IUnitOfWork unitOfWork)
+        public IHttpContextAccessor _httpContext;
+
+        public AfterUpdateThesisCreateOrUpdateThesisReviewsEvent(UpdateThesisDto updateThesisDto,
+            ThesisDto thesisDto, IUnitOfWork unitOfWork, IHttpContextAccessor httpContext)
         {
             _updateThesisDto = updateThesisDto;
             _thesisDto = thesisDto;
             _unitOfWork = unitOfWork;
+            _httpContext = httpContext;
         }
     }
 
@@ -27,6 +34,35 @@ namespace Core.Application.Features.Thesiss.Events
         public async Task Handle(AfterUpdateThesisCreateOrUpdateThesisReviewsEvent pEvent, CancellationToken cancellationToken)
         {
             await Task.Yield();
+
+            var userId = pEvent._httpContext.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;
+            var userType = pEvent._httpContext.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Type)?.Value;
+
+            if (userType != CLAIMS_VALUES.TYPE_TEACHER)
+            {
+                return;
+            }
+
+            // Từ id của người dùng lấy ra id của giáo viên
+            var teacher = await pEvent._unitOfWork.Repository<Teacher>()
+                .Query().Include(x => x.HeadDepartment_Department)
+                .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
+
+            if(teacher.HeadDepartment_Department == null)
+            {
+                return;
+            }
+            var departmentTeacherId = await pEvent._unitOfWork.Repository<Department>()
+                            .Query()
+                            .Where(x => x.Id == pEvent._thesisDto.LecturerThesis.DepartmentId)
+                            .Select(x => x.HeadDepartment_TeacherId)
+                            .FirstOrDefaultAsync();
+            if(departmentTeacherId != teacher.Id)
+            {
+                return;
+            }    
+            
+
 
             try
             {
