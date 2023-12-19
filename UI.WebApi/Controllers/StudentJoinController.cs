@@ -33,7 +33,7 @@ namespace UI.WebApi.Controllers
         /// </remarks>
         [HttpGet]
         [Permission("StudentJoin.View")]
-        public async Task<ActionResult<List<StudentJoinDto>>> Get([FromQuery] ListStudentJoinRequest request)
+        public async Task<ActionResult> Get([FromQuery] ListStudentJoinRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -49,7 +49,7 @@ namespace UI.WebApi.Controllers
         /// </remarks>
         [HttpGet("detail")]
         [Permission("StudentJoin.View")]
-        public async Task<ActionResult<StudentJoinDto>> Get([FromQuery] DetailStudentJoinRequest request)
+        public async Task<ActionResult> Get([FromQuery] DetailStudentJoinRequest request)
         {
             var response = await _mediator.Send(request);
 
@@ -64,25 +64,9 @@ namespace UI.WebApi.Controllers
         /// </remarks>
         [HttpPost]
         [Permission("StudentJoin.Create")]
-        public async Task<ActionResult<StudentJoinDto>> Post([FromBody] CreateStudentJoinDto StudentJoinRequest)
+        public async Task<ActionResult> Post([FromBody] CreateStudentJoinDto request)
         {
-            var command = new CreateStudentJoinRequest { createStudentJoinDto = StudentJoinRequest };
-            var response = await _mediator.Send(command);
-
-            return StatusCode(response.Code, response);
-        }
-
-        /// <summary>
-        /// Sửa đợt tham gia của sinh viên
-        /// </summary>
-        /// <remarks>
-        /// Ràng buộc:
-        /// </remarks>
-        [HttpPut]
-        [Permission("StudentJoin.Update")]
-        public async Task<ActionResult> Put([FromBody] UpdateStudentJoinDto StudentJoinRequest)
-        {
-            var command = new UpdateStudentJoinRequest { updateStudentJoinDto = StudentJoinRequest };
+            var command = new CreateStudentJoinRequest { createStudentJoinDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);

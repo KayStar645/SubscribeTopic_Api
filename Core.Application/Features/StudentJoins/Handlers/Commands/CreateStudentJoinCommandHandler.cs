@@ -12,7 +12,7 @@ using System.Net;
 
 namespace Core.Application.Features.StudentJoins.Handlers.Commands
 {
-    public class CreateStudentJoinCommandHandler : IRequestHandler<CreateStudentJoinRequest, Result<StudentJoinDto>>
+    public class CreateStudentJoinCommandHandler : IRequestHandler<CreateStudentJoinRequest, Result<List<StudentJoinDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ namespace Core.Application.Features.StudentJoins.Handlers.Commands
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<Result<StudentJoinDto>> Handle(CreateStudentJoinRequest request, CancellationToken cancellationToken)
+        public async Task<Result<List<StudentJoinDto>>> Handle(CreateStudentJoinRequest request, CancellationToken cancellationToken)
         {
             var validator = new CreateStudentJoinDtoValidator(_unitOfWork);
             var validationResult = await validator.ValidateAsync(request.createStudentJoinDto);
@@ -33,36 +33,57 @@ namespace Core.Application.Features.StudentJoins.Handlers.Commands
             if (validationResult.IsValid == false)
             {
                 var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
-                return Result<StudentJoinDto>.Failure(errorMessages, (int)HttpStatusCode.BadRequest);
+                return Result<List<StudentJoinDto>>.Failure(errorMessages, (int)HttpStatusCode.BadRequest);
             }
 
             try
             {
-                var studentJoin = _mapper.Map<StudentJoin>(request.createStudentJoinDto);
+                List<StudentJoinDto> list = new List<StudentJoinDto>();
+                foreach (var studentsId in request.createStudentJoinDto.studentIds)
+                {
+                    var studentJoin = new StudentJoin
+                    {
+                        StudentId = studentsId,
+                        RegistrationPeriodId = request.createStudentJoinDto.registrationPeriodId
+                    };
 
-                var newStudentJoin = await _unitOfWork.Repository<StudentJoin>().AddAsync(studentJoin);
-                await _unitOfWork.Save(cancellationToken);
+                    var findStudentJoin = await _unitOfWork.Repository<StudentJoin>()
+                                .FirstOrDefaultAsync(x => x.StudentId == studentJoin.StudentId &&
+                                        x.RegistrationPeriodId == studentJoin.RegistrationPeriodId);
+                    var studentJoinDto = new StudentJoinDto();
+                    if (findStudentJoin == null)
+                    {
+                        var newStudentJoin = await _unitOfWork.Repository<StudentJoin>().AddAsync(studentJoin);
+                        await _unitOfWork.Save(cancellationToken);
 
-                var studentJoinDto = _mapper.Map<StudentJoinDto>(newStudentJoin);
+                        studentJoinDto = _mapper.Map<StudentJoinDto>(newStudentJoin);
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                Task.Run(async () =>
-                {
-                    using (var scope = _serviceProvider.CreateScope())
-                    {
-                        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-                        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                        Task.Run(async () =>
+                        {
+                            using (var scope = _serviceProvider.CreateScope())
+                            {
+                                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                                var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-                        await mediator.Publish(new AfterCreatedStudentJoinCreateGroupEvent(newStudentJoin, unitOfWork));
-                    }
-                });
+                                await mediator.Publish(new AfterCreatedStudentJoinCreateGroupEvent(newStudentJoin, unitOfWork));
+                            }
+                        });
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                    }
+                    else
+                    {
+                        studentJoinDto = _mapper.Map<StudentJoinDto>(findStudentJoin);
+                    }    
 
-                return Result<StudentJoinDto>.Success(studentJoinDto, (int)HttpStatusCode.Created);
+
+                    list.Add(studentJoinDto);
+                }
+                return Result<List<StudentJoinDto>>.Success(list, (int)HttpStatusCode.Created);
             }
             catch (Exception ex)
             {
-                return Result<StudentJoinDto>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
+                return Result<List<StudentJoinDto>>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

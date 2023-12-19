@@ -95,7 +95,6 @@ namespace Core.Application.Profiles
             CreateMap<SieveModel, ListBaseRequest<StudentJoinDto>>().ReverseMap();
             CreateMap<StudentJoin, StudentJoinDto>().ReverseMap();
             CreateMap<StudentJoin, CreateStudentJoinDto>().ReverseMap();
-            CreateMap<StudentJoin, UpdateStudentJoinDto>().ReverseMap();
 
             CreateMap<SieveModel, ListBaseRequest<GroupDto>>().ReverseMap();
             CreateMap<GroupDto, Group>().ReverseMap();
