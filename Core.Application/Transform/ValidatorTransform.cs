@@ -133,5 +133,20 @@ namespace Core.Application.Transform
         {
             return $"Trường {name} ít nhất phải lớn hơn hoặc bằng ngày {day}!";
         }
+
+        public static string LessThanToday(string name)
+        {
+            return $"Trường {name} phải nhỏ hơn hôm nay!";
+        }
+
+        public static string LessThanDay(string name, DateTime day)
+        {
+            return $"Trường {name} phải nhỏ hơn ngày {day}!";
+        }
+
+        public static string LessEqualOrThanDay(string name, DateTime day)
+        {
+            return $"Trường {name} phải nhỏ hơn hoặc bằng ngày {day}!";
+        }
     }
 }

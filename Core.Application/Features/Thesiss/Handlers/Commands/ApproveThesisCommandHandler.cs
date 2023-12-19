@@ -2,12 +2,14 @@
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Thesis;
 using Core.Application.Exceptions;
+using Core.Application.Features.Thesiss.Events;
 using Core.Application.Features.Thesiss.Requests.Commands;
 using Core.Application.Responses;
 using Core.Application.Transform;
 using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 
 namespace Core.Application.Features.Thesiss.Handlers.Commands
@@ -16,11 +18,14 @@ namespace Core.Application.Features.Thesiss.Handlers.Commands
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IServiceProvider _serviceProvider;
 
-        public ApproveThesisCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public ApproveThesisCommandHandler(IUnitOfWork unitOfWork, IMapper mapper,
+            IServiceProvider serviceProvider)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<Result<ThesisDto>> Handle(ApproveThesisRequest request, CancellationToken cancellationToken)
@@ -46,6 +51,20 @@ namespace Core.Application.Features.Thesiss.Handlers.Commands
                 await _unitOfWork.Save(cancellationToken);
 
                 var thesisDto = _mapper.Map<ThesisDto>(newThesis);
+
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                Task.Run(async () =>
+                {
+                    using (var scope = _serviceProvider.CreateScope())
+                    {
+                        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+                        await mediator.Publish(new AfterApproveThesisUpdateDutyEvent(newThesis, unitOfWork));
+
+                    }
+                });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
                 return Result<ThesisDto>.Success(thesisDto, (int)HttpStatusCode.OK);
             }

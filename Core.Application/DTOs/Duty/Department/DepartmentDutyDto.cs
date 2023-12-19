@@ -28,5 +28,7 @@ namespace Core.Application.DTOs.Duty.Faculty
         public int? DutyId { get; set; }
 
         public FacultyDutyDto? ForDuty { get; set; }
+
+        public int? NumberThesisComplete { get; set; }
     }
 }

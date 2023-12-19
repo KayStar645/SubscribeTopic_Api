@@ -5,11 +5,13 @@ using Core.Application.DTOs.Duty.Validators;
 using Core.Application.Features.Duties.Events;
 using Core.Application.Features.Duties.Requests.Commands;
 using Core.Application.Responses;
+using Core.Application.Transform;
 using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
+using DutyEntity = Core.Domain.Entities.Duty;
 
 namespace Core.Application.Features.Duties.Handlers.Commands
 {
@@ -39,6 +41,16 @@ namespace Core.Application.Features.Duties.Handlers.Commands
 
             try
             {
+                var dutyFaculty = await _unitOfWork.Repository<DutyEntity>()
+                        .FirstOrDefaultAsync(x => x.Type == DutyEntity.TYPE_FACULTY &&
+                                        x.Id == request.createDepartmentDutyDto.DutyId);
+                if(request.createDepartmentDutyDto.TimeEnd >= dutyFaculty.TimeEnd)
+                {
+                    return Result<DepartmentDutyDto>
+                        .Failure(ValidatorTransform.LessThanDay("timeEnd", (DateTime)dutyFaculty.TimeEnd),
+                        (int)HttpStatusCode.BadRequest);
+                }    
+
                 var duty = _mapper.Map<Duty>(request.createDepartmentDutyDto);
                 duty.Type = Duty.TYPE_DEPARTMENT;
 
