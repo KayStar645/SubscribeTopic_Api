@@ -69,7 +69,6 @@ namespace Core.Application.Features.Thesiss.Handlers.Commands
                         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
                         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-                        await mediator.Publish(new AfterCreateThesisCreateThesisInstructionsEvent(request.createThesisDto, thesisDto, unitOfWork));
                         await mediator.Publish(new AfterCreateThesisCreateThesisMajorsEvent(request.createThesisDto, thesisDto, unitOfWork));
 
                     }
