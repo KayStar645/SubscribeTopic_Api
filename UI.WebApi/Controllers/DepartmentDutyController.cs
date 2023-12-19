@@ -35,9 +35,33 @@ namespace UI.WebApi.Controllers
         [Permission("Duty.View")]
         public async Task<ActionResult> Get([FromQuery] ListDepartmentDutyRequest request)
         {
-            var response = await _mediator.Send(request);
 
-            return StatusCode(response.Code, response);
+            try
+            {
+                var response = await _mediator.Send(request);
+
+                return StatusCode(response.Code, response);
+            }
+            catch (UnauthorizedException ex)
+            {
+                var responses = PaginatedResult<List<DepartmentDutyDto>>.Failure(ex.Message, ex.ErrorCode);
+                return StatusCode(responses.Code, responses);
+            }
+            catch (NotFoundException ex)
+            {
+                var responses = PaginatedResult<List<DepartmentDutyDto>>.Failure(ex.Message, (int)HttpStatusCode.NotFound);
+                return StatusCode(responses.Code, responses);
+            }
+            catch (BadRequestException ex)
+            {
+                var responses = PaginatedResult<List<DepartmentDutyDto>>.Failure(ex.Message, (int)HttpStatusCode.BadRequest);
+                return StatusCode(responses.Code, responses);
+            }
+            catch (Exception ex)
+            {
+                var responses = PaginatedResult<List<DepartmentDutyDto>>.Failure(ex.Message, (int)HttpStatusCode.InternalServerError);
+                return StatusCode(responses.Code, responses);
+            }
         }
 
         /// <summary>

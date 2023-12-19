@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Core.Application.Constants;
 using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Duty.Faculty;
+using Core.Application.Exceptions;
 using Core.Application.Features.Duties.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services.Interface;
@@ -17,11 +20,15 @@ namespace Core.Application.Features.Duties.Handlers.Queries
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
-        public ListDepartmentDutyQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
+        public IHttpContextAccessor _httpContext;
+
+        public ListDepartmentDutyQueryHandler(IUnitOfWork unitOfWork, IMapper mapper,
+            ISieveProcessor sieveProcessor, IHttpContextAccessor httpContext)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _sieveProcessor = sieveProcessor;
+            _httpContext = httpContext;
         }
 
         public async Task<PaginatedResult<List<DepartmentDutyDto>>> Handle(ListDepartmentDutyRequest request, CancellationToken cancellationToken)
@@ -40,7 +47,28 @@ namespace Core.Application.Features.Duties.Handlers.Queries
 
             var query = _unitOfWork.Repository<Duty>().GetAllInclude();
 
-            query = query.Where(x => x.Type == Duty.TYPE_DEPARTMENT);
+            var userId = _httpContext.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;
+            var userType = _httpContext.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Type)?.Value;
+            if (userType != CLAIMS_VALUES.TYPE_TEACHER)
+            {
+                throw new UnauthorizedException(StatusCodes.Status403Forbidden);
+            }
+            // Từ id của người dùng lấy ra id của giáo viên
+            var teacher = await _unitOfWork.Repository<Teacher>()
+                    .Query().Include(x => x.Department).ThenInclude(x => x.Faculty)
+                            .Include(x => x.Dean_Faculty)
+                            .Include(x => x.HeadDepartment_Department)
+                    .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
+
+            // Chỉ lấy khoa của bộ môn mình
+            query = query.Where(x => x.Type == Duty.TYPE_DEPARTMENT
+                    && x.DepartmentId == teacher.DepartmentId);
+
+            // Không phải trưởng bộ môn thì xét giảng viên
+            if (teacher.HeadDepartment_Department == null)
+            {
+                query = query.Where(x => x.TeacherId == teacher.Id);
+            }
 
             if (request.isAllDetail || request.isGetDepartment == true)
             {
