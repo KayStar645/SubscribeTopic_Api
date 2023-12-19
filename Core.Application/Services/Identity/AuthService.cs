@@ -165,7 +165,7 @@ namespace Core.Application.Services.Identity
             var facultyDto = _mapper.Map<FacultyDto>(result.faculty);
 
             var customer = await _userRepo.GetCustomerByUserName(user.UserName, result.type);
-            string type = "";
+            string type = CLAIMS_VALUES.TYPE_ADMIN;
             if (result.type == 0)
             {
                 type = CLAIMS_VALUES.TYPE_STUDENT;
