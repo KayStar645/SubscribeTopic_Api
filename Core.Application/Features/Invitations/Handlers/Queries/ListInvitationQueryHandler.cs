@@ -15,13 +15,13 @@ using System.Net;
 
 namespace Core.Application.Features.Invitations.Handlers.Queries
 {
-    public class ListInvitationRequestHandler : IRequestHandler<ListInvitationRequest, PaginatedResult<List<InvitationDto>>>
+    public class ListInvitationQueryHandler : IRequestHandler<ListInvitationRequest, PaginatedResult<List<InvitationDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
         public IHttpContextAccessor _httpContext;
-        public ListInvitationRequestHandler(IUnitOfWork unitOfWork, IMapper mapper,
+        public ListInvitationQueryHandler(IUnitOfWork unitOfWork, IMapper mapper,
             ISieveProcessor sieveProcessor, IHttpContextAccessor httpContext)
         {
             _unitOfWork = unitOfWork;

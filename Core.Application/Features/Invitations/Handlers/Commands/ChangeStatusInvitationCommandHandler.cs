@@ -10,6 +10,7 @@ using Core.Application.Transform;
 using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 
@@ -61,6 +62,11 @@ namespace Core.Application.Features.Invitations.Handlers.Commands
                 await _unitOfWork.Save(cancellationToken);
 
                 var invitationDto = _mapper.Map<InvitationDto>(newInvitation);
+                var oldGroup = await _unitOfWork.Repository<StudentJoin>()
+                                            .FindByCondition(x => x.Id == newInvitation.StudentJoinId)
+                                            .Include(x => x.Group)
+                                            .Select(x => x.Group)
+                                            .FirstOrDefaultAsync();
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 Task.Run(async () =>
@@ -71,9 +77,9 @@ namespace Core.Application.Features.Invitations.Handlers.Commands
                         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                         var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
-                        await mediator.Publish(new AfterChangeStatusInvitationChangeInvitationEnvent(invitationDto, unitOfWork, mapper));
-                        await mediator.Publish(new AfterChangeStatusInvitationChangeGroupEnvent(invitationDto, unitOfWork, mapper));
-                        await mediator.Publish(new AfterChangeStatusInvitationChangeStudentJoinEnvent(invitationDto, unitOfWork, mapper));
+                        await mediator.Publish(new AfterChangeStatusInvitationChangeInvitationEvent(invitationDto, unitOfWork, mapper));
+                        await mediator.Publish(new AfterChangeStatusInvitationChangeStudentJoinEvent(invitationDto, unitOfWork, mapper));
+                        await mediator.Publish(new AfterChangeStatusInvitationChangeGroupEvent(oldGroup, invitationDto, unitOfWork, mapper));
 
                     }
                 });
