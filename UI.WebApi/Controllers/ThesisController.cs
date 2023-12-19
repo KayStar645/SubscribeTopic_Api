@@ -1,4 +1,5 @@
 ﻿using Core.Application.DTOs.Thesis;
+using Core.Application.DTOs.Thesis.Validators;
 using Core.Application.Exceptions;
 using Core.Application.Features.Base.Requests.Commands;
 using Core.Application.Features.Thesiss.Requests.Commands;
@@ -127,7 +128,7 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
-        /// Sửa đề tài
+        /// Yêu cầu duyệt/Hủy yêu cầu/Yêu cầu chỉnh sửa lại
         /// </summary>
         /// <remarks>
         /// Ràng buộc: 
@@ -142,6 +143,23 @@ namespace UI.WebApi.Controllers
         public async Task<ActionResult> ChangeStatus([FromBody] ChangeStatusThesisDto request)
         {
             var command = new ChangeStatusThesisRequest { changeStatusThesis = request };
+            var response = await _mediator.Send(command);
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
+        /// Duyệt đề tài
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - Id: int, required
+        /// </remarks>
+        [HttpPut("Approve")]
+        [Permission("Thesis.Approve")]
+        public async Task<ActionResult> Approve([FromBody] ApproveThesisDto request)
+        {
+            var command = new ApproveThesisRequest { approveThesisDto = request };
             var response = await _mediator.Send(command);
 
             return StatusCode(response.Code, response);
