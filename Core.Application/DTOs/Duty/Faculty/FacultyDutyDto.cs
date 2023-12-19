@@ -29,5 +29,7 @@ namespace Core.Application.DTOs.Duty.Faculty
         public int? PeriodId { get; set; }
 
         public RegistrationPeriodDto? RegistrationPeriod { get; set; }
+
+        public int? NumberThesisComplete { get; set; }
     }
 }

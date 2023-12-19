@@ -31,6 +31,9 @@ namespace Core.Domain.Entities
         public string? Files { get; set; }
 
         public string? Type { get; set; }
+
+        [Sieve(CanFilter = true, CanSort = true)]
+        public int? NumberThesisComplete { get; set; }
         #endregion
 
 
