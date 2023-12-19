@@ -1,12 +1,6 @@
-﻿using Core.Application.DTOs.Teacher;
-using Core.Application.Models.Identity.Auths;
+﻿using Core.Application.Models.Identity.Auths;
 using Core.Application.Transform;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Application.Models.Identity.Validators
 {
@@ -20,19 +14,19 @@ namespace Core.Application.Models.Identity.Validators
         {
             RuleFor(p => p.UserName)
                 .NotEmpty().WithMessage(ValidatorTransform.Required("UserName"))
-                .MinimumLength(6).WithMessage(ValidatorTransform.MinimumLength("UserName", 6));
+                .MinimumLength(3).WithMessage(ValidatorTransform.MinimumLength("UserName", 3));
 
             RuleFor(p => p.Password)
                 .NotEmpty().WithMessage(ValidatorTransform.Required("Password"))
-                .MinimumLength(6).WithMessage(ValidatorTransform.MinimumLength("Password", 6))
-                .Must(password => password.Any(char.IsLower))
-                .WithMessage(ValidatorTransform.AnyIsLower("Password"))
-                .Must(password => password.Any(char.IsUpper))
-                .WithMessage(ValidatorTransform.AnyIsUpper("Password"))
-                .Must(password => password.Any(char.IsDigit))
-                .WithMessage(ValidatorTransform.AnyIsDigit("Password"))
-                .Must(password => password.Any(ch => !char.IsLetterOrDigit(ch)))
-                .WithMessage(ValidatorTransform.AnyIsLetterOrDigit("Password"));
+                .MinimumLength(3).WithMessage(ValidatorTransform.MinimumLength("Password", 3));
+                //.Must(password => password.Any(char.IsLower))
+                //.WithMessage(ValidatorTransform.AnyIsLower("Password"))
+                //.Must(password => password.Any(char.IsUpper))
+                //.WithMessage(ValidatorTransform.AnyIsUpper("Password"))
+                //.Must(password => password.Any(char.IsDigit))
+                //.WithMessage(ValidatorTransform.AnyIsDigit("Password"))
+                //.Must(password => password.Any(ch => !char.IsLetterOrDigit(ch)))
+                //.WithMessage(ValidatorTransform.AnyIsLetterOrDigit("Password"));
         }
     }
 }

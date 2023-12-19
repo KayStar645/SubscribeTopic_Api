@@ -180,20 +180,26 @@ namespace Core.Application.Services.Identity
             var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role.Name));
             var permissionClaims = permissions.Select(permission => new Claim(CONSTANT_CLAIM_TYPES.Permission, permission.Name));
 
+            var pCustomer = customer == null ? "" : JsonSerializer.Serialize(customer,
+                                    new JsonSerializerOptions
+                                    {
+                                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+                                    });
+            var pFaculty = facultyDto == null ? "" : JsonSerializer.Serialize(facultyDto,
+                                    new JsonSerializerOptions
+                                    {
+                                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+                                    });
+            var pFacultyId = facultyDto == null ? "" : facultyDto?.Id?.ToString();
+
             var claims = new[]
             {
                 new Claim(CONSTANT_CLAIM_TYPES.Uid, user.Id.ToString()),
                 new Claim(CONSTANT_CLAIM_TYPES.UserName, user.UserName),
                 new Claim(CONSTANT_CLAIM_TYPES.Type, type),
-                new Claim(CONSTANT_CLAIM_TYPES.FacultyId, facultyDto?.Id?.ToString()),
-                new Claim(CONSTANT_CLAIM_TYPES.Customer, JsonSerializer.Serialize(customer,
-                                    new JsonSerializerOptions {
-                                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
-                                    })),
-                new Claim(CONSTANT_CLAIM_TYPES.Faculty, JsonSerializer.Serialize(facultyDto, 
-                                    new JsonSerializerOptions { 
-                                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) 
-                                    })),
+                new Claim(CONSTANT_CLAIM_TYPES.FacultyId, pFacultyId),
+                new Claim(CONSTANT_CLAIM_TYPES.Customer, pCustomer),
+                new Claim(CONSTANT_CLAIM_TYPES.Faculty, pFaculty),
             }
             .Union(permissionClaims)
             .Union(roleClaims);

@@ -3,10 +3,8 @@ using Core.Application.Interfaces.Identity;
 using Core.Application.Models.Identity.Auths;
 using Core.Application.Models.Identity.Roles;
 using Core.Application.Responses;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Security.Cryptography;
 using UI.WebApi.Middleware;
 
 namespace UI.WebApi.Controllers
