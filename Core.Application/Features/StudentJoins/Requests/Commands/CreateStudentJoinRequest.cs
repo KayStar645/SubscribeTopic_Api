@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Core.Application.Features.StudentJoins.Requests.Commands
 {
-    public class CreateStudentJoinRequest : IRequest<Result<StudentJoinDto>>
+    public class CreateStudentJoinRequest : IRequest<Result<List<StudentJoinDto>>>
     {
         public CreateStudentJoinDto createStudentJoinDto { get; set; }
     }
