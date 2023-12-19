@@ -1,5 +1,10 @@
-﻿using Core.Application.DTOs.Thesis;
+﻿using Core.Application.Contracts.Persistence;
+using Core.Application.DTOs.Common.Validators;
+using Core.Application.DTOs.Thesis;
 using Core.Application.Features.Base.Requests.Queries;
+using Core.Application.Transform;
+using FluentValidation;
+using PeriodEntity = Core.Domain.Entities.RegistrationPeriod;
 
 namespace Core.Application.Features.Thesiss.Requests.Queries
 {
@@ -14,5 +19,28 @@ namespace Core.Application.Features.Thesiss.Requests.Queries
         public bool? isGetThesisMajors { get; set; }
 
         public bool? isGetAll { get; set; }
+
+        public int? periodId { get; set; }
+    }
+
+    public class ListThesisInstructorOfTeacherValidator : AbstractValidator<ListThesisInstructorOfTeacherRequest>
+    {
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ListThesisInstructorOfTeacherValidator(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+
+            Include(new ListBaseRequestValidator<ThesisDto>());
+
+            RuleFor(x => x.periodId)
+                .MustAsync(async (periodId, token) =>
+                {
+                    var exists = await _unitOfWork.Repository<PeriodEntity>()
+                        .FirstOrDefaultAsync(x => x.Id == periodId);
+                    return exists != null;
+                })
+                .WithMessage(id => ValidatorTransform.MustIn("periodId"));
+        }
     }
 }
