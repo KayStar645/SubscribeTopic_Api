@@ -47,5 +47,8 @@ namespace Infrastructure.Persistence
         public DbSet<ReportSchedule> ReportSchedules { get; set; }
         public DbSet<Duty> Duties { get; set; }
         public DbSet<Point> Point { get; set; }
+        public DbSet<Council> Councils { get; set; }
+        public DbSet<Commissioner> Commissioners { get; set; }
+
     }
 }

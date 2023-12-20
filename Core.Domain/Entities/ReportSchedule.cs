@@ -11,6 +11,8 @@ namespace Core.Domain.Entities
         public const string TYPE_WEEKLY = "W"; // Báo cáo hằng tuần (Gặp mặt GVHD)
         [NotMapped]
         public const string TYPE_REVIEW = "R"; // Lịch phản biện (Có GVPB)
+        [NotMapped]
+        public const string TYPE_COUNCIL = "C"; // Lịch phản biện trước hội đồng
         #endregion
 
 
@@ -58,7 +60,8 @@ namespace Core.Domain.Entities
             return new string[]
             {
                 TYPE_WEEKLY,
-                TYPE_REVIEW
+                TYPE_REVIEW,
+                TYPE_COUNCIL
             };
         }
         #endregion

@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubscribeTopicDbContext))]
-    partial class SubscribeTopicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231220075531_create_council")]
+    partial class create_council
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1223,9 +1226,6 @@ namespace Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CouncilId")
-                        .HasColumnType("int");
-
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -1272,8 +1272,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CouncilId");
 
                     b.HasIndex("DutyId");
 
@@ -1770,10 +1768,6 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Core.Domain.Entities.Thesis", b =>
                 {
-                    b.HasOne("Core.Domain.Entities.Council", "Council")
-                        .WithMany()
-                        .HasForeignKey("CouncilId");
-
                     b.HasOne("Core.Domain.Entities.Duty", "Duty")
                         .WithMany("Thesiss")
                         .HasForeignKey("DutyId");
@@ -1785,8 +1779,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Core.Domain.Entities.Student", "ProposedStudent")
                         .WithMany()
                         .HasForeignKey("ProposedStudentId");
-
-                    b.Navigation("Council");
 
                     b.Navigation("Duty");
 
