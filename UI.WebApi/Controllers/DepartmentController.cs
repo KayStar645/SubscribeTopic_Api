@@ -108,7 +108,20 @@ namespace UI.WebApi.Controllers
             var command = new UpdateDepartmentRequest { updateDepartmentDto = request };
             var response = await _mediator.Send(command);
 
-            return StatusCode(response.Code, response);
+            var settings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                NullValueHandling = NullValueHandling.Include,
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                }
+            };
+
+            var json = JsonConvert.SerializeObject(response, settings);
+
+            return StatusCode(response.Code, json);
         }
 
         /// <summary>
