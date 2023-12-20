@@ -12,6 +12,6 @@ namespace Core.Application.DTOs.Council
 
         public string? Location { get; set; }
 
-        public List<CommissionerDto>? Commissioners { get; set; }
+        public List<CreateCommissionerDto>? Commissioners { get; set; }
     }
 }

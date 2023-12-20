@@ -32,8 +32,4 @@
     <ProjectReference Include="..\Sieve\Sieve.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Councils\Events\" />
-  </ItemGroup>
-
 </Project>

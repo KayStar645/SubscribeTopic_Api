@@ -6,7 +6,6 @@ using Core.Application.Features.Departments.Requests.Queries;
 using Core.Application.Responses;
 using Core.Application.Transform;
 using Core.Domain.Entities;
-using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Net;

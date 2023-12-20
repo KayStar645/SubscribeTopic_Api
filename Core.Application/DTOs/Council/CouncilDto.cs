@@ -1,4 +1,5 @@
 ﻿using Core.Application.DTOs.Commissioner;
+using Core.Domain.Entities;
 using KLTN.Core.Application.DTOs.Common;
 
 namespace Core.Application.DTOs.Council
@@ -14,5 +15,9 @@ namespace Core.Application.DTOs.Council
         public string? Location { get; set; }
 
         public List<CommissionerDto>? Commissioners { get; set; }
+
+        public int? FacultyId { get; set; }
+
+        public Faculties? Faculty { get; set; }
     }
 }

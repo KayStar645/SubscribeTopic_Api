@@ -28,7 +28,11 @@ namespace Core.Domain.Entities
 
 
         #region FOREIGN KEY
+        // Hội đồng của khoa nào
+        public int? FacultyId { get; set; }
 
+        [ForeignKey("FacultyId")]
+        public Faculties? Faculty { get; set; }
         #endregion
 
 

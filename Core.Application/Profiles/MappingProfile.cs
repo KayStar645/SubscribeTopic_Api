@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Application.DTOs.Commissioner;
 using Core.Application.DTOs.Common;
 using Core.Application.DTOs.Council;
 using Core.Application.DTOs.Department;
@@ -162,6 +163,8 @@ namespace Core.Application.Profiles
             CreateMap<Council, CouncilDto>().ReverseMap();
             CreateMap<Council, CreateCouncilDto>().ReverseMap();
             CreateMap<Council, UpdateCouncilDto>().ReverseMap();
+            CreateMap<Commissioner, CommissionerDto>().ReverseMap();
+            CreateMap<Commissioner, CreateCommissionerDto>().ReverseMap();
 
 
         }
