@@ -19,21 +19,22 @@ namespace Core.Domain.Entities
         public string? Name { get; set; }   
 
         [Sieve(CanFilter = true, CanSort = true)]
-        [Column(TypeName = "datetime")]
+        [Column(TypeName = "date")]
         public DateTime? ProtectionDay { get; set; }
 
+        [Sieve(CanFilter = true, CanSort = true)]
         public string? Location { get; set; }
         #endregion
 
 
         #region FOREIGN KEY
-        // Thành viên trong hội đồng
-        public ICollection<Commissioner> Commissioners = new HashSet<Commissioner>();
 
         #endregion
 
 
         #region ICOLECTION
+        // Thành viên trong hội đồng
+        public ICollection<Commissioner> Commissioners = new HashSet<Commissioner>();
 
         #endregion
 

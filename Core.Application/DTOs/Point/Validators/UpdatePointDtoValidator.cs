@@ -5,11 +5,11 @@ using StudentJoinEntity = Core.Domain.Entities.StudentJoin;
 
 namespace Core.Application.DTOs.Point.Validators
 {
-    public class CreateOrUpdatePointDtoValidator : AbstractValidator<UpdatePointDto>
+    public class UpdatePointDtoValidator : AbstractValidator<UpdatePointDto>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateOrUpdatePointDtoValidator(IUnitOfWork unitOfWork) 
+        public UpdatePointDtoValidator(IUnitOfWork unitOfWork) 
         {
             _unitOfWork = unitOfWork;
 

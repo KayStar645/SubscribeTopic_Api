@@ -30,7 +30,7 @@ namespace Core.Application.Features.Points.Handlers.Commands
 
         public async Task<Result<PointDto>> Handle(UpdatePointRequest request, CancellationToken cancellationToken)
         {
-            var validator = new CreateOrUpdatePointDtoValidator(_unitOfWork);
+            var validator = new UpdatePointDtoValidator(_unitOfWork);
             var validationResult = await validator.ValidateAsync(request.updatePointDto);
 
             if (validationResult.IsValid == false)
