@@ -212,5 +212,22 @@ namespace UI.WebApi.Controllers
 
             return StatusCode(response.Code, response);
         }
+
+        /// <summary>
+        /// Đưa đề tài ra hội đồng
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - ThesisId: int, required
+        /// </remarks>
+        [HttpPut("ApproveToCouncil")]
+        [Permission("Thesis.ApproveToCouncil")]
+        public async Task<ActionResult> ApproveToCouncil([FromBody] ApproveThesisToCouncilRequest request)
+        {
+            var command = request;
+            var response = await _mediator.Send(command);
+
+            return StatusCode(response.Code, response);
+        }
     }
 }

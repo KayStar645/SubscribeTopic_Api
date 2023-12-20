@@ -108,7 +108,16 @@ namespace Core.Application.Profiles
             CreateMap<SieveModel, ListBaseRequest<ThesisDto>>().ReverseMap();
             CreateMap<SieveModel, ListBaseRequest<ThesisRegisteredDto>>().ReverseMap();
             CreateMap<Thesis, ThesisRegisteredDto>().ReverseMap();
-            CreateMap<Thesis, ThesisDto>().ReverseMap();
+            CreateMap<Thesis, ThesisDto>()
+                .ForMember(dest => dest.ThesisInstructions, opt => opt.Ignore())
+                .ForMember(dest => dest.ThesisReviews, opt => opt.Ignore())
+                .ForMember(dest => dest.ThesisMajors, opt => opt.Ignore());
+
+            CreateMap<ThesisDto, Thesis>()
+                .ForMember(dest => dest.ThesisInstructions, opt => opt.Ignore())
+                .ForMember(dest => dest.ThesisReviews, opt => opt.Ignore())
+                .ForMember(dest => dest.ThesisMajors, opt => opt.Ignore());
+
             CreateMap<Thesis, ThesisRegisteredDto>().ReverseMap();
             CreateMap<Thesis, CreateThesisDto>().ReverseMap();
             CreateMap<Thesis, UpdateThesisDto>().ReverseMap();

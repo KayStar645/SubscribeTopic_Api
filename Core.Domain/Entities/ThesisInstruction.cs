@@ -1,5 +1,6 @@
 ﻿using Core.Domain.Common;
 using Sieve.Attributes;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Domain.Entities
@@ -21,6 +22,10 @@ namespace Core.Domain.Entities
         public int? ThesisId { get; set; }
         [ForeignKey(nameof(ThesisId))]
         public Thesis? Thesis { get; set; }
+
+
+        [DefaultValue(false)]
+        public bool IsApprove { get; set; }
 
         #endregion
 
