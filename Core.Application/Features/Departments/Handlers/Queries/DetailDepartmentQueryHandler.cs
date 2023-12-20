@@ -6,19 +6,18 @@ using Core.Application.Features.Departments.Requests.Queries;
 using Core.Application.Responses;
 using Core.Application.Transform;
 using Core.Domain.Entities;
-using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace Core.Application.Features.Departments.Handlers.Queries
 {
-    public class DetailDepartmentRequestHandler : IRequestHandler<DetailDepartmentRequest, Result<DepartmentDto>>
+    public class DetailDepartmentQueryHandler : IRequestHandler<DetailDepartmentRequest, Result<DepartmentDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public DetailDepartmentRequestHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public DetailDepartmentQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

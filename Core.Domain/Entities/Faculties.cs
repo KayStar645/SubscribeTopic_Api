@@ -56,6 +56,9 @@ namespace Core.Domain.Entities
         // Khoa giao nhiệm vụ
         public ICollection<Duty>? Duties { get; } = new HashSet<Duty>();
 
+        // Danh sách hội đồng
+        public ICollection<Council> Councils = new HashSet<Council>();
+
         #endregion
 
 

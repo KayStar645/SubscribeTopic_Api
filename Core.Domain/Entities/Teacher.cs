@@ -92,6 +92,9 @@ namespace Core.Domain.Entities
         // Danh sách điểm số giảng viên chấm
         public ICollection<Point> Points = new HashSet<Point>();
 
+        // Tham gia hội đồng nào
+        public ICollection<Commissioner> Commissioners = new HashSet<Commissioner>();
+
         #endregion
 
 

@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SubscribeTopicDbContext))]
-    partial class SubscribeTopicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231220093153_update_council_time")]
+    partial class update_council_time
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,9 +80,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime");
 
-                    b.Property<int?>("FacultyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("InternalCode")
                         .HasColumnType("nvarchar(max)");
 
@@ -102,8 +102,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("date");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FacultyId");
 
                     b.ToTable("Councils");
                 });
@@ -1458,15 +1456,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Council");
 
                     b.Navigation("Teacher");
-                });
-
-            modelBuilder.Entity("Core.Domain.Entities.Council", b =>
-                {
-                    b.HasOne("Core.Domain.Entities.Faculties", "Faculty")
-                        .WithMany()
-                        .HasForeignKey("FacultyId");
-
-                    b.Navigation("Faculty");
                 });
 
             modelBuilder.Entity("Core.Domain.Entities.Department", b =>

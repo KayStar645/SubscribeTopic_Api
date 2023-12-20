@@ -10,6 +10,8 @@ namespace Core.Domain.Entities
         public const string TYPE_INSTRUCTION = "I";
         [NotMapped]
         public const string TYPE_REVIEW = "R";
+        [NotMapped]
+        public const string TYPE_COUNCIL = "C";
         #endregion
 
 

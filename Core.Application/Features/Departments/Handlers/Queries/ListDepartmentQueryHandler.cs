@@ -13,13 +13,13 @@ using System.Net;
 
 namespace Core.Application.Features.Departments.Handlers.Queries
 {
-    public class ListDepartmentRequestHandler : IRequestHandler<ListDepartmentRequest, PaginatedResult<List<DepartmentDto>>>
+    public class ListDepartmentQueryHandler : IRequestHandler<ListDepartmentRequest, PaginatedResult<List<DepartmentDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISieveProcessor _sieveProcessor;
 
-        public ListDepartmentRequestHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
+        public ListDepartmentQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ISieveProcessor sieveProcessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

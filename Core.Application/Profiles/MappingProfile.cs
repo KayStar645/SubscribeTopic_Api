@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Core.Application.DTOs.Commissioner;
 using Core.Application.DTOs.Common;
+using Core.Application.DTOs.Council;
 using Core.Application.DTOs.Department;
 using Core.Application.DTOs.Duty;
 using Core.Application.DTOs.Duty.Faculty;
@@ -156,6 +158,13 @@ namespace Core.Application.Profiles
             CreateMap<SieveModel, ListBaseRequest<ThesisPointDto>>().ReverseMap();
             CreateMap<Point, UpdatePointDto>().ReverseMap();
             CreateMap<Point, PointDto>().ReverseMap();
+
+            CreateMap<SieveModel, ListBaseRequest<CouncilDto>>().ReverseMap();
+            CreateMap<Council, CouncilDto>().ReverseMap();
+            CreateMap<Council, CreateCouncilDto>().ReverseMap();
+            CreateMap<Council, UpdateCouncilDto>().ReverseMap();
+            CreateMap<Commissioner, CommissionerDto>().ReverseMap();
+            CreateMap<Commissioner, CreateCommissionerDto>().ReverseMap();
 
 
         }

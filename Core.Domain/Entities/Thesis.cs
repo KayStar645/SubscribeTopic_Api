@@ -96,6 +96,12 @@ namespace Core.Domain.Entities
         // Nhóm nào đăng ký đề tài này
         public ThesisRegistration? ThesisRegistration { get; set; }
 
+        // Giảng viên ra đề
+        [Sieve(CanFilter = true, CanSort = true)]
+        public int? CouncilId { get; set; }
+        [ForeignKey(nameof(CouncilId))]
+        public Council? Council { get; set; }
+
         #endregion
 
         // Giảng viên hướng dẫn

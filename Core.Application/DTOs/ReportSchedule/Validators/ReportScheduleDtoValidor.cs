@@ -15,7 +15,7 @@ namespace Core.Application.DTOs.ReportSchedule.Validators
             _unitOfWork = unitOfWork;
 
             RuleFor(x => x.TimeStart)
-                .Must(timeStart => timeStart == null || CustomValidator.IsEqualOrAfterDay(timeStart, DateTime.Now))
+                .Must(timeStart => CustomValidator.IsEqualOrAfterDay(timeStart, DateTime.Now))
                 .WithMessage(ValidatorTransform.GreaterEqualOrThanDay("timestart", DateTime.Now));
 
             RuleFor(x => x.TimeEnd)
