@@ -75,7 +75,10 @@ namespace Core.Application.Features.Points.Handlers.Queries
                     InstructionScore = instructionAverage,
                     ViewScore = reviewAverage,
                     CouncilScore = councilAverage,
-                    AverageScore = (instructionAverage ?? 0 + reviewAverage ?? 0 + councilAverage ?? 0) / 3,
+                    AverageScore = double.Parse(((instructionAverage ?? 0 +
+                                        reviewAverage ?? 0 +
+                                        councilAverage ?? 0) / 3)
+                                        .ToString("F2")),
                     StudentJoin = _mapper.Map<StudentJoinDto>(studentGroup.FirstOrDefault()?.StudentJoin)
                 };
 
