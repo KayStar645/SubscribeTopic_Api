@@ -4,12 +4,15 @@ using Core.Application.Contracts.Persistence;
 using Core.Application.DTOs.Council;
 using Core.Application.DTOs.Council.Validators;
 using Core.Application.Exceptions;
+using Core.Application.Features.Councils.Events;
 using Core.Application.Features.Councils.Requests.Commands;
+using Core.Application.Features.Thesiss.Events;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using Schedule = Core.Domain.Entities.ReportSchedule;
 
@@ -20,13 +23,15 @@ namespace Core.Application.Features.Councils.Handlers.Commands
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContext;
+        private readonly IServiceProvider _serviceProvider;
 
         public SelectThesisForCouncilCommandHandler(IUnitOfWork unitOfWork, IMapper mapper,
-            IHttpContextAccessor httpContext)
+            IHttpContextAccessor httpContext, IServiceProvider serviceProvider)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _httpContext = httpContext;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<Result<CouncilDto>> Handle(SelectThesisForCouncilRequest request, CancellationToken cancellationToken)
@@ -79,7 +84,6 @@ namespace Core.Application.Features.Councils.Handlers.Commands
                     };
                     await _unitOfWork.Repository<Schedule>().AddAsync(schedule);
                     await _unitOfWork.Save(cancellationToken);
-
                 }
 
                 var findCouncil = await _unitOfWork.Repository<Council>()
@@ -87,6 +91,19 @@ namespace Core.Application.Features.Councils.Handlers.Commands
                 
 
                 var councilDto = _mapper.Map<CouncilDto>(findCouncil);
+
+                await Task.Run(async () =>
+                {
+                    using (var scope = _serviceProvider.CreateScope())
+                    {
+                        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                        var httpContext = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
+
+                        await mediator.Publish(new AfterSelectThesisForCouncilCreateOrUpdatePointEvent(council, request.selectThesisForCouncilDto.ListThesis, unitOfWork));
+
+                    }
+                });
 
                 return Result<CouncilDto>.Success(councilDto, (int)HttpStatusCode.OK);
             }

@@ -100,9 +100,9 @@ namespace Core.Application.Features.Points.Handlers.Queries
             query = _sieveProcessor.Apply(sieve, query);
 
 
-            var Points = await query.ToListAsync();
+            var points = await query.ToListAsync();
 
-            var mapPoints = _mapper.Map<List<PointDto>>(Points);
+            var mapPoints = _mapper.Map<List<PointDto>>(points);
             return PaginatedResult<List<PointDto>>.Success(
                 mapPoints, totalCount, request.page,
                 request.pageSize);
