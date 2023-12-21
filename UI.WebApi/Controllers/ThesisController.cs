@@ -214,6 +214,20 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
+        /// Lấy danh sách đề tài có thể đưa ra hội đồng
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        [HttpGet("ListThesisPossibleCouncil")]
+        [Permission("Thesis.PossibleCouncil.View")]
+        public async Task<ActionResult> Get([FromQuery] ListThesisPossibleCouncilRequest request)
+        {
+            var response = await _mediator.Send(request);
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
         /// Đưa đề tài ra hội đồng
         /// </summary>
         /// <remarks>
