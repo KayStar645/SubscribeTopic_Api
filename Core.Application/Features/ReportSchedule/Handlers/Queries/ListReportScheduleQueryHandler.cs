@@ -68,10 +68,21 @@ namespace Core.Application.Features.ReportSchedule.Handlers.Queries
                                                     .Where(x => x.Teacher.UserId == int.Parse(userId))
                                                     .Select(x => x.ThesisId)
                                                     .ToListAsync();
+                    var councilsId = await _unitOfWork.Repository<Commissioner>()
+                                                .Query()
+                                                .Where(x => x.Teacher.UserId == int.Parse(userId))
+                                                .Include(x => x.Council)
+                                                .Select(x => x.Council.Id)
+                                                .ToListAsync();
+
                     var thesisId = thesisInsId.Union(thesisRevId).ToList();
-                    query = query.Where(x => x.Thesis.ThesisInstructions.Any(x => thesisInsId.Contains(x.ThesisId)));
-                    query = query.Where(x => (x.Thesis.ThesisReviews.Any(x => thesisRevId.Contains(x.ThesisId)) &&
-                                             x.Type == ReportScheduleEntity.TYPE_WEEKLY) == false);
+                    query = query.Where(x => (x.Thesis.ThesisInstructions.Any(x => thesisInsId.Contains(x.ThesisId))) ||
+
+                                             (x.Thesis.ThesisReviews.Any(x => thesisRevId.Contains(x.ThesisId)) &&
+                                             x.Type == ReportScheduleEntity.TYPE_REVIEW) ||
+
+                                             ((x.Thesis.ThesisReviews.Any(x => thesisRevId.Contains(x.ThesisId)) &&
+                                             x.Type == ReportScheduleEntity.TYPE_WEEKLY) == false));
                 }
                 else if (userType == CLAIMS_VALUES.TYPE_STUDENT)
                 {
