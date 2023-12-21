@@ -13,9 +13,6 @@ namespace Core.Domain.Entities
 
         #region PROPERTIES
 
-        [Sieve(CanFilter = true, CanSort = true)]
-        public double? Score { get; set; }
-
         #endregion
 
 

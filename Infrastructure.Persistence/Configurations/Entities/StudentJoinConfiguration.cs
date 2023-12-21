@@ -8,7 +8,7 @@ namespace Infrastructure.Persistence.Configurations.Entities
     {
         public void Configure(EntityTypeBuilder<StudentJoin> builder)
         {
-            builder.Property(b => b.Score).HasDefaultValue(0.0);
+            
         }
     }
 }

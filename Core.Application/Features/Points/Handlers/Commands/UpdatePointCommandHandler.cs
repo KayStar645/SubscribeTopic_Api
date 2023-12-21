@@ -70,20 +70,6 @@ namespace Core.Application.Features.Points.Handlers.Commands
                 var newPoint = await _unitOfWork.Repository<Point>().UpdateAsync(findPoint);
                 await _unitOfWork.Save(cancellationToken);
 
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                Task.Run(async () =>
-                {
-                    using (var scope = _serviceProvider.CreateScope())
-                    {
-                        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-                        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                        var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
-
-                        await mediator.Publish(new AfterUpdatePointUpdateStudentJoinEvent(newPoint, unitOfWork, userRepository));
-                    }
-                });
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-
                 var pointDto = _mapper.Map<PointDto>(newPoint);
 
                 return Result<PointDto>.Success(pointDto, (int)HttpStatusCode.Created);

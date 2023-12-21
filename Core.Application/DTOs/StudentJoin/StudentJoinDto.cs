@@ -8,7 +8,6 @@ namespace Core.Application.DTOs.StudentJoin
     {
         public int? studentId { get; set; }
         public int? registrationPeriodId { get; set; }
-        public double? score { get; set; }
         public StudentDto? student { get; set; }
         public RegistrationPeriodDto? registrationPeriod { get; set; }
     }
