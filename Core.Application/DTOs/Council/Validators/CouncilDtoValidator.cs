@@ -16,10 +16,6 @@ namespace Core.Application.DTOs.Council.Validators
         {
             _unitOfWork = unitOfWork;
 
-            RuleFor(x => x.ProtectionDay)
-                .Must(protectionDay => CustomValidator.IsEqualOrAfterDay(protectionDay, DateTime.Now))
-                .WithMessage(ValidatorTransform.GreaterEqualOrThanDay("protectionDay", DateTime.Now));
-
             RuleFor(x => x.Location)
                 .NotEmpty().WithMessage(ValidatorTransform.Required("location"))
                 .MaximumLength(190).WithMessage(ValidatorTransform.MaximumLength("location", 500));

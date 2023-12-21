@@ -10,8 +10,6 @@ namespace Core.Application.DTOs.Council
 
         public string? Name { get; set; }
 
-        public DateTime? ProtectionDay { get; set; }
-
         public string? Location { get; set; }
 
         public List<CommissionerDto>? Commissioners { get; set; }

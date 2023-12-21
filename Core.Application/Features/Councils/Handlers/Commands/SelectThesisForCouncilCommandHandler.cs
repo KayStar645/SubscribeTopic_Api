@@ -6,14 +6,12 @@ using Core.Application.DTOs.Council.Validators;
 using Core.Application.Exceptions;
 using Core.Application.Features.Councils.Events;
 using Core.Application.Features.Councils.Requests.Commands;
-using Core.Application.Features.Thesiss.Events;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 using System.Net;
 using Schedule = Core.Domain.Entities.ReportSchedule;
 
@@ -120,6 +118,37 @@ namespace Core.Application.Features.Councils.Handlers.Commands
 
                     await _unitOfWork.Repository<Thesis>().UpdateAsync(findThesis);
                     await _unitOfWork.Save(cancellationToken);
+
+                    // Kiểm tra lịch của toàn bộ những người tham gia: GVHD, GVPB, thành viên hội đồng, sinh viên
+                    var teacherIns = await _unitOfWork.Repository<ThesisInstruction>()
+                                        .Query()
+                                        .Where(x => x.ThesisId == findThesis.Id)
+                                        .Select(x => x.TeacherId)
+                                        .ToListAsync();
+                    var teacherRev = await _unitOfWork.Repository<ThesisReview>()
+                                            .Query()
+                                            .Where(x => x.ThesisId == findThesis.Id)
+                                            .Select(x => x.TeacherId)
+                                            .ToListAsync();
+                    var thesisCouncil = await _unitOfWork.Repository<Thesis>()
+                                            .Query()
+                                            .Where(x => x.CouncilId == council.Id)
+                                            .Select(x => x.Id)
+                                            .ToListAsync();
+
+                    var check = await _unitOfWork.Repository<Schedule>()
+                                .Query()
+                                .AnyAsync(x => (x.TimeStart <= thesis.TimeStart && thesis.TimeStart <= x.TimeEnd ||
+                                                x.TimeStart <= thesis.TimeEnd && thesis.TimeEnd <= x.TimeEnd ||
+                                                thesis.TimeStart <= x.TimeStart && x.TimeStart <= thesis.TimeEnd) &&
+                                                (x.Thesis.ThesisInstructions.Any(x => teacherIns.Contains(x.TeacherId)) ||
+                                                x.Thesis.ThesisReviews.Any(x => teacherRev.Contains(x.TeacherId)) ||
+                                                thesisCouncil.Contains((int)x.ThesisId)));
+
+                    if (check)
+                    {
+                        throw new BadRequestException("Thời gian bị trùng với lịch khác!");
+                    }
 
                     // Tạo lịch cho đề tài này
                     Schedule schedule = new Schedule
