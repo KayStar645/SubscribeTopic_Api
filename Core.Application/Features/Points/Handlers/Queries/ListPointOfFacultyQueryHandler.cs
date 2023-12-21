@@ -60,25 +60,22 @@ namespace Core.Application.Features.Points.Handlers.Queries
             {
                 var instructionAverage = studentGroup
                     .Where(x => x.Type == Point.TYPE_INSTRUCTION)
-                    .Average(x => x.Scores);
+                    .Average(x => x.Scores) ?? 0;
 
                 var reviewAverage = studentGroup
                     .Where(x => x.Type == Point.TYPE_REVIEW)
-                    .Average(x => x.Scores);
+                    .Average(x => x.Scores) ?? 0;
 
                 var councilAverage = studentGroup
                     .Where(x => x.Type == Point.TYPE_COUNCIL)
-                    .Average(x => x.Scores);
+                    .Average(x => x.Scores) ?? 0;
 
                 var listPointDto = new ListPointDto
                 {
                     InstructionScore = instructionAverage,
                     ViewScore = reviewAverage,
                     CouncilScore = councilAverage,
-                    AverageScore = double.Parse(((instructionAverage ?? 0 +
-                                        reviewAverage ?? 0 +
-                                        councilAverage ?? 0) / 3)
-                                        .ToString("F2")),
+                    AverageScore = double.Parse(((instructionAverage + reviewAverage +councilAverage) / 3).ToString("F2")),
                     StudentJoin = _mapper.Map<StudentJoinDto>(studentGroup.FirstOrDefault()?.StudentJoin)
                 };
 

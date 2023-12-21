@@ -29,6 +29,12 @@ namespace Core.Application.Features.ThesisRegistrations.Event
         {
             var userId = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Uid)?.Value;
             var facultyId = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.FacultyId)?.Value;
+            var userType = pEvent._httpContextAccessor.HttpContext.User.FindFirst(CONSTANT_CLAIM_TYPES.Type)?.Value;
+
+            if (userType != CLAIMS_VALUES.TYPE_STUDENT)
+            {
+                throw new UnauthorizedException(StatusCodes.Status403Forbidden);
+            }
 
             // Chỉ cho đợt đăng ký đề tài của đợt hiện tại trong thời gian quy định
             var period = await pEvent._unitOfWork.Repository<RegistrationPeriod>()
@@ -42,14 +48,18 @@ namespace Core.Application.Features.ThesisRegistrations.Event
                 throw new UnauthorizedException(StatusCodes.Status403Forbidden);
             }
 
-            var group = await pEvent._unitOfWork.Repository<StudentJoin>()
+            var student = await pEvent._unitOfWork.Repository<Student>()
+                .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
+
+            var groupId = await pEvent._unitOfWork.Repository<StudentJoin>()
                                     .Query()
                                     .Where(x => x.RegistrationPeriodId == period.Id &&
-                                                x.Group.Leader.Student.UserId == int.Parse(userId))
+                                                x.StudentId == student.Id)
+                                    .Select(x => x.GroupId)
                                 .FirstOrDefaultAsync();
 
             // Chỉ cho trưởng nhóm đăng ký
-            if (group == null)
+            if (groupId == null)
             {
                 throw new UnauthorizedException(StatusCodes.Status403Forbidden);
             }
@@ -65,13 +75,13 @@ namespace Core.Application.Features.ThesisRegistrations.Event
 
             // 1 nhóm chỉ được đăng ký 1 đề tài
             var exists = await pEvent._unitOfWork.Repository<ThesisRegistration>()
-                                .AnyAsync(x => x.GroupId == group.Id);
+                                .AnyAsync(x => x.GroupId == groupId);
             if (exists)
             {
                 throw new BadRequestException("Một nhóm chỉ được đăng ký 1 đề tài!");
             }
 
-            pEvent._thesisRegistration.GroupId = group.Id;
+            pEvent._thesisRegistration.GroupId = groupId;
 
         }
     }

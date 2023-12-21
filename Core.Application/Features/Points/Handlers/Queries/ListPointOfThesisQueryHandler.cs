@@ -92,15 +92,17 @@ namespace Core.Application.Features.Points.Handlers.Queries
                     };
                     teacherPointDtos.Add(teacherPoint);  
                 }
+
+                var p1 = teacherPointDtos.Where(x => x.Type == Point.TYPE_INSTRUCTION).Average(x => x.Score) ?? 0;
+                var p2 = teacherPointDtos.Where(x => x.Type == Point.TYPE_REVIEW).Average(x => x.Score) ?? 0;
+                var p3 = teacherPointDtos.Where(x => x.Type == Point.TYPE_COUNCIL).Average(x => x.Score) ?? 0;
+
                 var studentJoin = _mapper.Map<StudentJoinDto>(studentGroup.FirstOrDefault()?.StudentJoin);
                 var thesisPointDto = new ThesisPointDto
                 {
                     StudentJoinId = studentJoin.Id,
                     Scores = teacherPointDtos,
-                    AverageScore = double.Parse(((teacherPointDtos.Where(x => x.Type == Point.TYPE_INSTRUCTION).Average(x => x.Score) ?? 0 +
-                                    teacherPointDtos.Where(x => x.Type == Point.TYPE_REVIEW).Average(x => x.Score) ?? 0 +
-                                    teacherPointDtos.Where(x => x.Type == Point.TYPE_COUNCIL).Average(x => x.Score) ?? 0) / 3)
-                                    .ToString("F2")),
+                    AverageScore = double.Parse(((p1 + p2 + p3) / 3).ToString("F2")),
                     StudentJoin = studentJoin
                 };
                 thesisPointDtos.Add(thesisPointDto);
