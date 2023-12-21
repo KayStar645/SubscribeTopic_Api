@@ -6,8 +6,9 @@ using Core.Application.Features.Teachers.Requests.Queries;
 using Core.Application.Responses;
 using Core.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 using System.Net;
 using UI.WebApi.Middleware;
 
@@ -53,7 +54,20 @@ namespace UI.WebApi.Controllers
         {
             var response = await _mediator.Send(request);
 
-            return StatusCode(response.Code, response);
+            var settings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                NullValueHandling = NullValueHandling.Include,
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                }
+            };
+
+            var json = JsonConvert.SerializeObject(response, settings);
+
+            return StatusCode(response.Code, json);
         }
 
         /// <summary>

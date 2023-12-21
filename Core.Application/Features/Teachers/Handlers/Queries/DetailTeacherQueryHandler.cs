@@ -39,16 +39,9 @@ namespace Core.Application.Features.Teachers.Handlers.Queries
             {
                 var query = _unitOfWork.Repository<Teacher>().GetByIdInclude(request.id);
 
-                if (request.isAllDetail)
+                if (request.isAllDetail || request.isGetDepartment == true)
                 {
-                    query = _unitOfWork.Repository<Teacher>().AddInclude(query, x => x.Department);
-                }
-                else
-                {
-                    if (request.isGetDepartment == true)
-                    {
-                        query = _unitOfWork.Repository<Teacher>().AddInclude(query, x => x.Department);
-                    }
+                    query = query.Include(x => x.Department).ThenInclude(x => x.HeadDepartment_Teacher);
                 }
 
                 var findTeacher = await query.SingleAsync();

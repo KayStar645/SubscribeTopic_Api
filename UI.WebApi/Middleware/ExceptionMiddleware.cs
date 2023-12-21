@@ -44,7 +44,7 @@ namespace API.WebApi.Middleware
                         httpContext.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
                     }
 
-                    var authorizeAttributes = endpoint.Metadata.GetOrderedMetadata<AuthorizeAttribute>();
+                    var authorizeAttributes = endpoint?.Metadata.GetOrderedMetadata<AuthorizeAttribute>();
 
                     if ((authorizeAttributes != null && authorizeAttributes.Any()) == false)
                     {
