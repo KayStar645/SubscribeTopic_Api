@@ -47,7 +47,7 @@ namespace Core.Application.Features.Points.Handlers.Queries
                          .Include(x => x.StudentJoin)
                             .ThenInclude(x => x.Student);
 
-            query = _sieveProcessor.Apply(sieve, query);
+            //query = _sieveProcessor.Apply(sieve, query);
 
             int totalCount = await query.CountAsync();
 
