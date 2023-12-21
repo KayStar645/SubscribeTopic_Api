@@ -68,9 +68,9 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
                 query = query.Where(x => x.Duty.Department.FacultyId == int.Parse(facultyId));
                 query = query.Where(x => x.Duty.ForDuty.Faculty.RegistrationPeriods.Any(x => x.Id == period.Id));
 
-                query = _sieveProcessor.Apply(sieve, query);
-
                 int totalCount = await query.CountAsync();
+
+                query = _sieveProcessor.Apply(sieve, query);
 
                 var listThesis = await query.ToListAsync();
 

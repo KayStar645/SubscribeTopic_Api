@@ -111,9 +111,9 @@ namespace Core.Application.Features.ReportSchedule.Handlers.Queries
                     query = query.Include(x => x.Teacher);
                 }
 
-                query = _sieveProcessor.Apply(sieve, query);
-
                 int totalCount = await query.CountAsync();
+
+                query = _sieveProcessor.Apply(sieve, query);
 
                 var reportSchedules = await query.ToListAsync();
 

@@ -65,9 +65,9 @@ namespace Core.Application.Features.Students.Handlers.Queries
                 }
             }
 
-            query = _sieveProcessor.Apply(sieve, query);
-
             int totalCount = await query.CountAsync();
+
+            query = _sieveProcessor.Apply(sieve, query);
 
             var students = await query.ToListAsync();
 
