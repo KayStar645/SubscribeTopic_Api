@@ -64,7 +64,7 @@ namespace Core.Application.Features.Points.Events
                 return;
             }
 
-            throw new UnauthorizedException(StatusCodes.Status403Forbidden);
+            //throw new UnauthorizedException(StatusCodes.Status403Forbidden);
         }
     }
 
