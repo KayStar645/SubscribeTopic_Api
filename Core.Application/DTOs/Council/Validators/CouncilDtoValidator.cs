@@ -44,10 +44,13 @@ namespace Core.Application.DTOs.Council.Validators
                         }
 
                         // Kiểm tra điều kiện đặc biệt cho Position "C" và "S"
-                        if ((commissioner.Position == CommissionerEntity.POSITION_CHAIRPERSON ||
-                             commissioner.Position == CommissionerEntity.POSITION_SECRETARY) &&
-                             commissioners.Count(c => c.Position == CommissionerEntity.POSITION_CHAIRPERSON ||
-                             c.Position == CommissionerEntity.POSITION_SECRETARY) > 1)
+                        if (commissioner.Position == CommissionerEntity.POSITION_CHAIRPERSON &&
+                             commissioners.Count(c => c.Position == CommissionerEntity.POSITION_CHAIRPERSON) > 1)
+                        {
+                            return false;
+                        }
+                        if (commissioner.Position == CommissionerEntity.POSITION_SECRETARY &&
+                             commissioners.Count(c => c.Position == CommissionerEntity.POSITION_SECRETARY) > 1)
                         {
                             return false;
                         }
