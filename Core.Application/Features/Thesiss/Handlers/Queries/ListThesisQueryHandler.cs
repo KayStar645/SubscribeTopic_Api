@@ -61,29 +61,31 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
                 .Query().Include(x => x.HeadDepartment_Department)
                         .Include(x => x.Dean_Faculty)
                 .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
-
-            if(teacher.Dean_Faculty != null)
+            if(request.filters == string.Empty)
             {
-                query = query.Where(x => x.LecturerThesis.UserId == int.Parse(userId) ||
-                            x.ThesisInstructions.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
-                            x.ThesisReviews.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
-                            (x.Duty.ForDuty.FacultyId == teacher.Dean_Faculty.Id && x.Status == Thesis.STATUS_APPROVED));
-            }
-            else if(teacher.HeadDepartment_Department != null)
-            {
-                query = query.Where(x => x.LecturerThesis.UserId == int.Parse(userId) ||
-                            x.ThesisInstructions.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
-                            x.ThesisReviews.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
-                            (x.Duty.DepartmentId == teacher.HeadDepartment_Department.Id &&
-                            x.Status == Thesis.STATUS_APPROVED || x.Status == Thesis.STATUS_APPROVE_REQUEST));
-            }
-            else
-            {
-                // Đề tài mình ra/hd/pb
-                query = query.Where(x => x.LecturerThesis.UserId == int.Parse(userId) ||
-                                    x.ThesisInstructions.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
-                                    x.ThesisReviews.Any(x => x.Teacher.UserId == int.Parse(userId)));
-            }
+                if (teacher.Dean_Faculty != null)
+                {
+                    query = query.Where(x => x.LecturerThesis.UserId == int.Parse(userId) ||
+                                x.ThesisInstructions.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
+                                x.ThesisReviews.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
+                                (x.Duty.ForDuty.FacultyId == teacher.Dean_Faculty.Id && x.Status == Thesis.STATUS_APPROVED));
+                }
+                else if (teacher.HeadDepartment_Department != null)
+                {
+                    query = query.Where(x => x.LecturerThesis.UserId == int.Parse(userId) ||
+                                x.ThesisInstructions.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
+                                x.ThesisReviews.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
+                                (x.Duty.DepartmentId == teacher.HeadDepartment_Department.Id &&
+                                x.Status == Thesis.STATUS_APPROVED || x.Status == Thesis.STATUS_APPROVE_REQUEST));
+                }
+                else
+                {
+                    // Đề tài mình ra/hd/pb
+                    query = query.Where(x => x.LecturerThesis.UserId == int.Parse(userId) ||
+                                        x.ThesisInstructions.Any(x => x.Teacher.UserId == int.Parse(userId)) ||
+                                        x.ThesisReviews.Any(x => x.Teacher.UserId == int.Parse(userId)));
+                }
+            }    
 
             if (request.departmentId != null)
             {
