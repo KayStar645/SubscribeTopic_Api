@@ -16,11 +16,7 @@ namespace Core.Domain.Entities
         public string? InternalCode { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
-        public string? Name { get; set; }   
-
-        [Sieve(CanFilter = true, CanSort = true)]
-        [Column(TypeName = "date")]
-        public DateTime? ProtectionDay { get; set; }
+        public string? Name { get; set; }
 
         [Sieve(CanFilter = true, CanSort = true)]
         public string? Location { get; set; }

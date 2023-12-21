@@ -1,5 +1,4 @@
 ﻿using Core.Application.Contracts.Persistence;
-using Core.Application.Interfaces.Repositories;
 using Core.Application.Transform;
 using FluentValidation;
 
@@ -9,11 +8,11 @@ namespace Core.Application.DTOs.RegistrationPeriod.Validators
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateRegistrationPeriodDtoValidator(IUnitOfWork unitOfWork, DateTime start)
+        public UpdateRegistrationPeriodDtoValidator(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
 
-            Include(new RegistrationPeriodDtoValidator(_unitOfWork, start));
+            Include(new RegistrationPeriodDtoValidator(_unitOfWork));
 
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage(ValidatorTransform.Required("id"));
