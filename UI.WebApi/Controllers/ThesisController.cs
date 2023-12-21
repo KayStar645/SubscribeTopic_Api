@@ -58,6 +58,20 @@ namespace UI.WebApi.Controllers
         }
 
         /// <summary>
+        /// Lấy thông tin đề đã đăng ký đợt hiện tại
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        [HttpGet("detail/meCurrent")]
+        [Permission("Thesis.MeCurrent.View")]
+        public async Task<ActionResult> Get([FromQuery] DetailThesisMePeriodCurrentRequest request)
+        {
+            var response = await _mediator.Send(request);
+
+            return StatusCode(response.Code, response);
+        }
+
+        /// <summary>
         /// Thêm đề tài
         /// </summary>
         /// <remarks>
