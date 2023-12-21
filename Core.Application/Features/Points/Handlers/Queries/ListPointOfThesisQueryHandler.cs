@@ -63,14 +63,14 @@ namespace Core.Application.Features.Points.Handlers.Queries
             else
             {
                 query = query.Where(x => x.StudentJoin.Group.ThesisRegistration.ThesisId == request.thesisId);
-            }    
+            }
 
 
             query = query.Include(x => x.Teacher)
                          .Include(x => x.StudentJoin)
                             .ThenInclude(x => x.Student);
 
-            query = _sieveProcessor.Apply(sieve, query);
+            //query = _sieveProcessor.Apply(sieve, query);
 
             var points = await query.ToListAsync();
 
