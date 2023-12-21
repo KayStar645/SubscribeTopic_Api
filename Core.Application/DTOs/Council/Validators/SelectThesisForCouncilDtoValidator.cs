@@ -43,7 +43,8 @@ namespace Core.Application.DTOs.Council.Validators
 
                     return true; // Nếu tất cả là hợp lệ, trả về true
                 })
-                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("thesisId", "theses"));
+                .WithMessage(id => ValidatorTransform.NotExistsValueInTable("thesisId", "theses") + 
+                            " Thời gian bắt đầu phải lớn hơn hiện tại và nhỏ hơn thời gian kết thúc");
 
 
         }

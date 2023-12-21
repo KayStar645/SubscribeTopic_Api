@@ -13,6 +13,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 using System.Net;
 using Schedule = Core.Domain.Entities.ReportSchedule;
 
@@ -63,6 +64,54 @@ namespace Core.Application.Features.Councils.Handlers.Commands
 
                 foreach (var thesis in request.selectThesisForCouncilDto.ListThesis)
                 {
+                    var t = await _unitOfWork.Repository<Thesis>()
+                                    .FirstOrDefaultAsync(x => x.Id == thesis.ThesisId);
+
+                    // Kiểm tra đề tài đã được GVHD và GVPB duyệt chưa
+                    // Giảng viên hướng dẫn
+                    var approveIns = await _unitOfWork.Repository<ThesisInstruction>()
+                                            .Query()
+                                            .Where(x => x.ThesisId == thesis.ThesisId)
+                                            .ToListAsync();
+
+                    // Giảng viên phản biện
+                    var approveRev = await _unitOfWork.Repository<ThesisReview>()
+                                            .Query()
+                                            .Where(x => x.ThesisId == thesis.ThesisId)
+                                            .ToListAsync();
+                    if(approveIns.Any(x => x.IsApprove == false) || approveRev.Any(x => x.IsApprove == false))
+                    {
+                        throw new BadRequestException($"Đề tài {t.InternalCode}: Đề tài chưa được duyệt bởi GVHD hoặc GVPB!");
+                    }    
+
+
+                    // Kiểm tra giảng viên trong hội đồng và GVHD & GVPB không được trùng nhau
+                    // Giảng viên trong hội đồng
+                    var teacherIdCouncil = await _unitOfWork.Repository<Commissioner>()
+                                            .Query()
+                                            .Where(x => x.CouncilId == request.selectThesisForCouncilDto.CouncilId)
+                                            .Select(x => x.TeacherId)
+                                            .ToListAsync();
+
+                    // Giảng viên hướng dẫn
+                    var teacherIdIns = await _unitOfWork.Repository<ThesisInstruction>()
+                                            .Query()
+                                            .Where(x => x.ThesisId == thesis.ThesisId)
+                                            .Select(x => x.TeacherId)
+                                            .ToListAsync();
+
+                    // Giảng viên phản biện
+                    var teacherIdRev = await _unitOfWork.Repository<ThesisReview>()
+                                            .Query()
+                                            .Where(x => x.ThesisId == thesis.ThesisId)
+                                            .Select(x => x.TeacherId)
+                                            .ToListAsync();
+
+                    if (teacherIdIns.Intersect(teacherIdCouncil).Any() || teacherIdRev.Intersect(teacherIdCouncil).Any())
+                    {
+                        throw new BadRequestException($"Đề tài {t.InternalCode}: Giảng viên trong hội đồng trùng với GVHD hoặc GVPB không hợp lệ!");
+                    }
+
                     var findThesis = await _unitOfWork.Repository<Thesis>()
                                             .Query()
                                             .Where(x => x.Id == thesis.ThesisId)
