@@ -13,6 +13,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 using System.Net;
 using Schedule = Core.Domain.Entities.ReportSchedule;
 
@@ -54,6 +55,40 @@ namespace Core.Application.Features.Councils.Handlers.Commands
                 {
                     throw new UnauthorizedException(StatusCodes.Status403Forbidden);
                 }
+
+                // Kiểm tra giảng viên trong hội đồng và GVHD & GVPB không được trùng nhau
+                // Giảng viên trong hội đồng
+                var teacherIdCouncil = await _unitOfWork.Repository<Commissioner>()
+                                        .Query()
+                                        .Where(x => x.CouncilId == request.selectThesisForCouncilDto.CouncilId)
+                                        .Select(x => x.TeacherId)
+                                        .ToListAsync();
+
+                // DS đề tài của hội đồng này
+                var thesisIds = await _unitOfWork.Repository<Thesis>()
+                                    .Query()
+                                    .Where(x => x.CouncilId == request.selectThesisForCouncilDto.CouncilId)
+                                    .Select(x => x.Id)
+                                    .ToListAsync();
+
+                // Giảng viên hướng dẫn
+                var teacherIdIns = await _unitOfWork.Repository<ThesisInstruction>()
+                                        .Query()
+                                        .Where(x => thesisIds.Contains((int)x.ThesisId))
+                                        .Select(x => x.TeacherId)
+                                        .ToListAsync();
+
+                // Giảng viên phản biện
+                var teacherIdRev = await _unitOfWork.Repository<ThesisReview>()
+                                        .Query()
+                                        .Where(x => thesisIds.Contains((int)x.ThesisId))
+                                        .Select(x => x.TeacherId)
+                                        .ToListAsync();
+
+                if(teacherIdIns.Intersect(teacherIdCouncil).Any() || teacherIdRev.Intersect(teacherIdCouncil).Any())
+                {
+                    throw new BadRequestException("Giảng viên trong hội đồng trùng với GVHD hoặc phản biện không hợp lệ!");
+                }    
 
                 var teacher = await _unitOfWork.Repository<Teacher>()
                     .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));

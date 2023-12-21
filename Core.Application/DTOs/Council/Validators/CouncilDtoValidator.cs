@@ -35,20 +35,23 @@ namespace Core.Application.DTOs.Council.Validators
                     foreach (var commissioner in commissioners)
                     {
                         // Kiểm tra TeacherId
-                        if (!(await _unitOfWork.Repository<TeacherEntity>().Query().AnyAsync(t => t.Id == commissioner.TeacherId)))
+                        if ((await _unitOfWork.Repository<TeacherEntity>().Query()
+                            .AnyAsync(t => t.Id == commissioner.TeacherId)) == false)
                         {
                             return false;
                         }
 
                         // Kiểm tra Position
-                        if (!CommissionerEntity.GetPosition().Contains(commissioner.Position))
+                        if (CommissionerEntity.GetPosition().Contains(commissioner.Position) == false)
                         {
                             return false;
                         }
 
                         // Kiểm tra điều kiện đặc biệt cho Position "C" và "S"
-                        if ((commissioner.Position == "C" || commissioner.Position == "S") &&
-                            commissioners.Count(c => c.Position == "T" || c.Position == "S") > 1)
+                        if ((commissioner.Position == CommissionerEntity.POSITION_CHAIRPERSON ||
+                             commissioner.Position == CommissionerEntity.POSITION_SECRETARY) &&
+                             commissioners.Count(c => c.Position == CommissionerEntity.POSITION_CHAIRPERSON ||
+                             c.Position == CommissionerEntity.POSITION_SECRETARY) > 1)
                         {
                             return false;
                         }
