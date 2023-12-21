@@ -9,6 +9,8 @@ namespace Core.Application.DTOs.Point
 
         public double? ViewScore { get; set; }
 
+        public double? CouncilScore { get; set; }
+
         public double? AverageScore { get; set; }
 
         public StudentJoinDto? StudentJoin { get; set; }

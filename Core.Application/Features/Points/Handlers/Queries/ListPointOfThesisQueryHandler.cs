@@ -98,7 +98,8 @@ namespace Core.Application.Features.Points.Handlers.Queries
                     StudentJoinId = studentJoin.Id,
                     Scores = teacherPointDtos,
                     AverageScore = (teacherPointDtos.Where(x => x.Type == Point.TYPE_INSTRUCTION).Average(x => x.Score) +
-                                    teacherPointDtos.Where(x => x.Type == Point.TYPE_REVIEW).Average(x => x.Score)) /2,
+                                    teacherPointDtos.Where(x => x.Type == Point.TYPE_REVIEW).Average(x => x.Score) +
+                                    teacherPointDtos.Where(x => x.Type == Point.TYPE_COUNCIL).Average(x => x.Score)) / 3,
                     StudentJoin = studentJoin
                 };
                 thesisPointDtos.Add(thesisPointDto);
