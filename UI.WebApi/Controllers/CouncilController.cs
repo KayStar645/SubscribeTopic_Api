@@ -133,5 +133,23 @@ namespace UI.WebApi.Controllers
                 return StatusCode(responses.Code, responses);
             }
         }
+
+        /// <summary>
+        /// Chọn đề tài cho hội đồng
+        /// </summary>
+        /// <remarks>
+        /// Ràng buộc: 
+        /// - CouncilId: int, required - Hội đồng nào
+        /// - ListThesisId: int, required - Danh sách đề tài của hội đồng cần thêm
+        /// </remarks>
+        [HttpPut("SelectThesis")]
+        [Permission("Council.SelectThesis")]
+        public async Task<ActionResult> Put([FromBody] SelectThesisForCouncilDto request)
+        {
+            var command = new SelectThesisForCouncilRequest { selectThesisForCouncilDto = request };
+            var response = await _mediator.Send(command);
+
+            return StatusCode(response.Code, response);
+        }
     }
 }
