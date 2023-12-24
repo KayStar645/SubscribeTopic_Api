@@ -60,6 +60,27 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
             {
                 throw new UnauthorizedException(StatusCodes.Status403Forbidden);
             }
+
+            // Từ id của người dùng lấy ra id của khoa
+            var facultyId = await _unitOfWork.Repository<Teacher>()
+                                    .Query()
+                                    .Where(x => x.UserId == int.Parse(userId))
+                                    .Include(x => x.Department)
+                                    .Select(x => x.Department.FacultyId)
+                                    .FirstAsync();
+
+
+            // Lấy đợt đăng ký hiện tại của khoa
+            var periodCurrentId = await _unitOfWork.Repository<RegistrationPeriod>()
+                                        .Query()
+                                        .Where(x => x.FacultyId == facultyId && x.IsActive == true)
+                                        .Select(x => x.Id)
+                                        .FirstOrDefaultAsync();
+            if(request.periodId == null)
+            {
+                request.periodId = periodCurrentId;
+            }    
+
             var teacher = await _unitOfWork.Repository<Teacher>()
                 .FirstOrDefaultAsync(x => x.UserId == int.Parse(userId));
 
