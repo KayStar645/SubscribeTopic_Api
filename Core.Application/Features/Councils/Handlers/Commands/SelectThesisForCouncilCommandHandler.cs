@@ -77,7 +77,8 @@ namespace Core.Application.Features.Councils.Handlers.Commands
                                             .Query()
                                             .Where(x => x.ThesisId == thesis.ThesisId)
                                             .ToListAsync();
-                    if(approveIns.Any(x => x.IsApprove == false) || approveRev.Any(x => x.IsApprove == false))
+                    if((approveIns.Any(x => x.IsApprove == false) && approveIns.Count > 0) ||
+                        (approveRev.Any(x => x.IsApprove == false) && approveRev.Count > 0))
                     {
                         throw new BadRequestException($"Đề tài {t.InternalCode}: Đề tài chưa được duyệt bởi GVHD hoặc GVPB!");
                     }    
