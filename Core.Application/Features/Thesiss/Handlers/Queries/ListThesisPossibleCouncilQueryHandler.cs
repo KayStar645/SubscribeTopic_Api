@@ -60,8 +60,8 @@ namespace Core.Application.Features.Thesiss.Handlers.Queries
             var query = _unitOfWork.Repository<Thesis>().GetAllInclude()
                 .Where(x => x.Status == Thesis.STATUS_APPROVED && 
                             x.Duty.ForDuty.RegistrationPeriod.Id == periodCurrentId &&
-                            x.ThesisReviews.All(x => x.IsApprove == true) &&
-                            x.ThesisInstructions.All(x => x.IsApprove == true) &&
+                            (x.ThesisReviews.All(x => x.IsApprove == true) && x.ThesisReviews.Count > 0) &&
+                            (x.ThesisInstructions.All(x => x.IsApprove == true) && x.ThesisInstructions.Count > 0) &&
                             x.CouncilId == null);
             
             int totalCount = await query.CountAsync();
