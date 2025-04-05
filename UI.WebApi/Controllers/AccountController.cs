@@ -40,7 +40,7 @@ namespace UI.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        [Permission("Account.Create")]
+        //[Permission("Account.Create")]
         public async Task<ActionResult<Result<RegistrationResponse>>> Register(RegistrationRequest request)
         {
             Result<RegistrationResponse> response = await _authenticationService.Register(request);

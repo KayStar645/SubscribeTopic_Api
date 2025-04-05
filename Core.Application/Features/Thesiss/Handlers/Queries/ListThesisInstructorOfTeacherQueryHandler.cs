@@ -13,7 +13,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
-using Sieve.Services.Interface;
+using Sieve.Services;
 using System.Net;
 
 namespace Core.Application.Features.Thesiss.Handlers.Queries

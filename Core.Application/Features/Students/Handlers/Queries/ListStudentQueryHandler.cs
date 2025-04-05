@@ -7,7 +7,7 @@ using Core.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
-using Sieve.Services.Interface;
+using Sieve.Services;
 using System.Net;
 
 namespace Core.Application.Features.Students.Handlers.Queries

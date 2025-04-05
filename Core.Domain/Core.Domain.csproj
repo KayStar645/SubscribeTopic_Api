@@ -15,14 +15,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Sieve\Sieve.csproj" />
+    <PackageReference Include="Sieve" Version="2.5.5" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Common\Interfaces" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

@@ -4,11 +4,10 @@ using Core.Application.DTOs.Common.Validators;
 using Core.Application.DTOs.Faculty;
 using Core.Application.Features.Faculties.Requests.Queries;
 using Core.Application.Responses;
-using Core.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
-using Sieve.Services.Interface;
+using Sieve.Services;
 using System.Net;
 
 namespace Core.Application.Features.Faculties.Handlers.Queries

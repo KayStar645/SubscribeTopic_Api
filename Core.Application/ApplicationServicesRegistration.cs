@@ -10,6 +10,7 @@ using Core.Application.Services.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Sieve.Services;
 using System.Reflection;
 
 namespace Core.Application
@@ -37,6 +38,7 @@ namespace Core.Application
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IGoogleDriveService, GoogleDriveService>();
+            services.AddScoped<ISieveProcessor, SieveProcessor>();
 
 
             return services;

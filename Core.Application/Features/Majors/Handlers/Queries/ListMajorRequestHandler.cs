@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using Core.Application.Contracts.Persistence;
-using Core.Application.DTOs.Common.Validators;
-using Core.Application.DTOs.Industry;
 using Core.Application.DTOs.Major;
 using Core.Application.Features.Majors.Requests.Queries;
 using Core.Application.Responses;
@@ -9,7 +7,7 @@ using Core.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
-using Sieve.Services.Interface;
+using Sieve.Services;
 using System.Net;
 
 namespace Core.Application.Features.Majors.Handlers.Queries

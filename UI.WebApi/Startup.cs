@@ -54,16 +54,11 @@ namespace UI.WebApi
                 options.AddPermissionPoliciesFromAttributes(Assembly.GetExecutingAssembly());
             });
 
-
-
-
-
             services.AddHttpContextAccessor();
             AddSwaggerDoc(services);
 
             services.ConfigureApplicationServices();
             services.ConfigureDomainServices(_configuration);
-            services.ConfigureSieveServices(_configuration);
             services.ConfigurePersistenceServices(_configuration);
 
             services.AddControllers();

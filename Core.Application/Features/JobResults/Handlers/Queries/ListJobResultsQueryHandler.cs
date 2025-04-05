@@ -6,7 +6,7 @@ using Core.Application.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
-using Sieve.Services.Interface;
+using Sieve.Services;
 using System.Net;
 using JobResultsEntity = Core.Domain.Entities.JobResults;
 
